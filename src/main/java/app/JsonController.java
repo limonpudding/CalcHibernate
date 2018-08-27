@@ -50,7 +50,7 @@ public class JsonController {
         if (!b.matches(regex)) {
             b = jdbc.getConstantValueDB(b);
         }
-        print(logger, Level.INFO, CALC_LOG, new Object[]{req.getRemoteAddr(), operation});
+        print(logger, Level.INFO, CALC_LOG, req.getRemoteAddr(), operation);
         String ans = Answer.calc(a, b, operation);
         Operation operationObject = new Operation(new Date(), a, b, operation, ans, UUID.randomUUID().toString());
         jdbc.putDataInBD(operationObject);
@@ -71,7 +71,7 @@ public class JsonController {
             logger.warn("Попытка присвоить значение константы, не представляющее собой число");
 
         jdbc.updatePostDB(keyOld, constant);
-        print(logger, Level.INFO, UPDATE_CONST_LOG, new Object[]{req.getRemoteAddr(), keyOld, keyNew, value});
+        print(logger, Level.INFO, UPDATE_CONST_LOG, req.getRemoteAddr(), keyOld, keyNew, value);
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.PUT)
@@ -83,7 +83,7 @@ public class JsonController {
         if (!constant.getValue().matches(regex))
             logger.warn("Попытка присвоить значение константы, не представляющее собой число");
         jdbc.putConstInDB(constant);
-        print(logger, Level.INFO, PUT_CONST_LOG, new Object[]{req.getRemoteAddr(), constant.getKey(), constant.getValue()});
+        print(logger, Level.INFO, PUT_CONST_LOG, req.getRemoteAddr(), constant.getKey(), constant.getValue());
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.PATCH)
@@ -91,7 +91,7 @@ public class JsonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void updateValue(@RequestBody Constant constant) {
         jdbc.updatePatchDB(constant);
-        print(logger, Level.INFO, UPDATE_VALUE_LOG, new Object[]{req.getRemoteAddr(), constant.getKey(), constant.getValue()});
+        print(logger, Level.INFO, UPDATE_VALUE_LOG, req.getRemoteAddr(), constant.getKey(), constant.getValue());
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.DELETE)
@@ -99,14 +99,14 @@ public class JsonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteConst(@RequestBody Key key) {
         jdbc.deleteConstantDB(key.getKey());
-        print(logger, Level.INFO, DELETE_CONST_LOG, new Object[]{req.getRemoteAddr(), key});
+        print(logger, Level.INFO, DELETE_CONST_LOG, req.getRemoteAddr(), key);
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<List<Constant>> getConstants() {
         List<Constant> constants = jdbc.getConstantsDB();
-        print(logger, Level.INFO, GET_CONSTANTS_LOG, new Object[]{req.getRemoteAddr()});
+        print(logger, Level.INFO, GET_CONSTANTS_LOG, req.getRemoteAddr());
         return new ResponseEntity<>(constants, HttpStatus.OK);
     }
 }

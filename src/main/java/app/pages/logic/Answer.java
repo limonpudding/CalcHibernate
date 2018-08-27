@@ -64,7 +64,7 @@ public class Answer extends Page {
         a.setValue(strA);
         b.setValue(strB);
         if (Integer.parseInt(strA) > 50000 && "fib".equals(operation)) {
-            Log.print(logger, Level.WARN, CALC_FIB_LOG, new Object[]{Integer.parseInt(strA)});
+            Log.print(logger, Level.WARN, CALC_FIB_LOG, Integer.parseInt(strA));
         }
         switch (operation) {
             case "sum":

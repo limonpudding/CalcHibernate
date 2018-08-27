@@ -48,7 +48,7 @@ public class MainController {
     private void init() {
         if (req.getSession().isNew()) {
             jdbc.insertSessionTime();
-                Log.print(rootLogger, Level.INFO, USER_CONNECTED_LOG, new Object[]{req.getRemoteAddr()});
+                Log.print(rootLogger, Level.INFO, USER_CONNECTED_LOG, req.getRemoteAddr());
         } else {
             jdbc.updateSessionEndTime();
         }

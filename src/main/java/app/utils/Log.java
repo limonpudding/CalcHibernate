@@ -13,7 +13,7 @@ public class Log {
     public static final String CALC_LOG = "Пользователь с IP: {} начал выполнение операции \'{}\'";
     public static final String UPDATE_CONST_LOG = "Пользователь с IP: {} обновил константу \'{}\' на key:\'{}\', value:\'{}\'";
 
-    public static void print(Logger logger, Level level, String msg, Object[] objects) {
+    public static void print(Logger logger, Level level, String msg, Object ... objects) {
         if (logger.isEnabled(level)) {
             logger.log(level, msg, objects);
         }
