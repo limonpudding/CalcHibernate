@@ -8,6 +8,7 @@ import app.rest.Key;
 import app.rest.UpdatePost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,6 +93,7 @@ public class JsonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void updateValue(@RequestBody Constant constant) {
         jdbc.updatePatchDB(constant);
+        //StringFormattedMessage {0} {1} {2}
         if (logger.isInfoEnabled()) {
             logger.info("Пользователь с IP: " + req.getRemoteAddr() + " обновил значение константы \'" + constant.getKey() + "\' на value:\'" + constant.getValue() + "\'");
         }
