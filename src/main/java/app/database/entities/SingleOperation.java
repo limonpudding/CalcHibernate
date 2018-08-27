@@ -2,7 +2,6 @@ package app.database.entities;
 
 public class SingleOperation extends Operation {
 
-    private String name;
     private String firstoperand;
 
     public String getFirstoperand() {
@@ -13,11 +12,5 @@ public class SingleOperation extends Operation {
         this.firstoperand = firstoperand;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 }

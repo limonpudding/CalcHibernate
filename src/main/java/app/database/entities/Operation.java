@@ -4,11 +4,20 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Operation {
 
+    private String name;
     public Logger logger;
     protected String id;
     protected String answer;
     protected String idsession;
     protected java.sql.Timestamp time;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getId() {
         return id;
