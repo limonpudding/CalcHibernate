@@ -6,6 +6,8 @@ import app.pages.logic.Operation;
 import app.rest.Constant;
 import app.rest.Key;
 import app.rest.UpdatePost;
+import app.utils.Log;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import static app.utils.Log.*;
 
 @RestController
 public class JsonController {
@@ -45,9 +49,7 @@ public class JsonController {
         if (!b.matches(regex)) {
             b = jdbc.getConstantValueDB(b);
         }
-        if (logger.isInfoEnabled()) {
-            logger.info("Пользователь с IP: " + req.getRemoteAddr() + " начал выполнение операции \'" + operation + "\'");
-        }
+        print(logger, Level.INFO, CALC_LOG, new Object[]{req.getRemoteAddr(), operation});
         String ans = Answer.calc(a, b, operation);
         Operation operationObject = new Operation(new Date(), a, b, operation, ans, UUID.randomUUID().toString());
         jdbc.putDataInBD(operationObject);
@@ -68,9 +70,7 @@ public class JsonController {
             logger.warn("Попытка присвоить значение константы, не представляющее собой число");
 
         jdbc.updatePostDB(keyOld, constant);
-        if (logger.isInfoEnabled()) {
-            logger.info("Пользователь с IP: " + req.getRemoteAddr() + " обновил константу \'" + keyOld + "\' на key:\'" + keyNew + "\', value:\'" + value + "\'");
-        }
+        print(logger, Level.INFO, UPDATE_CONST_LOG, new Object[]{req.getRemoteAddr(), keyOld, keyNew, value});
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.PUT)
@@ -82,9 +82,7 @@ public class JsonController {
         if (!constant.getValue().matches(regex))
             logger.warn("Попытка присвоить значение константы, не представляющее собой число");
         jdbc.putConstInDB(constant);
-        if (logger.isInfoEnabled()) {
-            logger.info("Пользователь с IP: " + req.getRemoteAddr() + " добавил константу key:\'" + constant.getKey() + "\', value:\'" + constant.getValue() + "\'");
-        }
+        print(logger, Level.INFO, PUT_CONST_LOG, new Object[]{req.getRemoteAddr(), constant.getKey(), constant.getValue()});
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.PATCH)
@@ -92,9 +90,7 @@ public class JsonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void updateValue(@RequestBody Constant constant) {
         jdbc.updatePatchDB(constant);
-        if (logger.isInfoEnabled()) {
-            logger.info("Пользователь с IP: " + req.getRemoteAddr() + " обновил значение константы \'" + constant.getKey() + "\' на value:\'" + constant.getValue() + "\'");
-        }
+        print(logger, Level.INFO, UPDATE_VALUE_LOG, new Object[]{req.getRemoteAddr(), constant.getKey(), constant.getValue()});
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.DELETE)
@@ -102,18 +98,14 @@ public class JsonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteConst(@RequestBody Key key) {
         jdbc.deleteConstantDB(key.getKey());
-        if (logger.isInfoEnabled()) {
-            logger.info("Пользователь с IP: " + req.getRemoteAddr() + " удалил константу \'" + key + "\'");
-        }
+        print(logger, Level.INFO, DELETE_CONST_LOG, new Object[]{req.getRemoteAddr(), key});
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<List<Constant>> getConstants() {
         List<Constant> constants = jdbc.getConstantsDB();
-        if (logger.isInfoEnabled()) {
-            logger.info("Пользователь с IP: " + req.getRemoteAddr() + " запросил список констант");
-        }
+        print(logger, Level.INFO, GET_CONSTANTS_LOG, new Object[]{req.getRemoteAddr()});
         return new ResponseEntity<>(constants, HttpStatus.OK);
     }
 }

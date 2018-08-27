@@ -5,6 +5,8 @@ import app.math.Fibonacci;
 import app.math.LongArithmethic;
 import app.math.LongArithmeticImplList;
 import app.math.LongArithmeticMath;
+import app.utils.Log;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
+
+import static app.utils.Log.*;
 
 @Service("getAnswer")
 public class Answer extends Page {
@@ -60,9 +64,7 @@ public class Answer extends Page {
         a.setValue(strA);
         b.setValue(strB);
         if (Integer.parseInt(strA) > 50000 && "fib".equals(operation)) {
-            if (logger.isWarnEnabled()) {
-                logger.warn("Запущена операция фибоначчи с параметром: " + Integer.parseInt(strA));
-            }
+            Log.print(logger, Level.WARN, CALC_FIB_LOG, new Object[]{Integer.parseInt(strA)});
         }
         switch (operation) {
             case "sum":

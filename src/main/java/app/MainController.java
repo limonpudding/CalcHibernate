@@ -2,6 +2,8 @@ package app;
 
 import app.database.JDBC;
 import app.pages.logic.Page;
+import app.utils.Log;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+
+import static app.utils.Log.*;
 
 @Controller
 public class MainController {
@@ -44,9 +48,7 @@ public class MainController {
     private void init() {
         if (req.getSession().isNew()) {
             jdbc.insertSessionTime();
-            if (rootLogger.isInfoEnabled()) {
-                rootLogger.info("Подключился пользователь с IP: " + req.getRemoteAddr());
-            }
+                Log.print(rootLogger, Level.INFO, USER_CONNECTED_LOG, new Object[]{req.getRemoteAddr()});
         } else {
             jdbc.updateSessionEndTime();
         }
