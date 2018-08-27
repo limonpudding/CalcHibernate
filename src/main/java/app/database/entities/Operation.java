@@ -1,15 +1,24 @@
 package app.database.entities;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class Operation {
+    protected Logger logger;
 
-    private String name;
-    public Logger logger;
+    protected String name;
     protected String id;
     protected String answer;
     protected String idsession;
     protected java.sql.Timestamp time;
+
+    protected Operation(String name, String id, String answer, String idsession) {
+        this.name = name;
+        this.id = id;
+        this.answer = answer;
+        this.idsession = idsession;
+        logger = LogManager.getLogger(this.getClass());
+    }
 
     public String getName() {
         return name;
