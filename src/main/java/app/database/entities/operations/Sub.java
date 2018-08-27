@@ -1,7 +1,7 @@
-package app.database.entities;
+package app.database.entities.operations;
 
 
-public class Sub implements BinaryOperation {
+public class Sub {
 
   private String id;
   private String firstoperand;

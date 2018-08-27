@@ -1,7 +1,7 @@
-package app.database.entities;
+package app.database.entities.operations;
 
 
-public class Mul implements BinaryOperation{
+public class Mul{
 
   private String id;
   private String firstoperand;

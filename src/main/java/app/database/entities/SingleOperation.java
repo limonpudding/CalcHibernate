@@ -1,7 +1,23 @@
 package app.database.entities;
 
-public interface SingleOperation {
-    String getFirstoperand();
+public class SingleOperation extends Operation {
 
-    void setFirstoperand(String firstoperand);
+    private String name;
+    private String firstoperand;
+
+    public String getFirstoperand() {
+        return firstoperand;
+    }
+
+    public void setFirstoperand(String firstoperand) {
+        this.firstoperand = firstoperand;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

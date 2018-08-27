@@ -1,10 +1,11 @@
-package app.database.entities;
+package app.database.entities.operations;
 
 
-public class Fib implements SingleOperation {
+public class Sum {
 
   private String id;
   private String firstoperand;
+  private String secondoperand;
   private String answer;
   private String idsession;
   private java.sql.Timestamp time;
@@ -25,6 +26,15 @@ public class Fib implements SingleOperation {
 
   public void setFirstoperand(String firstoperand) {
     this.firstoperand = firstoperand;
+  }
+
+
+  public String getSecondoperand() {
+    return secondoperand;
+  }
+
+  public void setSecondoperand(String secondoperand) {
+    this.secondoperand = secondoperand;
   }
 
 
