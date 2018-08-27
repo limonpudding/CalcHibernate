@@ -6,7 +6,7 @@ public class SingleOperation extends Operation {
 
     private LongArithmethic firstOperand;
 
-    protected SingleOperation(String name, String id, String answer, String idsession, LongArithmethic firstOperand) {
+    protected SingleOperation(Oper name, String id, String answer, String idsession, LongArithmethic firstOperand) {
         super(name, id, answer, idsession);
         this.firstOperand = firstOperand;
     }

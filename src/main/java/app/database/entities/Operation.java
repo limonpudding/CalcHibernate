@@ -6,13 +6,13 @@ import org.apache.logging.log4j.Logger;
 public abstract class Operation {
     protected Logger logger;
 
-    protected String name;
+    protected Oper name;
     protected String id;
     protected String answer;
     protected String idsession;
     protected java.sql.Timestamp time;
 
-    protected Operation(String name, String id, String answer, String idsession) {
+    protected Operation(Oper name, String id, String answer, String idsession) {
         this.name = name;
         this.id = id;
         this.answer = answer;
@@ -20,11 +20,11 @@ public abstract class Operation {
         logger = LogManager.getLogger(this.getClass());
     }
 
-    public String getName() {
+    public Oper getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Oper name) {
         this.name = name;
     }
 
