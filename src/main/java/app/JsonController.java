@@ -99,8 +99,7 @@ public class JsonController {
         }
     }
 
-    @RequestMapping(path = "/rest", method = RequestMethod.DELETE)
-    public @ResponseBody
+    @RequestMapping(path = "/rest", method = RequestMethod.DELETE) public @ResponseBody
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteConst(@RequestBody Key key) {
         jdbc.deleteConstantDB(key.getKey());

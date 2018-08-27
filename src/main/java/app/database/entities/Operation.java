@@ -1,20 +1,44 @@
 package app.database.entities;
 
-public interface Operation {
+import org.apache.logging.log4j.Logger;
 
-    String getId();
+public abstract class Operation {
 
-    void setId(String id);
+    public Logger logger;
+    protected String id;
+    protected String answer;
+    protected String idsession;
+    protected java.sql.Timestamp time;
 
-    String getAnswer();
+    public String getId() {
+        return id;
+    }
 
-    void setAnswer(String answer);
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    String getIdsession();
+    public String getAnswer() {
+        return answer;
+    }
 
-    void setIdsession(String idsession);
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
 
-    java.sql.Timestamp getTime();
+    public String getIdsession() {
+        return idsession;
+    }
 
-    void setTime(java.sql.Timestamp time);
+    public void setIdsession(String idsession) {
+        this.idsession = idsession;
+    }
+
+    public java.sql.Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(java.sql.Timestamp time) {
+        this.time = time;
+    }
 }

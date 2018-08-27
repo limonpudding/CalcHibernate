@@ -1,7 +1,7 @@
-package app.database.entities;
+package app.database.entities.operations;
 
 
-public class Div implements BinaryOperation {
+public class Div{
 
     private String id;
     private String firstoperand;

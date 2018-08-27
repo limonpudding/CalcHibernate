@@ -1,11 +1,10 @@
-package app.database.entities;
+package app.database.entities.operations;
 
 
-public class Sum implements BinaryOperation {
+public class Fib {
 
   private String id;
   private String firstoperand;
-  private String secondoperand;
   private String answer;
   private String idsession;
   private java.sql.Timestamp time;
@@ -26,15 +25,6 @@ public class Sum implements BinaryOperation {
 
   public void setFirstoperand(String firstoperand) {
     this.firstoperand = firstoperand;
-  }
-
-
-  public String getSecondoperand() {
-    return secondoperand;
-  }
-
-  public void setSecondoperand(String secondoperand) {
-    this.secondoperand = secondoperand;
   }
 
 
