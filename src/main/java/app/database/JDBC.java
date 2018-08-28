@@ -2,6 +2,7 @@ package app.database;
 
 import app.database.entities.BinaryOperation;
 import app.database.entities.Constants;
+import app.database.entities.Sessions;
 import app.database.entities.SingleOperation;
 import app.rest.Key;
 import app.rest.UpdatePost;
@@ -75,56 +76,67 @@ public class JDBC {
     }
 
     public void putSession() {
-        final String INSERT_SQL = "insert into SESSIONS (ID, IP, TIMESTART, TIMEEND) values (:id,:ip,:timestart,:timeend)";
         Session session = sessionFactory.openSession();
-        session.createSQLQuery(INSERT_SQL)
-                .setParameter("timeend", new Timestamp(req.getSession().getLastAccessedTime()))
-                .setParameter("id", req.getSession().getId())
-                .setParameter("ip", req.getRemoteAddr())
-                .setParameter("timestart", new Timestamp(req.getSession().getCreationTime()));
+        session.beginTransaction();
+        Sessions sessions = new Sessions();
+        sessions.setId(req.getSession().getId());
+        sessions.setIp(req.getRemoteAddr());
+        sessions.setTimestart(new Timestamp(req.getSession().getCreationTime()));
+        sessions.setTimeend(new Timestamp(req.getSession().getLastAccessedTime()));
+        session.save(sessions);
+        session.getTransaction().commit();
         session.close();
         rootLogger.info("В базу даных добалена новая сессия с ID: " + req.getSession().getId());
     }
 
     @Transactional
     public void updateSession() {
-        final String UPDATE_SQL = "update SESSIONS set TIMEEND = :timeend where SESSIONS.ID = :id";
         Session session = sessionFactory.openSession();
-        session.createSQLQuery(UPDATE_SQL)
-                .setParameter("timeend", new Timestamp(req.getSession().getLastAccessedTime()))
-                .setParameter("id", req.getSession().getId());
+        session.beginTransaction();
+        Sessions sessions = session.get(Sessions.class, req.getSession().getId());
+        sessions.setTimeend(new Timestamp(req.getSession().getLastAccessedTime()));
+        session.saveOrUpdate(sessions);
+        session.getTransaction().commit();
         session.close();
         rootLogger.info("В базе данных обновлена сессия с ID: " + req.getSession().getId());
     }
 
+
     public void putConstInDB(Constants constant) {
-        final String INSERT_SQL = "insert into CONSTANTS (KEY, VALUE) values (:key,:value)";
         Session session = sessionFactory.openSession();
-        session.createSQLQuery(INSERT_SQL).setParameter("value", constant.getValue()).setParameter("key", constant.getKey());
+        session.beginTransaction();
+        session.save(constant);
+        session.getTransaction().commit();
         session.close();
     }
 
     public void updatePostDB(UpdatePost post) {
-        final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.KEY = :keyNew, CONSTANTS.VALUE = :value WHERE CONSTANTS.KEY = :keyOld";
         Session session = sessionFactory.openSession();
-        session.createSQLQuery(UPDATE_SQL)
-                .setParameter("value", post.getValue())
-                .setParameter("keyNew", post.getKeyNew())
-                .setParameter("keyOld", post.getKeyOld());
+        session.beginTransaction();
+        Constants constants = session.get(Constants.class, post.getKeyOld());
+        constants.setKey(post.getKeyNew());
+        constants.setValue(post.getValue());
+        session.saveOrUpdate(constants);
+        session.getTransaction().commit();
         session.close();
     }
 
     public void deleteConstantDB(Key key) {
-        final String DELETE_SQL = "DELETE FROM CONSTANTS WHERE CONSTANTS.KEY = :key";
         Session session = sessionFactory.openSession();
-        session.createSQLQuery(DELETE_SQL).setParameter("key", key.getKey());
+        session.beginTransaction();
+        Constants constants = session.get(Constants.class, key.getKey());
+        session.delete(constants);
+        session.getTransaction().commit();
         session.close();
     }
 
     public void updatePatchDB(Constants constant) {
-        final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.VALUE = :value WHERE CONSTANTS.KEY = :key";
         Session session = sessionFactory.openSession();
-        session.createSQLQuery(UPDATE_SQL).setParameter("value", constant.getValue()).setParameter("key", constant.getKey());
+        session.beginTransaction();
+        Constants constants = session.get(Constants.class, constant.getKey());
+        constants.setValue(constant.getValue());
+        session.saveOrUpdate(constants);
+        session.getTransaction().commit();
         session.close();
     }
 
@@ -138,101 +150,32 @@ public class JDBC {
 
     public String getConstantValueDB(String key) {
         Session session = sessionFactory.openSession();
-        String value = session.get(Constants.class,key).getValue();
+        String value = session.get(Constants.class, key).getValue();
         session.close();
         return value;
     }
 
-    public List<SessionsRow> selectSessionsFromBD(String mode, String order) {
-        String orderStr;
-        String modeStr;
-        if ("desc".equals(order)) {
-            orderStr = "desc";
-        } else {
-            orderStr = "asc";
-        }
-        if (mode == null)
-            mode = "";
-        switch (mode) {
-            case "idSession":
-                modeStr = "ID";
-                break;
-            case "ip":
-                modeStr = "IP";
-                break;
-            case "timeStart":
-                modeStr = "TIMESTART";
-                break;
-            case "timeEnd":
-                modeStr = "TIMEEND";
-                break;
-            default:
-                modeStr = "ID";
-        }
-
-
+    public List selectSessionsFromBD(String mode, String order) {
         final String SELECT_SQL = "" +
                 "select * from (select distinct sessions.id, sessions.ip,sessions.timestart,sessions.timeend, 'false' as operation from SESSIONS left join history on SESSIONS.id = HISTORY.id where operation is null\n" +
                 "union all\n" +
-                "select distinct sessions.id, sessions.ip,sessions.timestart,sessions.timeend, 'true' as operation from SESSIONS left join history on SESSIONS.id = HISTORY.id where operation is not null) order by " + modeStr + " " + orderStr;
-        List<SessionsRow> dbRows = jdbcTemplate.query(SELECT_SQL,
-                (rs, rowNum) -> {
-                    SessionsRow row = new SessionsRow();
-                    row.setId(rs.getString(1));
-                    row.setIp(rs.getString(2));
-                    row.setSessionStartTime(rs.getString(3));
-                    row.setSessionEndTime(rs.getString(4));
-                    row.setOperation(rs.getString(5));
-                    return row;
-                });
+                "select distinct sessions.id, sessions.ip,sessions.timestart,sessions.timeend, 'true' as operation from SESSIONS left join history on SESSIONS.id = HISTORY.id where operation is not null) order by "+mode+" "+order;
+
+        Session session = sessionFactory.openSession();
+        List dbRows = session.createSQLQuery(SELECT_SQL).list();
+        session.close();
         return dbRows;
     }
 
-    public List<DBRow> selectDataFromBD(String mode, String order, String id) {
-        String orderStr;
-        String modeStr;
-        if ("desc".equals(order)) {
-            orderStr = "desc";
-        } else {
-            orderStr = "asc";
-        }
-        if (mode == null)
-            mode = "";
-        switch (mode) {
-            case "operation":
-                modeStr = "OPERATION";
-                break;
-            case "firstOper":
-                modeStr = "FIRSTOPERAND";
-                break;
-            case "secondOper":
-                modeStr = "SECONDOPERAND";
-                break;
-            case "answer":
-                modeStr = "ANSWER";
-                break;
-            case "time":
-                modeStr = "TIME";
-                break;
-            default:
-                modeStr = "TIME";
-        }
-
-        final String SELECT_SQL = "SELECT OPERATION, FIRSTOPERAND, SECONDOPERAND, ANSWER, TIME FROM HISTORY where '" + id + "'=ID ORDER BY " + modeStr + " " + orderStr;
-        List<DBRow> dbRows = jdbcTemplate.query(SELECT_SQL,
-                (rs, rowNum) -> {
-                    DBRow row = new DBRow();
-                    row.setOperationName(rs.getString("OPERATION"));
-                    row.setOp1(rs.getString("FIRSTOPERAND"));
-                    row.setOp2(rs.getString("SECONDOPERAND"));
-                    row.setAnswer(rs.getString("ANSWER"));
-                    row.setTime(rs.getString("TIME"));
-                    return row;
-                });
+    public List selectDataFromBD(String mode, String order, String id) {
+        final String SELECT_SQL = "SELECT OPERATION, FIRSTOPERAND, SECONDOPERAND, ANSWER, TIME FROM HISTORY where '"+id+"'=ID ORDER BY "+mode+" "+order;
+        Session session = sessionFactory.openSession();
+        List dbRows = session.createSQLQuery(SELECT_SQL).list();
+        session.close();
         return dbRows;
     }
 
-    public class DBRow {
+    public class OperationsRow {
         private String operationName;
         private String op1;
         private String op2;

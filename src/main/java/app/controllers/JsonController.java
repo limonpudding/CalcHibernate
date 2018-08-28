@@ -1,4 +1,4 @@
-package app;
+package app.controllers;
 
 import app.database.JDBC;
 import app.database.entities.Constants;
@@ -12,8 +12,6 @@ import app.rest.UpdatePost;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import static app.utils.Log.*;
@@ -34,14 +31,12 @@ public class JsonController extends AbstractController {
     private final Logger rootLogger;
     private Logger logger = LogManager.getLogger(JsonController.class);
     private final String regex = "^[-+]?[0-9]+$";
-    private final SessionFactory sessionFactory;
 
     @Autowired
-    public JsonController(HttpServletRequest req, JDBC jdbc, Logger rootLogger, SessionFactory sessionFactory) {
+    public JsonController(HttpServletRequest req, JDBC jdbc, Logger rootLogger) {
         this.req = req;
         this.jdbc = jdbc;
         this.rootLogger = rootLogger;
-        this.sessionFactory = sessionFactory;
     }
 
     @RequestMapping(path = "/rest/calc", method = RequestMethod.GET)
@@ -90,9 +85,9 @@ public class JsonController extends AbstractController {
     public void updateConst(@RequestBody UpdatePost post) {
         init();
         if (post.getKeyNew().matches(regex))
-            print(logger, Level.WARN, "Попытка переименовать константу в вид, содержащий только число. Её использование будет не возможно, до изменения");
+            print(logger, Level.WARN, INCORRECT_UPDATE_KEY);
         if (!post.getValue().matches(regex))
-            print(logger, Level.WARN, "Попытка присвоить значение константы, не представляющее собой число");
+            print(logger, Level.WARN, INCORRECT_VALUE);
         jdbc.updatePostDB(post);
         print(logger, Level.INFO, UPDATE_CONST_LOG, req.getRemoteAddr(), post.getKeyOld(), post.getKeyNew(), post.getValue());
     }
@@ -103,9 +98,9 @@ public class JsonController extends AbstractController {
     void putConst(@RequestBody Constants constant) {
         init();
         if (constant.getKey().matches(regex))
-            print(logger, Level.WARN, "Попытка добавить константу, состоящую только из числа. Её использование будет не возможно, до изменения");
+            print(logger, Level.WARN, INCORRECT_ADD_KEY);
         if (!constant.getValue().matches(regex))
-            print(logger, Level.WARN, "Попытка присвоить значение константы, не представляющее собой число");
+            print(logger, Level.WARN, INCORRECT_VALUE);
         jdbc.putConstInDB(constant);
         print(logger, Level.INFO, PUT_CONST_LOG, req.getRemoteAddr(), constant.getKey(), constant.getValue());
     }

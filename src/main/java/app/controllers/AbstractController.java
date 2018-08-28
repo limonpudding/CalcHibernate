@@ -1,4 +1,4 @@
-package app;
+package app.controllers;
 
 import app.database.JDBC;
 import app.utils.Log;

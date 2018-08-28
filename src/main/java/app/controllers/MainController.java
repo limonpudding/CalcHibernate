@@ -1,14 +1,7 @@
-package app;
+package app.controllers;
 
 import app.database.JDBC;
-import app.database.entities.OperationKind;
-import app.database.entities.SingleOperation;
-import app.math.LongArithmeticImpl;
-import app.math.LongArithmeticImplList;
-import app.pages.logic.Answer;
 import app.pages.logic.Page;
-import app.utils.Log;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import static app.utils.Log.*;
 
 @Controller
 public class MainController extends AbstractController {
