@@ -1,6 +1,10 @@
 package app;
 
 import app.database.JDBC;
+import app.database.entities.Oper;
+import app.database.entities.SingleOperation;
+import app.math.LongArithmeticImpl;
+import app.math.LongArithmeticImplList;
 import app.pages.logic.Answer;
 import app.pages.logic.Operation;
 import app.rest.Constant;
@@ -35,6 +39,18 @@ public class JsonController {
         this.jdbc = jdbc;
         this.rootLogger = rootLogger;
     }
+
+//    @RequestMapping(path = "/rest/test", method = RequestMethod.GET)
+//    public @ResponseBody
+//    ResponseEntity<app.database.entities.Operation> testEntity(
+//            @RequestParam(value = "a") String a,
+//            @RequestParam(value = "b") String b,
+//            @RequestParam(value = "operation") String operation) throws Exception {
+//        String ans = Answer.calc(a, b, operation);
+//        app.database.entities.SingleOperation operationObject = new SingleOperation(Oper.FIB,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
+//        jdbc.putOperation(operationObject);
+//        return new ResponseEntity<>(operationObject, HttpStatus.OK);
+//    }
 
     @RequestMapping(path = "/rest/calc", method = RequestMethod.GET)
     public @ResponseBody

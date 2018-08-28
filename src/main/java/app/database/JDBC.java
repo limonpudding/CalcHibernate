@@ -1,5 +1,8 @@
 package app.database;
 
+import app.database.entities.BinaryOperation;
+import app.database.entities.Oper;
+import app.database.entities.SingleOperation;
 import app.pages.logic.Operation;
 import app.rest.Constant;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +39,36 @@ public class JDBC {
     public void init() {
         System.out.println("JDBCExample postConstruct is called. datasource = " + dataSource);
         jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public void putOperation(app.database.entities.Operation operation) {
+        String OPER_SQL = "insert into " + operation.getName().toString() + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?,?)";
+        String FIB_SQL = "insert into " + operation.getName().toString() + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?)";
+        if (operation instanceof SingleOperation) {
+            SingleOperation singleOperation = (SingleOperation)operation;
+            jdbcTemplate.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(FIB_SQL);
+                preparedStatement.setString(1, singleOperation.getId());
+                preparedStatement.setString(2, singleOperation.getFirstOperand().toString());
+                preparedStatement.setString(3, singleOperation.getAnswer().toString());
+                preparedStatement.setString(4, singleOperation.getIdsession());
+                preparedStatement.setTimestamp(5, singleOperation.getTime());
+                return preparedStatement;
+            });
+        }
+        else {
+            BinaryOperation binaryOperation = (BinaryOperation)operation;
+            jdbcTemplate.update(connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(OPER_SQL);
+                preparedStatement.setString(1, binaryOperation.getId());
+                preparedStatement.setString(2, binaryOperation.getFirstoperand().toString());
+                preparedStatement.setString(3, binaryOperation.getSecondOperand().toString());
+                preparedStatement.setString(4, binaryOperation.getAnswer().toString());
+                preparedStatement.setString(5, binaryOperation.getIdsession());
+                preparedStatement.setTimestamp(6, binaryOperation.getTime());
+                return preparedStatement;
+            });
+        }
     }
 
     public void putConstInDB(Constant constant) {

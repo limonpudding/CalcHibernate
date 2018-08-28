@@ -1,23 +1,28 @@
 package app.database.entities;
 
+import app.math.LongArithmethic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 public abstract class Operation {
     protected Logger logger;
 
     protected Oper name;
     protected String id;
-    protected String answer;
+    protected LongArithmethic answer;
     protected String idsession;
     protected java.sql.Timestamp time;
 
-    protected Operation(Oper name, String id, String answer, String idsession) {
+    protected Operation(Oper name, String id, LongArithmethic answer, String idsession) {
         this.name = name;
         this.id = id;
         this.answer = answer;
         this.idsession = idsession;
         logger = LogManager.getLogger(this.getClass());
+        time = new Timestamp(new Date().getTime());
     }
 
     public Oper getName() {
@@ -36,11 +41,11 @@ public abstract class Operation {
         this.id = id;
     }
 
-    public String getAnswer() {
+    public LongArithmethic getAnswer() {
         return answer;
     }
 
-    public void setAnswer(String answer) {
+    public void setAnswer(LongArithmethic answer) {
         this.answer = answer;
     }
 

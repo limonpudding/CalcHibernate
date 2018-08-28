@@ -1,11 +1,19 @@
 package app;
 
 import app.database.JDBC;
+import app.database.entities.Oper;
+import app.database.entities.Operation;
+import app.database.entities.SingleOperation;
+import app.math.LongArithmeticImpl;
+import app.math.LongArithmeticImplList;
+import app.pages.logic.Answer;
 import app.pages.logic.Page;
 import app.utils.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static app.utils.Log.*;
 
@@ -118,6 +127,17 @@ public class MainController {
         init();
         return getError.build();
     }
-
+    //http://localhost/calc/test?a=555&b=1&operation=fib
+    @RequestMapping(path = "/calc/test", method = RequestMethod.GET)
+    public ModelAndView  testEntity(
+            @RequestParam(value = "a") String a,
+            @RequestParam(value = "b") String b,
+            @RequestParam(value = "operation") String operation) throws Exception {
+        init();
+        String ans = Answer.calc(a, b, operation);
+        app.database.entities.SingleOperation operationObject = new SingleOperation(Oper.DIV,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
+        jdbc.putOperation(operationObject);
+        return getError.build();
+    }
 
 }
