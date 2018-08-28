@@ -1,7 +1,6 @@
 package app.database;
 
 import app.database.entities.BinaryOperation;
-import app.database.entities.Oper;
 import app.database.entities.SingleOperation;
 import app.pages.logic.Operation;
 import app.rest.Constant;
@@ -42,12 +41,16 @@ public class JDBC {
     }
 
     public void putOperation(app.database.entities.Operation operation) {
-        String OPER_SQL = "insert into " + operation.getName().toString() + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?,?)";
-        String FIB_SQL = "insert into " + operation.getName().toString() + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?)";
+        String BINARY_SQL = "INSERT INTO "
+                + operation.getOperationKind().getTableName()
+                + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) VALUES (?,?,?,?,?,?)";
+        String SINGLE_SQL = "INSERT INTO "
+                + operation.getOperationKind().getTableName()
+                + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) VALUES (?,?,?,?,?)";
         if (operation instanceof SingleOperation) {
-            SingleOperation singleOperation = (SingleOperation)operation;
+            SingleOperation singleOperation = (SingleOperation) operation;
             jdbcTemplate.update(connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(FIB_SQL);
+                PreparedStatement preparedStatement = connection.prepareStatement(SINGLE_SQL);
                 preparedStatement.setString(1, singleOperation.getId());
                 preparedStatement.setString(2, singleOperation.getFirstOperand().toString());
                 preparedStatement.setString(3, singleOperation.getAnswer().toString());
@@ -55,11 +58,10 @@ public class JDBC {
                 preparedStatement.setTimestamp(5, singleOperation.getTime());
                 return preparedStatement;
             });
-        }
-        else {
-            BinaryOperation binaryOperation = (BinaryOperation)operation;
+        } else {
+            BinaryOperation binaryOperation = (BinaryOperation) operation;
             jdbcTemplate.update(connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(OPER_SQL);
+                PreparedStatement preparedStatement = connection.prepareStatement(BINARY_SQL);
                 preparedStatement.setString(1, binaryOperation.getId());
                 preparedStatement.setString(2, binaryOperation.getFirstoperand().toString());
                 preparedStatement.setString(3, binaryOperation.getSecondOperand().toString());
@@ -69,6 +71,31 @@ public class JDBC {
                 return preparedStatement;
             });
         }
+    }
+
+    public void putSession() {
+        final String INSERT_SQL = "insert into SESSIONS (ID, IP, TIMESTART, TIMEEND) values (?,?,?,?)";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL);
+            preparedStatement.setString(1, req.getSession().getId());
+            preparedStatement.setString(2, req.getRemoteAddr());
+            preparedStatement.setTimestamp(3, new java.sql.Timestamp(req.getSession().getCreationTime()));
+            preparedStatement.setTimestamp(4, new java.sql.Timestamp(req.getSession().getCreationTime()));
+            return preparedStatement;
+        });
+        rootLogger.info("В базу даных добалена новая сессия с ID: " + session.getId());
+    }
+
+    @Transactional
+    public void updateSession() {
+        final String UPDATE_SQL = "update SESSIONS set TIMEEND = ? where SESSIONS.ID = ?";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL);
+            preparedStatement.setTimestamp(1, new java.sql.Timestamp(session.getLastAccessedTime()));
+            preparedStatement.setString(2, session.getId());
+            return preparedStatement;
+        });
+        rootLogger.info("В базе данных обновлена сессия с ID: " + session.getId());
     }
 
     public void putConstInDB(Constant constant) {
@@ -123,31 +150,6 @@ public class JDBC {
         List<String> dbRows = jdbcTemplate.query(SELECT_SQL,
                 (rs, rowNum) -> rs.getString(1));
         return dbRows.get(0);
-    }
-
-    public void insertSessionTime() {
-        final String INSERT_SQL = "insert into SESSIONS (ID, IP, TIMESTART, TIMEEND) values (?,?,?,?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL);
-            preparedStatement.setString(1, req.getSession().getId());
-            preparedStatement.setString(2, req.getRemoteAddr());
-            preparedStatement.setTimestamp(3, new java.sql.Timestamp(req.getSession().getCreationTime()));
-            preparedStatement.setTimestamp(4, new java.sql.Timestamp(req.getSession().getCreationTime()));
-            return preparedStatement;
-        });
-        rootLogger.info("В базу даных добалена новая сессия с ID: " + session.getId());
-    }
-
-    @Transactional
-    public void updateSessionEndTime() {
-        final String UPDATE_SQL = "update SESSIONS set TIMEEND = ? where SESSIONS.ID = ?";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL);
-            preparedStatement.setTimestamp(1, new java.sql.Timestamp(session.getLastAccessedTime()));
-            preparedStatement.setString(2, session.getId());
-            return preparedStatement;
-        });
-        rootLogger.info("В базе данных обновлена сессия с ID: " + session.getId());
     }
 
     public void putDataInBD(Operation operation) {

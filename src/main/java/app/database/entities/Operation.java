@@ -10,14 +10,14 @@ import java.util.Date;
 public abstract class Operation {
     protected Logger logger;
 
-    protected Oper name;
+    protected OperationKind operationKind;
     protected String id;
     protected LongArithmethic answer;
     protected String idsession;
     protected java.sql.Timestamp time;
 
-    protected Operation(Oper name, String id, LongArithmethic answer, String idsession) {
-        this.name = name;
+    protected Operation(OperationKind name, String id, LongArithmethic answer, String idsession) {
+        this.operationKind = name;
         this.id = id;
         this.answer = answer;
         this.idsession = idsession;
@@ -25,12 +25,14 @@ public abstract class Operation {
         time = new Timestamp(new Date().getTime());
     }
 
-    public Oper getName() {
-        return name;
+    protected Operation(){}
+
+    public OperationKind getOperationKind() {
+        return operationKind;
     }
 
-    public void setName(Oper name) {
-        this.name = name;
+    public void setOperationKind(OperationKind name) {
+        this.operationKind = name;
     }
 
     public String getId() {

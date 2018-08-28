@@ -1,16 +1,11 @@
 package app;
 
 import app.database.JDBC;
-import app.database.entities.Oper;
-import app.database.entities.SingleOperation;
-import app.math.LongArithmeticImpl;
-import app.math.LongArithmeticImplList;
 import app.pages.logic.Answer;
 import app.pages.logic.Operation;
 import app.rest.Constant;
 import app.rest.Key;
 import app.rest.UpdatePost;
-import app.utils.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +42,7 @@ public class JsonController {
 //            @RequestParam(value = "b") String b,
 //            @RequestParam(value = "operation") String operation) throws Exception {
 //        String ans = Answer.calc(a, b, operation);
-//        app.database.entities.SingleOperation operationObject = new SingleOperation(Oper.FIB,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
+//        app.database.entities.SingleOperation operationObject = new SingleOperation(OperationKind.FIB,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
 //        jdbc.putOperation(operationObject);
 //        return new ResponseEntity<>(operationObject, HttpStatus.OK);
 //    }

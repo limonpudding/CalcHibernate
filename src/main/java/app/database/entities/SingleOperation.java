@@ -6,10 +6,12 @@ public class SingleOperation extends Operation {
 
     private LongArithmethic firstOperand;
 
-    public SingleOperation(Oper name, String id, LongArithmethic answer, String idsession, LongArithmethic firstOperand) {
+    public SingleOperation(OperationKind name, String id, LongArithmethic answer, String idsession, LongArithmethic firstOperand) {
         super(name, id, answer, idsession);
         this.firstOperand = firstOperand;
     }
+
+    public SingleOperation(){}
 
     public LongArithmethic getFirstOperand() {
         return firstOperand;

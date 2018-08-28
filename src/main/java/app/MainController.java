@@ -1,8 +1,7 @@
 package app;
 
 import app.database.JDBC;
-import app.database.entities.Oper;
-import app.database.entities.Operation;
+import app.database.entities.OperationKind;
 import app.database.entities.SingleOperation;
 import app.math.LongArithmeticImpl;
 import app.math.LongArithmeticImplList;
@@ -12,8 +11,6 @@ import app.utils.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -56,10 +53,10 @@ public class MainController {
 
     private void init() {
         if (req.getSession().isNew()) {
-            jdbc.insertSessionTime();
+            jdbc.putSession();
                 Log.print(rootLogger, Level.INFO, USER_CONNECTED_LOG, req.getRemoteAddr());
         } else {
-            jdbc.updateSessionEndTime();
+            jdbc.updateSession();
         }
     }
 
@@ -135,7 +132,7 @@ public class MainController {
             @RequestParam(value = "operation") String operation) throws Exception {
         init();
         String ans = Answer.calc(a, b, operation);
-        app.database.entities.SingleOperation operationObject = new SingleOperation(Oper.DIV,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
+        app.database.entities.SingleOperation operationObject = new SingleOperation(OperationKind.DIV,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
         jdbc.putOperation(operationObject);
         return getError.build();
     }
