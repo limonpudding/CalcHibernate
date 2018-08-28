@@ -1,16 +1,14 @@
 package app.database.entities;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "CONSTANTS")
 public class Constants {
-    @Id
+
     private String key;
 
-    @Basic
+
     private String value;
 
     public Constants() {}
@@ -20,6 +18,8 @@ public class Constants {
         this.value = value;
     }
 
+    @Id
+    @Column(name = "key")
     public String getKey() {
         return key;
     }
@@ -28,7 +28,8 @@ public class Constants {
         this.key = key;
     }
 
-
+    @Basic
+    @Column(name = "value")
     public String getValue() {
         return value;
     }

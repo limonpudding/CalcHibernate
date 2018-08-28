@@ -142,8 +142,10 @@ public class JsonController extends AbstractController {
     ResponseEntity<List<Constants>> getConstants() {
         init();
         Session session = sessionFactory.openSession();
-        Constants constants = new Constants();
-        System.out.println(constants.getKey());
+        Constants constants;
+        constants = session.get(Constants.class, "one");
+
+        System.out.println(constants);
         session.close();
         print(logger, Level.INFO, GET_CONSTANTS_LOG, req.getRemoteAddr());
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
