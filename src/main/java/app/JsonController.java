@@ -2,7 +2,6 @@ package app;
 
 import app.database.JDBC;
 import app.database.entities.Constants;
-import app.database.entities.Operation;
 import app.database.entities.OperationKind;
 import app.database.entities.dto.BinaryOperationDto;
 import app.database.entities.dto.OperationDto;
@@ -18,13 +17,10 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -93,17 +89,12 @@ public class JsonController extends AbstractController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateConst(@RequestBody UpdatePost post) {
         init();
-        String keyOld = post.getKeyOld();
-        String keyNew = post.getKeyNew();
-        String value = post.getValue();
-        Constants constant = new Constants(keyNew, value);
-        if (keyNew.matches(regex))
+        if (post.getKeyNew().matches(regex))
             print(logger, Level.WARN, "Попытка переименовать константу в вид, содержащий только число. Её использование будет не возможно, до изменения");
-        if (!value.matches(regex))
+        if (!post.getValue().matches(regex))
             print(logger, Level.WARN, "Попытка присвоить значение константы, не представляющее собой число");
-
-        jdbc.updatePostDB(keyOld, constant);
-        print(logger, Level.INFO, UPDATE_CONST_LOG, req.getRemoteAddr(), keyOld, keyNew, value);
+        jdbc.updatePostDB(post);
+        print(logger, Level.INFO, UPDATE_CONST_LOG, req.getRemoteAddr(), post.getKeyOld(), post.getKeyNew(), post.getValue());
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.PUT)
@@ -133,21 +124,15 @@ public class JsonController extends AbstractController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteConst(@RequestBody Key key) {
         init();
-        jdbc.deleteConstantDB(key.getKey());
+        jdbc.deleteConstantDB(key);
         print(logger, Level.INFO, DELETE_CONST_LOG, req.getRemoteAddr(), key);
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<List<Constants>> getConstants() {
+    ResponseEntity getConstants() {
         init();
-        Session session = sessionFactory.openSession();
-        Constants constants;
-        constants = session.get(Constants.class, "one");
-
-        System.out.println(constants);
-        session.close();
         print(logger, Level.INFO, GET_CONSTANTS_LOG, req.getRemoteAddr());
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        return new ResponseEntity<>(jdbc.getConstantsDB(), HttpStatus.OK);
     }
 }

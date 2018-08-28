@@ -15,7 +15,7 @@ public class BinaryOperation extends Operation {
 
     public BinaryOperation(){}
 
-    public LongArithmethic getFirstoperand() {
+    public LongArithmethic getFirstOperand() {
         return firstOperand;
     }
 

@@ -3,7 +3,11 @@ package app.database;
 import app.database.entities.BinaryOperation;
 import app.database.entities.Constants;
 import app.database.entities.SingleOperation;
+import app.rest.Key;
+import app.rest.UpdatePost;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -11,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
@@ -20,14 +23,15 @@ import java.util.List;
 public class JDBC {
 
     @Autowired
-    private HttpSession session;
-    @Autowired
     private DataSource dataSource;
     @Autowired
     private HttpServletRequest req;
     @Autowired
     private Logger rootLogger;
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
 
     JDBC() {
@@ -42,113 +46,101 @@ public class JDBC {
     public void putOperation(app.database.entities.Operation operation) {
         String BINARY_SQL = "INSERT INTO "
                 + operation.getOperationKind().getTableName()
-                + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) VALUES (?,?,?,?,?,?)";
+                + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) VALUES (:id,:firstoperand,:secondoperand,:answer,:idsession,:time)";
         String SINGLE_SQL = "INSERT INTO "
                 + operation.getOperationKind().getTableName()
-                + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) VALUES (?,?,?,?,?)";
+                + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) VALUES (:id,:firstoperand,:answer,:idsession,:time)";
         if (operation instanceof SingleOperation) {
             SingleOperation singleOperation = (SingleOperation) operation;
-            jdbcTemplate.update(connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(SINGLE_SQL);
-                preparedStatement.setString(1, singleOperation.getId());
-                preparedStatement.setString(2, singleOperation.getFirstOperand().toString());
-                preparedStatement.setString(3, singleOperation.getAnswer().toString());
-                preparedStatement.setString(4, singleOperation.getIdsession());
-                preparedStatement.setTimestamp(5, singleOperation.getTime());
-                return preparedStatement;
-            });
+            Session session = sessionFactory.openSession();
+            session.createSQLQuery(SINGLE_SQL)
+                    .setParameter("id", singleOperation.getId())
+                    .setParameter("firstoperand", singleOperation.getFirstOperand().toString())
+                    .setParameter("answer", singleOperation.getAnswer().toString())
+                    .setParameter("idsession", singleOperation.getIdsession())
+                    .setParameter("time", singleOperation.getTime());
+            session.close();
         } else {
             BinaryOperation binaryOperation = (BinaryOperation) operation;
-            jdbcTemplate.update(connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(BINARY_SQL);
-                preparedStatement.setString(1, binaryOperation.getId());
-                preparedStatement.setString(2, binaryOperation.getFirstoperand().toString());
-                preparedStatement.setString(3, binaryOperation.getSecondOperand().toString());
-                preparedStatement.setString(4, binaryOperation.getAnswer().toString());
-                preparedStatement.setString(5, binaryOperation.getIdsession());
-                preparedStatement.setTimestamp(6, binaryOperation.getTime());
-                return preparedStatement;
-            });
+            Session session = sessionFactory.openSession();
+            session.createSQLQuery(BINARY_SQL)
+                    .setParameter("id", binaryOperation.getId())
+                    .setParameter("firstoperand", binaryOperation.getFirstOperand().toString())
+                    .setParameter("secondoperand", binaryOperation.getSecondOperand().toString())
+                    .setParameter("answer", binaryOperation.getAnswer().toString())
+                    .setParameter("idsession", binaryOperation.getIdsession())
+                    .setParameter("time", binaryOperation.getTime());
+            session.close();
         }
     }
 
     public void putSession() {
-        final String INSERT_SQL = "insert into SESSIONS (ID, IP, TIMESTART, TIMEEND) values (?,?,?,?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL);
-            preparedStatement.setString(1, req.getSession().getId());
-            preparedStatement.setString(2, req.getRemoteAddr());
-            preparedStatement.setTimestamp(3, new java.sql.Timestamp(req.getSession().getCreationTime()));
-            preparedStatement.setTimestamp(4, new java.sql.Timestamp(req.getSession().getCreationTime()));
-            return preparedStatement;
-        });
-        rootLogger.info("В базу даных добалена новая сессия с ID: " + session.getId());
+        final String INSERT_SQL = "insert into SESSIONS (ID, IP, TIMESTART, TIMEEND) values (:id,:ip,:timestart,:timeend)";
+        Session session = sessionFactory.openSession();
+        session.createSQLQuery(INSERT_SQL)
+                .setParameter("timeend", new Timestamp(req.getSession().getLastAccessedTime()))
+                .setParameter("id", req.getSession().getId())
+                .setParameter("ip", req.getRemoteAddr())
+                .setParameter("timestart", new Timestamp(req.getSession().getCreationTime()));
+        session.close();
+        rootLogger.info("В базу даных добалена новая сессия с ID: " + req.getSession().getId());
     }
 
     @Transactional
     public void updateSession() {
-        final String UPDATE_SQL = "update SESSIONS set TIMEEND = ? where SESSIONS.ID = ?";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL);
-            preparedStatement.setTimestamp(1, new java.sql.Timestamp(session.getLastAccessedTime()));
-            preparedStatement.setString(2, session.getId());
-            return preparedStatement;
-        });
-        rootLogger.info("В базе данных обновлена сессия с ID: " + session.getId());
+        final String UPDATE_SQL = "update SESSIONS set TIMEEND = :timeend where SESSIONS.ID = :id";
+        Session session = sessionFactory.openSession();
+        session.createSQLQuery(UPDATE_SQL)
+                .setParameter("timeend", new Timestamp(req.getSession().getLastAccessedTime()))
+                .setParameter("id", req.getSession().getId());
+        session.close();
+        rootLogger.info("В базе данных обновлена сессия с ID: " + req.getSession().getId());
     }
 
     public void putConstInDB(Constants constant) {
-        final String INSERT_SQL = "insert into CONSTANTS (KEY, VALUE) values (?,?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL);
-            preparedStatement.setString(1, constant.getKey());
-            preparedStatement.setString(2, constant.getValue());
-            return preparedStatement;
-        });
+        final String INSERT_SQL = "insert into CONSTANTS (KEY, VALUE) values (:key,:value)";
+        Session session = sessionFactory.openSession();
+        session.createSQLQuery(INSERT_SQL).setParameter("value", constant.getValue()).setParameter("key", constant.getKey());
+        session.close();
     }
 
-    public void updatePostDB(String key, Constants constant) {
-        final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.KEY = ?, CONSTANTS.VALUE = ? WHERE CONSTANTS.KEY = ?";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL);
-            preparedStatement.setString(1, constant.getKey());
-            preparedStatement.setString(2, constant.getValue());
-            preparedStatement.setString(3, key);
-            return preparedStatement;
-        });
+    public void updatePostDB(UpdatePost post) {
+        final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.KEY = :keyNew, CONSTANTS.VALUE = :value WHERE CONSTANTS.KEY = :keyOld";
+        Session session = sessionFactory.openSession();
+        session.createSQLQuery(UPDATE_SQL)
+                .setParameter("value", post.getValue())
+                .setParameter("keyNew", post.getKeyNew())
+                .setParameter("keyOld", post.getKeyOld());
+        session.close();
     }
 
-    public void deleteConstantDB(String key) {
-        final String DELETE_SQL = "DELETE FROM CONSTANTS WHERE CONSTANTS.KEY = ?";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL);
-            preparedStatement.setString(1, key);
-            return preparedStatement;
-        });
+    public void deleteConstantDB(Key key) {
+        final String DELETE_SQL = "DELETE FROM CONSTANTS WHERE CONSTANTS.KEY = :key";
+        Session session = sessionFactory.openSession();
+        session.createSQLQuery(DELETE_SQL).setParameter("key", key.getKey());
+        session.close();
     }
 
     public void updatePatchDB(Constants constant) {
-        final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.VALUE = ? WHERE CONSTANTS.KEY = ?";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL);
-            preparedStatement.setString(1, constant.getValue());
-            preparedStatement.setString(2, constant.getKey());
-            return preparedStatement;
-        });
+        final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.VALUE = :value WHERE CONSTANTS.KEY = :key";
+        Session session = sessionFactory.openSession();
+        session.createSQLQuery(UPDATE_SQL).setParameter("value", constant.getValue()).setParameter("key", constant.getKey());
+        session.close();
     }
 
-    public List<Constants> getConstantsDB() {
+    public List getConstantsDB() {
         final String SELECT_SQL = "SELECT CONSTANTS.KEY, CONSTANTS.VALUE FROM CONSTANTS";
-        List<Constants> dbRows = jdbcTemplate.query(SELECT_SQL,
-                (rs, rowNum) -> new Constants(rs.getString("KEY"), rs.getString("VALUE")));
-        return dbRows;
+        Session session = sessionFactory.openSession();
+        List constants = session.createSQLQuery(SELECT_SQL).list();
+        session.close();
+        return constants;
     }
 
     public String getConstantValueDB(String key) {
-        final String SELECT_SQL = "SELECT CONSTANTS.VALUE FROM CONSTANTS where CONSTANTS.KEY = '" + key + "'";
-        List<String> dbRows = jdbcTemplate.query(SELECT_SQL,
-                (rs, rowNum) -> rs.getString(1));
-        return dbRows.get(0);
+        Session session = sessionFactory.openSession();
+        String value = session.get(Constants.class,key).getValue();
+        session.close();
+        return value;
     }
 
     public List<SessionsRow> selectSessionsFromBD(String mode, String order) {
