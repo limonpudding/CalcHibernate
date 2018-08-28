@@ -24,7 +24,7 @@ import java.util.UUID;
 import static app.utils.Log.*;
 
 @Controller
-public class MainController {
+public class MainController extends AbstractController {
 
     private final HttpServletRequest req;
     private final JDBC jdbc;
@@ -49,15 +49,6 @@ public class MainController {
         this.getCalc = getCalc;
         this.getOpHistory = getOpHistory;
         this.rootLogger = rootLogger;
-    }
-
-    private void init() {
-        if (req.getSession().isNew()) {
-            jdbc.putSession();
-                Log.print(rootLogger, Level.INFO, USER_CONNECTED_LOG, req.getRemoteAddr());
-        } else {
-            jdbc.updateSession();
-        }
     }
 
     //TODO привязать через Autowired и Qualifier реализации созданного абстрактного класса для каждого представления свою.
@@ -122,18 +113,6 @@ public class MainController {
     @RequestMapping(path = "/*")
     public ModelAndView getError() throws Exception {
         init();
-        return getError.build();
-    }
-    //http://localhost/calc/test?a=555&b=1&operation=fib
-    @RequestMapping(path = "/calc/test", method = RequestMethod.GET)
-    public ModelAndView  testEntity(
-            @RequestParam(value = "a") String a,
-            @RequestParam(value = "b") String b,
-            @RequestParam(value = "operation") String operation) throws Exception {
-        init();
-        String ans = Answer.calc(a, b, operation);
-        app.database.entities.SingleOperation operationObject = new SingleOperation(OperationKind.DIV,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
-        jdbc.putOperation(operationObject);
         return getError.build();
     }
 

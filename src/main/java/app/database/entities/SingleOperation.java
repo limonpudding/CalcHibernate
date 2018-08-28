@@ -21,5 +21,7 @@ public class SingleOperation extends Operation {
         this.firstOperand = firstOperand;
     }
 
-
+    public String toString() {
+        return time + " : " + operationKind.getKind() + "(" + firstOperand + ") = " + answer;
+    }
 }

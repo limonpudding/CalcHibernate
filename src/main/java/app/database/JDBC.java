@@ -1,9 +1,8 @@
 package app.database;
 
 import app.database.entities.BinaryOperation;
+import app.database.entities.Constants;
 import app.database.entities.SingleOperation;
-import app.pages.logic.Operation;
-import app.rest.Constant;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -98,7 +97,7 @@ public class JDBC {
         rootLogger.info("В базе данных обновлена сессия с ID: " + session.getId());
     }
 
-    public void putConstInDB(Constant constant) {
+    public void putConstInDB(Constants constant) {
         final String INSERT_SQL = "insert into CONSTANTS (KEY, VALUE) values (?,?)";
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL);
@@ -108,7 +107,7 @@ public class JDBC {
         });
     }
 
-    public void updatePostDB(String key, Constant constant) {
+    public void updatePostDB(String key, Constants constant) {
         final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.KEY = ?, CONSTANTS.VALUE = ? WHERE CONSTANTS.KEY = ?";
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL);
@@ -128,7 +127,7 @@ public class JDBC {
         });
     }
 
-    public void updatePatchDB(Constant constant) {
+    public void updatePatchDB(Constants constant) {
         final String UPDATE_SQL = "update CONSTANTS set CONSTANTS.VALUE = ? WHERE CONSTANTS.KEY = ?";
         jdbcTemplate.update(connection -> {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL);
@@ -138,10 +137,10 @@ public class JDBC {
         });
     }
 
-    public List<Constant> getConstantsDB() {
+    public List<Constants> getConstantsDB() {
         final String SELECT_SQL = "SELECT CONSTANTS.KEY, CONSTANTS.VALUE FROM CONSTANTS";
-        List<Constant> dbRows = jdbcTemplate.query(SELECT_SQL,
-                (rs, rowNum) -> new Constant(rs.getString("KEY"), rs.getString("VALUE")));
+        List<Constants> dbRows = jdbcTemplate.query(SELECT_SQL,
+                (rs, rowNum) -> new Constants(rs.getString("KEY"), rs.getString("VALUE")));
         return dbRows;
     }
 
@@ -152,36 +151,36 @@ public class JDBC {
         return dbRows.get(0);
     }
 
-    public void putDataInBD(Operation operation) {
-
-        String OPER_SQL = "insert into " + operation.getOperation() + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?,?)";
-        String FIB_SQL = "insert into " + operation.getOperation() + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?)";
-        switch (operation.getOperation()) {
-            case "fib":
-                jdbcTemplate.update(connection -> {
-                    PreparedStatement preparedStatement = connection.prepareStatement(FIB_SQL);
-                    preparedStatement.setString(1, operation.getIdOperation());
-                    preparedStatement.setString(2, operation.getA());
-                    preparedStatement.setString(3, operation.getResult());
-                    preparedStatement.setString(4, session.getId());
-                    preparedStatement.setTimestamp(5, new Timestamp(operation.getDate().getTime()));
-                    return preparedStatement;
-                });
-                break;
-            default:
-                jdbcTemplate.update(connection -> {
-                    PreparedStatement preparedStatement = connection.prepareStatement(OPER_SQL);
-                    preparedStatement.setString(1, operation.getIdOperation());
-                    preparedStatement.setString(2, operation.getA());
-                    preparedStatement.setString(3, operation.getB());
-                    preparedStatement.setString(4, operation.getResult());
-                    preparedStatement.setString(5, session.getId());
-                    preparedStatement.setTimestamp(6, new Timestamp(operation.getDate().getTime()));
-                    return preparedStatement;
-                });
-        }
-        rootLogger.info("В базу данных была добавлена операция с ID: " + operation.getIdOperation());
-    }
+//    public void putDataInBD(Operation operation) {
+//
+//        String OPER_SQL = "insert into " + operation.getOperation() + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?,?)";
+//        String FIB_SQL = "insert into " + operation.getOperation() + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?)";
+//        switch (operation.getOperation()) {
+//            case "fib":
+//                jdbcTemplate.update(connection -> {
+//                    PreparedStatement preparedStatement = connection.prepareStatement(FIB_SQL);
+//                    preparedStatement.setString(1, operation.getIdOperation());
+//                    preparedStatement.setString(2, operation.getA());
+//                    preparedStatement.setString(3, operation.getResult());
+//                    preparedStatement.setString(4, session.getId());
+//                    preparedStatement.setTimestamp(5, new Timestamp(operation.getDate().getTime()));
+//                    return preparedStatement;
+//                });
+//                break;
+//            default:
+//                jdbcTemplate.update(connection -> {
+//                    PreparedStatement preparedStatement = connection.prepareStatement(OPER_SQL);
+//                    preparedStatement.setString(1, operation.getIdOperation());
+//                    preparedStatement.setString(2, operation.getA());
+//                    preparedStatement.setString(3, operation.getB());
+//                    preparedStatement.setString(4, operation.getResult());
+//                    preparedStatement.setString(5, session.getId());
+//                    preparedStatement.setTimestamp(6, new Timestamp(operation.getDate().getTime()));
+//                    return preparedStatement;
+//                });
+//        }
+//        rootLogger.info("В базу данных была добавлена операция с ID: " + operation.getIdOperation());
+//    }
 
     public List<SessionsRow> selectSessionsFromBD(String mode, String order) {
         String orderStr;

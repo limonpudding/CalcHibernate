@@ -7,7 +7,7 @@ public class BinaryOperation extends Operation {
     private LongArithmethic firstOperand;
     private LongArithmethic secondOperand;
 
-    protected BinaryOperation(OperationKind name, String id, LongArithmethic answer, String idsession, LongArithmethic firstOperand, LongArithmethic secondOperand) {
+    public BinaryOperation(OperationKind name, String id, LongArithmethic answer, String idsession, LongArithmethic firstOperand, LongArithmethic secondOperand) {
         super(name, id, answer, idsession);
         this.firstOperand = firstOperand;
         this.secondOperand = secondOperand;
@@ -29,5 +29,9 @@ public class BinaryOperation extends Operation {
 
     public void setSecondOperand(LongArithmethic secondOperand) {
         this.secondOperand = secondOperand;
+    }
+
+    public String toString() {
+        return time + " : " + firstOperand + " " + operationKind.getKind() + " " + secondOperand + " = " + answer;
     }
 }

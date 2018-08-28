@@ -66,4 +66,7 @@ public abstract class Operation {
     public void setTime(java.sql.Timestamp time) {
         this.time = time;
     }
+
+    @Override
+    public abstract String toString();
 }

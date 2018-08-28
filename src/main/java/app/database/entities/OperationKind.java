@@ -22,4 +22,22 @@ public enum OperationKind {
         this.kind = kind;
         this.tableName = tableName;
     }
+
+    public static OperationKind getOperationKind(String oper) {
+        oper=oper.toUpperCase();
+        switch(oper) {
+            case "SUM":
+                return SUM;
+            case "DIV":
+                return DIV;
+            case "SUB":
+                return SUB;
+            case "MUL":
+                return MUL;
+            case "FIB":
+                return FIB;
+            default:
+                return null;
+        }
+    }
 }

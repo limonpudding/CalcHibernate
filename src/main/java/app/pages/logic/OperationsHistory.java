@@ -3,6 +3,7 @@ package app.pages.logic;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.LinkedList;
+import app.database.entities.Operation;
 
 class OperationsHistory {
 

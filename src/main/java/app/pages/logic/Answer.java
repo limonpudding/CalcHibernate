@@ -1,10 +1,11 @@
 package app.pages.logic;
 
 import app.database.JDBC;
-import app.math.Fibonacci;
-import app.math.LongArithmethic;
-import app.math.LongArithmeticImplList;
-import app.math.LongArithmeticMath;
+import app.database.entities.BinaryOperation;
+import app.database.entities.Operation;
+import app.database.entities.OperationKind;
+import app.database.entities.SingleOperation;
+import app.math.*;
 import app.utils.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -42,12 +43,16 @@ public class Answer extends Page {
         OperationsHistory operationsHistory = new OperationsHistory();
         HttpSession session = (HttpSession) getParams().get("session");
         operationsHistory.getHistory(session);
+        Operation operNew;
+        if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
+            operNew = new SingleOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), req.getSession().getId(), new LongArithmeticImplList(a));
+        } else {
+            operNew = new BinaryOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), req.getSession().getId(), new LongArithmeticImplList(a), new LongArithmeticImplList(b));
+        }
 
-        Operation oper = new Operation(new Date(), a, b, operation, ans, UUID.randomUUID().toString());
+        jdbc.putOperation(operNew);
 
-        jdbc.putDataInBD(oper);
-
-        operationsHistory.addOperation(oper);
+        operationsHistory.addOperation(operNew);
 
         session.getServletContext().setAttribute(session.getId(), operationsHistory.getHistory());
         ModelAndView mav = new ModelAndView();
@@ -62,8 +67,10 @@ public class Answer extends Page {
         LongArithmethic a = new LongArithmeticImplList();
         LongArithmethic b = new LongArithmeticImplList();
         a.setValue(strA);
-        b.setValue(strB);
-        if (Integer.parseInt(strA) > 50000 && "fib".equals(operation)) {
+        if (strB != null) {
+            b.setValue(strB);
+        }
+        if ("fib".equals(operation) && Integer.parseInt(strA) > 50000) {
             Log.print(logger, Level.WARN, CALC_FIB_LOG, Integer.parseInt(strA));
         }
         switch (operation) {
