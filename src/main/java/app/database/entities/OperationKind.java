@@ -1,11 +1,11 @@
 package app.database.entities;
 
 public enum OperationKind {
-    SUM ("SUM", "SUM"),
-    DIV ("DIV", "DIV"),
-    SUB ("SUB", "SUB"),
-    MUL ("MUL", "MUL"),
-    FIB ("FIB", "FIB");
+    SUM("SUM", "SUM"),
+    DIV("DIV", "DIV"),
+    SUB("SUB", "SUB"),
+    MUL("MUL", "MUL"),
+    FIB("FIB", "FIB");
 
     private String kind;
     private String tableName;
@@ -24,20 +24,11 @@ public enum OperationKind {
     }
 
     public static OperationKind getOperationKind(String oper) {
-        oper=oper.toUpperCase();
-        switch(oper) {
-            case "SUM":
-                return SUM;
-            case "DIV":
-                return DIV;
-            case "SUB":
-                return SUB;
-            case "MUL":
-                return MUL;
-            case "FIB":
-                return FIB;
-            default:
-                return null;
+        for (OperationKind operation : values()) {
+            if (operation.getKind().equals(oper.toUpperCase())) {
+                return operation;
+            }
         }
+        return null;
     }
 }

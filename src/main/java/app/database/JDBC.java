@@ -151,37 +151,6 @@ public class JDBC {
         return dbRows.get(0);
     }
 
-//    public void putDataInBD(Operation operation) {
-//
-//        String OPER_SQL = "insert into " + operation.getOperation() + " (ID, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?,?)";
-//        String FIB_SQL = "insert into " + operation.getOperation() + " (ID, FIRSTOPERAND, ANSWER, IDSESSION, TIME) values (?,?,?,?,?)";
-//        switch (operation.getOperation()) {
-//            case "fib":
-//                jdbcTemplate.update(connection -> {
-//                    PreparedStatement preparedStatement = connection.prepareStatement(FIB_SQL);
-//                    preparedStatement.setString(1, operation.getIdOperation());
-//                    preparedStatement.setString(2, operation.getA());
-//                    preparedStatement.setString(3, operation.getResult());
-//                    preparedStatement.setString(4, session.getId());
-//                    preparedStatement.setTimestamp(5, new Timestamp(operation.getDate().getTime()));
-//                    return preparedStatement;
-//                });
-//                break;
-//            default:
-//                jdbcTemplate.update(connection -> {
-//                    PreparedStatement preparedStatement = connection.prepareStatement(OPER_SQL);
-//                    preparedStatement.setString(1, operation.getIdOperation());
-//                    preparedStatement.setString(2, operation.getA());
-//                    preparedStatement.setString(3, operation.getB());
-//                    preparedStatement.setString(4, operation.getResult());
-//                    preparedStatement.setString(5, session.getId());
-//                    preparedStatement.setTimestamp(6, new Timestamp(operation.getDate().getTime()));
-//                    return preparedStatement;
-//                });
-//        }
-//        rootLogger.info("В базу данных была добавлена операция с ID: " + operation.getIdOperation());
-//    }
-
     public List<SessionsRow> selectSessionsFromBD(String mode, String order) {
         String orderStr;
         String modeStr;

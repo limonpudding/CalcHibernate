@@ -41,18 +41,6 @@ public class JsonController extends AbstractController{
         this.rootLogger = rootLogger;
     }
 
-//    @RequestMapping(path = "/rest/test", method = RequestMethod.GET)
-//    public @ResponseBody
-//    ResponseEntity<app.database.entities.Operation> testEntity(
-//            @RequestParam(value = "a") String a,
-//            @RequestParam(value = "b") String b,
-//            @RequestParam(value = "operation") String operation) throws Exception {
-//        String ans = Answer.calc(a, b, operation);
-//        app.database.entities.SingleOperation operationObject = new SingleOperation(OperationKind.FIB,UUID.randomUUID().toString(),new LongArithmeticImplList(ans),req.getSession().getId(),new LongArithmeticImpl(a));
-//        jdbc.putOperation(operationObject);
-//        return new ResponseEntity<>(operationObject, HttpStatus.OK);
-//    }
-
     @RequestMapping(path = "/rest/calc", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<OperationDto> calc(
@@ -69,7 +57,7 @@ public class JsonController extends AbstractController{
         print(logger, Level.INFO, CALC_LOG, req.getRemoteAddr(), operation);
         String ans = Answer.calc(a, b, operation);
         OperationDto operationDto;
-        if (OperationKind.getOperationKind(operation)==OperationKind.FIB) {
+        if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
             operationDto = new SingleOperationDto(
                     operation,
                     UUID.randomUUID().toString(),

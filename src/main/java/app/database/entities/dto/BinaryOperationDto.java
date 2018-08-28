@@ -27,6 +27,7 @@ public class BinaryOperationDto implements OperationDto {
         this.time = time;
     }
 
+    @Override
     public Operation toOperation() throws IOException {
         return new BinaryOperation(
                 OperationKind.getOperationKind(operationKind),

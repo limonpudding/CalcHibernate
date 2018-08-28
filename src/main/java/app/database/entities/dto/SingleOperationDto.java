@@ -26,6 +26,7 @@ public class SingleOperationDto implements OperationDto {
         this.time = time;
     }
 
+    @Override
     public Operation toOperation() throws IOException {
         return new SingleOperation(
                 OperationKind.getOperationKind(operationKind),
