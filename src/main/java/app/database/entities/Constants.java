@@ -1,9 +1,16 @@
 package app.database.entities;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
 public class Constants {
-
+    @Id
     private String key;
+
+    @Basic
     private String value;
 
     public Constants() {}

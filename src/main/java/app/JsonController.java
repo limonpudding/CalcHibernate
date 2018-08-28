@@ -13,13 +13,18 @@ import app.rest.UpdatePost;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -27,18 +32,20 @@ import java.util.UUID;
 import static app.utils.Log.*;
 
 @RestController
-public class JsonController extends AbstractController{
+public class JsonController extends AbstractController {
     private final HttpServletRequest req;
     private final JDBC jdbc;
     private final Logger rootLogger;
     private Logger logger = LogManager.getLogger(JsonController.class);
     private final String regex = "^[-+]?[0-9]+$";
+    private final SessionFactory sessionFactory;
 
     @Autowired
-    public JsonController(HttpServletRequest req, JDBC jdbc, Logger rootLogger) {
+    public JsonController(HttpServletRequest req, JDBC jdbc, Logger rootLogger, SessionFactory sessionFactory) {
         this.req = req;
         this.jdbc = jdbc;
         this.rootLogger = rootLogger;
+        this.sessionFactory = sessionFactory;
     }
 
     @RequestMapping(path = "/rest/calc", method = RequestMethod.GET)
@@ -77,8 +84,7 @@ public class JsonController extends AbstractController{
                     new Timestamp(new Date().getTime())
             );
         }
-        Operation operationObject = operationDto.toOperation();
-        jdbc.putOperation(operationObject);
+        jdbc.putOperation(operationDto.toOperation());
         return new ResponseEntity<>(operationDto, HttpStatus.OK);
     }
 
@@ -108,7 +114,7 @@ public class JsonController extends AbstractController{
         if (constant.getKey().matches(regex))
             print(logger, Level.WARN, "Попытка добавить константу, состоящую только из числа. Её использование будет не возможно, до изменения");
         if (!constant.getValue().matches(regex))
-            print(logger, Level.WARN,"Попытка присвоить значение константы, не представляющее собой число");
+            print(logger, Level.WARN, "Попытка присвоить значение константы, не представляющее собой число");
         jdbc.putConstInDB(constant);
         print(logger, Level.INFO, PUT_CONST_LOG, req.getRemoteAddr(), constant.getKey(), constant.getValue());
     }
@@ -135,8 +141,11 @@ public class JsonController extends AbstractController{
     public @ResponseBody
     ResponseEntity<List<Constants>> getConstants() {
         init();
-        List<Constants> constants = jdbc.getConstantsDB();
+        Session session = sessionFactory.openSession();
+        Constants constants = new Constants();
+        System.out.println(constants.getKey());
+        session.close();
         print(logger, Level.INFO, GET_CONSTANTS_LOG, req.getRemoteAddr());
-        return new ResponseEntity<>(constants, HttpStatus.OK);
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 }
