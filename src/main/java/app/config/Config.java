@@ -50,7 +50,7 @@ public class Config implements WebMvcConfigurer {
         return transactionManager;
     }
 
-    private final Properties hibernateProperties() {
+    private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty(
                 "hibernate.hbm2ddl.auto", "create-drop");
@@ -73,6 +73,27 @@ public class Config implements WebMvcConfigurer {
             try (Connection connection = dataSource.getConnection()) {
                 Statement statement = connection.createStatement();
                 statement.execute("" +
+                        "create table BINARYOPERATION\n" +
+                        "(\n" +
+                        "  ID             NVARCHAR2(40) not null\n" +
+                        "    primary key,\n" +
+                        "  NAME           NVARCHAR2(40),\n" +
+                        "  FIRSTOPERAND   CLOB,\n" +
+                        "  SECONDOPEERAND CLOB,\n" +
+                        "  ANSWER         CLOB,\n" +
+                        "  IDSESSION      NVARCHAR2(40),\n" +
+                        "  TIME           TIMESTAMP(6)\n" +
+                        ");" +
+                        "create table SINGLEOPERATION\n" +
+                        "(\n" +
+                        "  ID           NVARCHAR2(40) not null\n" +
+                        "    primary key,\n" +
+                        "  NAME         NVARCHAR2(40),\n" +
+                        "  FIRSTOPERAND CLOB,\n" +
+                        "  ANSWER       CLOB,\n" +
+                        "  IDSESSION    NVARCHAR2(40),\n" +
+                        "  TIME         TIMESTAMP(6)\n" +
+                        ");" +
                         "create table CONSTANTS\n" +
                         "(\n" +
                         "  KEY            NVARCHAR2(40) default NULL not null\n" +
