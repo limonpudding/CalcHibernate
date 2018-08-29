@@ -113,23 +113,15 @@ public class JDBC {
 
     @Transactional
     public void deleteConstantDB(Key key) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Constants constants = session.get(Constants.class, key.getKey());
-        session.delete(constants);
-        session.getTransaction().commit();
-        session.close();
+        Constants constants = sessionFactory.getCurrentSession().get(Constants.class, key.getKey());
+        sessionFactory.getCurrentSession().delete(constants);
     }
 
     @Transactional
     public void updatePatchDB(Constants constant) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Constants constants = session.get(Constants.class, constant.getKey());
+        Constants constants = sessionFactory.getCurrentSession().get(Constants.class, constant.getKey());
         constants.setValue(constant.getValue());
-        session.update(constants);
-        session.getTransaction().commit();
-        session.close();
+        sessionFactory.getCurrentSession().update(constants);
     }
 
     @Transactional
