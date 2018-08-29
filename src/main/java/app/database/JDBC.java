@@ -2,13 +2,17 @@ package app.database;
 
 import app.database.entities.BinaryOperation;
 import app.database.entities.Constants;
+import app.database.entities.Operation;
 import app.database.entities.Sessions;
 import app.database.entities.SingleOperation;
+import app.database.entities.dto.OperationDto;
+import app.database.entities.dto.SingleOperationDto;
 import app.rest.Key;
 import app.rest.UpdatePost;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -46,37 +50,8 @@ public class JDBC {
     }
 
     @Transactional//TODO не работает занесение в БД
-    public void putOperation(app.database.entities.Operation operation) {
-        String BINARY_SQL = "INSERT INTO "
-                + "BINARYOPERATION"
-                + " (ID, NAME, FIRSTOPERAND, SECONDOPERAND, ANSWER, IDSESSION, TIME) VALUES (:id,:name,:firstoperand,:secondoperand,:answer,:idsession,:time)";
-        String SINGLE_SQL = "INSERT INTO "
-                + "SINGLEOPERATION"
-                + " (ID, NAME, FIRSTOPERAND, ANSWER, IDSESSION, TIME) VALUES (:id,:name,:firstoperand,:answer,:idsession,:time)";
-        if (operation instanceof SingleOperation) {
-            SingleOperation singleOperation = (SingleOperation) operation;
-            Session session = sessionFactory.openSession();
-            session.createSQLQuery(SINGLE_SQL)
-                    .setParameter("id", singleOperation.getId())
-                    .setParameter("name", operation.getOperationKind().getKind())
-                    .setParameter("firstoperand", singleOperation.getFirstOperand().toString())
-                    .setParameter("answer", singleOperation.getAnswer().toString())
-                    .setParameter("idSession", singleOperation.getIdsession())
-                    .setParameter("time", singleOperation.getTime());
-            session.close();
-        } else {
-            BinaryOperation binaryOperation = (BinaryOperation) operation;
-            Session session = sessionFactory.openSession();
-            session.createSQLQuery(BINARY_SQL)
-                    .setParameter("id", binaryOperation.getId())
-                    .setParameter("name", operation.getOperationKind().getKind())
-                    .setParameter("firstoperand", binaryOperation.getFirstOperand().toString())
-                    .setParameter("secondoperand", binaryOperation.getSecondOperand().toString())
-                    .setParameter("answer", binaryOperation.getAnswer().toString())
-                    .setParameter("idSession", binaryOperation.getIdsession())
-                    .setParameter("time", binaryOperation.getTime());
-            session.close();
-        }
+    public void putOperation(Operation operation) {
+        sessionFactory.getCurrentSession().save(operation.toDto());//не, ну а вдруг заработает
     }
 
     @Transactional
@@ -137,119 +112,17 @@ public class JDBC {
         return sessionFactory.getCurrentSession().get(Constants.class, key).getValue();
     }
 
-    public List<SessionsRow> selectSessionsFromBD(String mode, String order) {
-        final String SELECT_SQL = "" +
-                "select * from (select distinct sessions.id, sessions.ip,sessions.timestart,sessions.timeend, 'false' as operation from SESSIONS left join history on SESSIONS.id = HISTORY.id where operation is null\n" +
-                "union all\n" +
-                "select distinct sessions.id, sessions.ip,sessions.timestart,sessions.timeend, 'true' as operation from SESSIONS left join history on SESSIONS.id = HISTORY.id where operation is not null) order by " + mode + " " + order;
-
-        Session session = sessionFactory.openSession();
-        List<SessionsRow> dbRows = session.createSQLQuery(SELECT_SQL).list();
-        session.close();
-        return dbRows;
+    @Transactional
+    public List<Sessions> selectSessionsFromBD(String mode, String order) {
+        CriteriaQuery<Sessions> criteria = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(Sessions.class);
+        criteria.from(Sessions.class);
+        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 
-    public List<OperationsRow> selectDataFromBD(String mode, String order, String id) {
-        final String SELECT_SQL = "SELECT OPERATION, FIRSTOPERAND, SECONDOPERAND, ANSWER, TIME FROM HISTORY where '" + id + "'=ID ORDER BY " + mode + " " + order;
-        Session session = sessionFactory.openSession();
-        List<OperationsRow> dbRows = session.createSQLQuery(SELECT_SQL).list();
-        session.close();
-        return dbRows;
-    }
-
-    public class OperationsRow {
-        private String operationName;
-        private String op1;
-        private String op2;
-        private String answer;
-        private String time;
-
-        public void setOperationName(String operationName) {
-            this.operationName = operationName;
-        }
-
-        public void setOp1(String op1) {
-            this.op1 = op1;
-        }
-
-        public void setOp2(String op2) {
-            this.op2 = op2;
-        }
-
-        public void setAnswer(String answer) {
-            this.answer = answer;
-        }
-
-        public void setTime(String time) {
-            this.time = time;
-        }
-
-        public String operationName() {
-            return operationName;
-        }
-
-        public String op1() {
-            return op1;
-        }
-
-        public String op2() {
-            return op2;
-        }
-
-        public String answer() {
-            return answer;
-        }
-
-        public String time() {
-            return time;
-        }
-    }
-
-    public class SessionsRow {
-        private String id;
-        private String ip;
-        private String sessionStartTime;
-        private String sessionEndTime;
-        private String operation;
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public void setIp(String ip) {
-            this.ip = ip;
-        }
-
-        public void setSessionStartTime(String sessionStartTime) {
-            this.sessionStartTime = sessionStartTime;
-        }
-
-        public void setSessionEndTime(String sessionEndTime) {
-            this.sessionEndTime = sessionEndTime;
-        }
-
-        public void setOperation(String operation) {
-            this.operation = operation;
-        }
-
-        public String id() {
-            return id;
-        }
-
-        public String ip() {
-            return ip;
-        }
-
-        public String sessionStartTime() {
-            return sessionStartTime;
-        }
-
-        public String sessionEndTime() {
-            return sessionEndTime;
-        }
-
-        public String operation() {
-            return operation;
-        }
+    @Transactional
+    public List<OperationDto> selectDataFromBD(String mode, String order, String id) {//TODO: добавить выборку только по нужному id (where)
+        CriteriaQuery<OperationDto> criteria = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(OperationDto.class);
+        criteria.from(OperationDto.class);
+        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 }

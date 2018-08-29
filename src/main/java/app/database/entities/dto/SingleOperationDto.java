@@ -4,8 +4,10 @@ import app.database.entities.Operation;
 import app.database.entities.OperationKind;
 import app.database.entities.SingleOperation;
 import app.math.LongArithmeticImplList;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -15,6 +17,7 @@ import java.sql.Timestamp;
 public class SingleOperationDto extends OperationDto {
 
     protected String operationKind;
+
     protected String firstOperand;
 
     public SingleOperationDto(){}

@@ -1,5 +1,8 @@
 package app.database.entities;
 
+import app.database.entities.dto.BinaryOperationDto;
+import app.database.entities.dto.OperationDto;
+import app.database.entities.dto.SingleOperationDto;
 import app.math.LongArithmethic;
 
 public class BinaryOperation extends Operation {
@@ -11,6 +14,18 @@ public class BinaryOperation extends Operation {
         super(name, id, answer, idsession);
         this.firstOperand = firstOperand;
         this.secondOperand = secondOperand;
+    }
+
+    public OperationDto toDto() {
+        return new BinaryOperationDto(
+                operationKind.getKind(),
+                id,
+                firstOperand.toString(),
+                secondOperand.toString(),
+                answer.toString(),
+                idsession,
+                time
+        );
     }
 
     public BinaryOperation(){}

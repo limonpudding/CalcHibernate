@@ -1,13 +1,17 @@
 package app.database.entities;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "CONSTANTS")
 public class Constants {
 
+    @Id
+    @Column(length = 40)
     private String key;
-
+    @Type(type = "clob")
     private String value;
 
     public Constants() {}
@@ -17,8 +21,7 @@ public class Constants {
         this.value = value;
     }
 
-    @Id
-    @Column(name = "key")
+
     public String getKey() {
         return key;
     }
@@ -27,8 +30,6 @@ public class Constants {
         this.key = key;
     }
 
-    @Basic
-    @Column(name = "value")
     public String getValue() {
         return value;
     }

@@ -1,5 +1,6 @@
 package app.database.entities;
 
+import app.database.entities.dto.OperationDto;
 import app.math.LongArithmethic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,6 +68,8 @@ public abstract class Operation {
     public void setTime(java.sql.Timestamp time) {
         this.time = time;
     }
+
+    public abstract OperationDto toDto();
 
     @Override
     public abstract String toString();

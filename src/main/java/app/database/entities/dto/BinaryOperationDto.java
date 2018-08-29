@@ -5,7 +5,9 @@ import app.database.entities.Operation;
 import app.database.entities.OperationKind;
 import app.math.LongArithmeticImplList;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -13,7 +15,9 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "BINARYOPERATION")
 public class BinaryOperationDto extends OperationDto {
+
     protected String firstOperand;
+
     protected String secondOperand;
 
     public BinaryOperationDto(){}
