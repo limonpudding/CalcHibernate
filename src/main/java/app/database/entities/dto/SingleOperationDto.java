@@ -3,26 +3,28 @@ package app.database.entities.dto;
 import app.database.entities.Operation;
 import app.database.entities.OperationKind;
 import app.database.entities.SingleOperation;
-import app.math.LongArithmethic;
 import app.math.LongArithmeticImplList;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-public class SingleOperationDto implements OperationDto {
-    protected String operationKind;
-    protected String id;
-    protected String firstOperand;
-    protected String answer;
-    protected String idsession;
-    protected java.sql.Timestamp time;
+@Entity
+@Table(name = "SINGLEOPERATION")
+public class SingleOperationDto extends OperationDto {
 
-    public SingleOperationDto(String operationKind, String id, String firstOperand, String answer, String idsession, Timestamp time) {
+    protected String operationKind;
+    protected String firstOperand;
+
+    public SingleOperationDto(){}
+
+    public SingleOperationDto(String operationKind, String id, String firstOperand, String answer, String idSession, Timestamp time) {
         this.operationKind = operationKind;
         this.id = id;
         this.firstOperand = firstOperand;
         this.answer = answer;
-        this.idsession = idsession;
+        this.idSession = idSession;
         this.time = time;
     }
 
@@ -32,7 +34,7 @@ public class SingleOperationDto implements OperationDto {
                 OperationKind.getOperationKind(operationKind),
                 id,
                 new LongArithmeticImplList(answer),
-                idsession,
+                idSession,
                 new LongArithmeticImplList(firstOperand)
         );
     }
@@ -70,11 +72,11 @@ public class SingleOperationDto implements OperationDto {
     }
 
     public String getIdsession() {
-        return idsession;
+        return idSession;
     }
 
     public void setIdsession(String idsession) {
-        this.idsession = idsession;
+        this.idSession = idsession;
     }
 
     public Timestamp getTime() {

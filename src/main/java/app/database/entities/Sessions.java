@@ -6,48 +6,48 @@ import javax.persistence.*;
 @Table(name = "SESSIONS")
 public class Sessions {
 
-  private String id;
-  private String ip;
-  private java.sql.Timestamp timestart;
-  private java.sql.Timestamp timeend;
+    private String id;
+    private String ip;
+    private java.sql.Timestamp timeStart;
+    private java.sql.Timestamp timeEnd;
 
-  @Id
-  @Column(name = "id")
-  public String getId() {
-    return id;
-  }
+    @Id
+    @Column(name = "id")
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  @Basic
-  @Column(name = "ip")
-  public String getIp() {
-    return ip;
-  }
+    @Basic
+    @Column(name = "ip")
+    public String getIp() {
+        return ip;
+    }
 
-  public void setIp(String ip) {
-    this.ip = ip;
-  }
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
 
-  @Basic
-  @Column(name = "timestart")
-  public java.sql.Timestamp getTimestart() {
-    return timestart;
-  }
+    @Basic
+    @Column(name = "timestart")
+    public java.sql.Timestamp getTimeStart() {
+        return timeStart;
+    }
 
-  public void setTimestart(java.sql.Timestamp timestart) {
-    this.timestart = timestart;
-  }
+    public void setTimeStart(java.sql.Timestamp timestart) {
+        this.timeStart = timestart;
+    }
 
-  @Basic
-  @Column(name = "timeend")
-  public java.sql.Timestamp getTimeend() {
-    return timeend;
-  }
+    @Basic
+    @Column(name = "timeend")
+    public java.sql.Timestamp getTimeEnd() {
+        return timeEnd;
+    }
 
-  public void setTimeend(java.sql.Timestamp timeend) {
-    this.timeend = timeend;
-  }
+    public void setTimeEnd(java.sql.Timestamp timeend) {
+        this.timeEnd = timeend;
+    }
 }

@@ -5,25 +5,26 @@ import app.database.entities.Operation;
 import app.database.entities.OperationKind;
 import app.math.LongArithmeticImplList;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-public class BinaryOperationDto implements OperationDto {
-    protected String operationKind;
-    protected String id;
+@Entity
+@Table(name = "BINARYOPERATION")
+public class BinaryOperationDto extends OperationDto {
     protected String firstOperand;
     protected String secondOperand;
-    protected String answer;
-    protected String idsession;
-    protected java.sql.Timestamp time;
 
-    public BinaryOperationDto(String operationKind, String id, String firstOperand, String secondOperand, String answer, String idsession, Timestamp time) {
+    public BinaryOperationDto(){}
+
+    public BinaryOperationDto(String operationKind, String id, String firstOperand, String secondOperand, String answer, String idSession, Timestamp time) {
         this.operationKind = operationKind;
         this.id = id;
         this.firstOperand = firstOperand;
         this.secondOperand = secondOperand;
         this.answer = answer;
-        this.idsession = idsession;
+        this.idSession = idSession;
         this.time = time;
     }
 
@@ -33,7 +34,7 @@ public class BinaryOperationDto implements OperationDto {
                 OperationKind.getOperationKind(operationKind),
                 id,
                 new LongArithmeticImplList(answer),
-                idsession,
+                idSession,
                 new LongArithmeticImplList(firstOperand),
                 new LongArithmeticImplList(secondOperand)
         );
@@ -60,7 +61,7 @@ public class BinaryOperationDto implements OperationDto {
     }
 
     public String getIdsession() {
-        return idsession;
+        return idSession;
     }
 
     public Timestamp getTime() {
@@ -88,7 +89,7 @@ public class BinaryOperationDto implements OperationDto {
     }
 
     public void setIdsession(String idsession) {
-        this.idsession = idsession;
+        this.idSession = idsession;
     }
 
     public void setTime(Timestamp time) {

@@ -4,6 +4,7 @@ import app.math.LongArithmethic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 
