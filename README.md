@@ -13,3 +13,9 @@
 1. [Hibernate Tutorial](https://www.tutorialspoint.com/hibernate/index.htm)
 
 1. [Hibernate Getting Started Guide](http://docs.jboss.org/hibernate/orm/5.3/quickstart/html_single/#hibernate-gsg-tutorial-basic-config)
+
+1. [Hibernate: save, persist, update, merge, saveOrUpdate](https://www.baeldung.com/hibernate-save-persist-update-merge-saveorupdate)
+
+1. [Наследование в Hibernate: выбор стратегии](https://habr.com/post/337488/)
+
+1. [Tutorial - Hibernate formula annotation example](http://www.javamakeuse.com/2015/08/tutorial-hibernate-formula-annotation.html)
