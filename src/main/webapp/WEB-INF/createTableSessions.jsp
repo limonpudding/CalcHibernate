@@ -3,24 +3,24 @@
 <jsp:useBean id="fullSessionsHistory" scope="request" type="java.util.List"/>
 <c:forEach var="row" items="${fullSessionsHistory}">
     <tr>
-        <td class="col hidden" title="${row.id()}">
+        <td class="col hidden" title="${row.getId()}">
             <c:choose>
-                <c:when test="${row.operation()=='false'}">
-                    ${row.id()}
+                <c:when test="${row.getOperation()=='false'}">
+                    ${row.getId()}
                 </c:when>
                 <c:otherwise>
-                    <a href="#" onclick="openSecondTable('${row.id()}')">${row.id()}</a>
+                    <a href="#" onclick="openSecondTable('${row.getId()}')">${row.getId()}</a>
                 </c:otherwise>
             </c:choose>
         </td>
-        <td class="col hidden" title="${row.ip()}">
-                ${row.ip()}
+        <td class="col hidden" title="${row.getIp()}">
+                ${row.getIp()}
         </td>
         <td class="col">
-                ${row.sessionStartTime()}
+                ${row.getTimeStart()}
         </td>
         <td class="col">
-                ${row.sessionEndTime()}
+                ${row.getTimeEnd()}
         </td>
     </tr>
 </c:forEach>

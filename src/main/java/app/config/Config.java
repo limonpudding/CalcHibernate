@@ -52,12 +52,8 @@ public class Config implements WebMvcConfigurer {
 
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-//        hibernateProperties.setProperty(
-//                "hibernate.hbm2ddl.auto", "create");
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
-        hibernateProperties.setProperty(
-                "datatypeFactory", "org.dbunit.ext.oracle.Oracle10DataTypeFactory");
         return hibernateProperties;
     }
 
@@ -67,8 +63,87 @@ public class Config implements WebMvcConfigurer {
     }
 
     @Bean
-    DataSource getDataSource() throws NamingException {
-        return (DataSource) new InitialContext().lookup("java:comp/env/" + context.getInitParameter("dbName"));
+    DataSource getDataSource() throws NamingException, SQLException {
+        String dbName = context.getInitParameter("dbName");
+        DataSource dataSource = (DataSource) new InitialContext().lookup("java:comp/env/" + dbName);
+        if (dataSource.getConnection().getMetaData().getDatabaseProductName().toUpperCase().contains("H2")) {
+
+            try (Connection connection = dataSource.getConnection()) {
+                Statement statement = connection.createStatement();
+                statement.execute("" +
+                        "create table BINARYOPERATION\n" +
+                        "(\n" +
+                        "  ID             NVARCHAR2(40) not null\n" +
+                        "    primary key,\n" +
+                        "  NAME           NVARCHAR2(40),\n" +
+                        "  FIRSTOPERAND   CLOB,\n" +
+                        "  SECONDOPERAND CLOB,\n" +
+                        "  ANSWER         CLOB,\n" +
+                        "  IDSESSION      NVARCHAR2(40),\n" +
+                        "  TIME           TIMESTAMP(6)\n" +
+                        ");" +
+                        "create table SINGLEOPERATION\n" +
+                        "(\n" +
+                        "  ID           NVARCHAR2(40) not null\n" +
+                        "    primary key,\n" +
+                        "  NAME         NVARCHAR2(40),\n" +
+                        "  FIRSTOPERAND CLOB,\n" +
+                        "  ANSWER       CLOB,\n" +
+                        "  IDSESSION    NVARCHAR2(40),\n" +
+                        "  TIME         TIMESTAMP(6)\n" +
+                        ");" +
+                        "create table CONSTANTS\n" +
+                        "(\n" +
+                        "  KEY            NVARCHAR2(40) default NULL not null\n" +
+                        "    primary key,\n" +
+                        "  VALUE  CLOB" +
+                        ");"+
+                        "create table SESSIONS\n" +
+                        "(\n" +
+                        "  ID        NVARCHAR2(40) default NULL not null\n" +
+                        "    primary key,\n" +
+                        "  IP        NVARCHAR2(25),\n" +
+                        "  TIMESTART TIMESTAMP,\n" +
+                        "  TIMEEND   TIMESTAMP\n" +
+                        ");" +
+                        "create view HISTORY as\n" +
+                        "  SELECT\n" +
+                        "    SESSIONS.id,\n" +
+                        "    SESSIONS.ip,\n" +
+                        "    SESSIONS.TIMESTART,\n" +
+                        "    SESSIONS.TIMEEND,\n" +
+                        "    BINARYOPERATION.NAME,\n" +
+                        "    BINARYOPERATION.FIRSTOPERAND,\n" +
+                        "    BINARYOPERATION.SECONDOPERAND,\n" +
+                        "    BINARYOPERATION.ANSWER,\n" +
+                        "    BINARYOPERATION.TIME\n" +
+                        "  FROM BINARYOPERATION\n" +
+                        "    join SESSIONS on BINARYOPERATION.IDSESSION = SESSIONS.ID\n" +
+                        "  union all\n" +
+                        "  SELECT\n" +
+                        "    SESSIONS.id,\n" +
+                        "    SESSIONS.ip,\n" +
+                        "    SESSIONS.TIMESTART,\n" +
+                        "    SESSIONS.TIMEEND,\n" +
+                        "    SINGLEOPERATION.NAME,\n" +
+                        "    SINGLEOPERATION.FIRSTOPERAND,\n" +
+                        "    null        as SECONDOPERAND,\n" +
+                        "    SINGLEOPERATION.ANSWER,\n" +
+                        "    SINGLEOPERATION.TIME\n" +
+                        "  FROM SINGLEOPERATION\n" +
+                        "    join SESSIONS on SINGLEOPERATION.IDSESSION = SESSIONS.ID"
+                );
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return dataSource;
+        } else if (dataSource.getConnection().getMetaData().getDatabaseProductName().toUpperCase().contains("ORACLE")) {
+            return dataSource;
+        } else {
+            return null;
+        }
     }
 
 }

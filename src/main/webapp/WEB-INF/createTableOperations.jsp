@@ -3,20 +3,20 @@
 <jsp:useBean id="operationsHistory" scope="request" type="java.util.List"/>
 <c:forEach var="row" items="${operationsHistory}">
     <tr>
-        <td class="col hidden" title="${row.operationName()}">
-                ${row.operationName()}
+        <td class="col hidden" title="${row.getOperationKind()}">
+                ${row.getOperationKind()}
         </td>
-        <td class="col hidden" title="${row.op1()}">
-                ${row.op1()}
+        <td class="col hidden" title="${row.getFirstOperand()}">
+                ${row.getFirstOperand()}
         </td>
-        <td class="col hidden" title="${row.op2()}">
-                ${row.op2()}
+        <td class="col hidden" title="${row.getSecondOperand()}">
+                ${row.getSecondOperand()}
         </td>
-        <td class="col hidden" title="${row.answer()}">
-                ${row.answer()}
+        <td class="col hidden" title="${row.getAnswer()}">
+                ${row.getAnswer()}
         </td>
-        <td class="col hidden" title="${row.time()}">
-                ${row.time()}
+        <td class="col hidden" title="${row.getTime()}">
+                ${row.getTime()}
         </td>
     </tr>
 </c:forEach>

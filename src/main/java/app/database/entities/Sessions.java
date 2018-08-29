@@ -17,6 +17,23 @@ public class Sessions {
     private java.sql.Timestamp timeStart;
     private java.sql.Timestamp timeEnd;
 
+    @Transient
+//    @Formula("(select case when count(*) >= 1 then 'true' else 'false' end from (\n" +
+//            "    select 'true' as operation from SESSIONS join BINARYOPERATION on SESSIONS.ID = BINARYOPERATION.IDSESSION where rownum = 1\n" +
+//            "    union all\n" +
+//            "    select 'true' as operation from SESSIONS join SINGLEOPERATION on SESSIONS.ID = SINGLEOPERATION.IDSESSION where rownum = 1\n" +
+//            ") where rownum = 1)")
+    @Formula("(select 'false' from dual)")
+    private String operation;
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
     public String getId() {
         return id;
     }

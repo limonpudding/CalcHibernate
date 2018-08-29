@@ -46,6 +46,11 @@ public class SingleOperationDto extends OperationDto {
         return operationKind;
     }
 
+    @Override
+    public String getSecondOperand() {
+        return "";
+    }
+
     public void setOperationKind(String operationKind) {
         this.operationKind = operationKind;
     }
