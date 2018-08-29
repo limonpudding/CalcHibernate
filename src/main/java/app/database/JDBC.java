@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.sql.*;
@@ -44,6 +46,7 @@ public class JDBC {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    @Transactional//TODO не работает занесение в БД
     public void putOperation(app.database.entities.Operation operation) {
         String BINARY_SQL = "INSERT INTO "
                 + operation.getOperationKind().getTableName()
@@ -75,52 +78,40 @@ public class JDBC {
         }
     }
 
+    @Transactional
     public void putSession() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
         Sessions sessions = new Sessions();
         sessions.setId(req.getSession().getId());
         sessions.setIp(req.getRemoteAddr());
         sessions.setTimestart(new Timestamp(req.getSession().getCreationTime()));
         sessions.setTimeend(new Timestamp(req.getSession().getLastAccessedTime()));
-        session.save(sessions);
-        session.getTransaction().commit();
-        session.close();
+        sessionFactory.getCurrentSession().save(sessions);
         rootLogger.info("В базу даных добалена новая сессия с ID: " + req.getSession().getId());
     }
 
     @Transactional
     public void updateSession() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Sessions sessions = session.get(Sessions.class, req.getSession().getId());
+        Sessions sessions = sessionFactory.getCurrentSession().get(Sessions.class, req.getSession().getId());
         sessions.setTimeend(new Timestamp(req.getSession().getLastAccessedTime()));
-        session.saveOrUpdate(sessions);
-        session.getTransaction().commit();
-        session.close();
+        sessionFactory.getCurrentSession().saveOrUpdate(sessions);
         rootLogger.info("В базе данных обновлена сессия с ID: " + req.getSession().getId());
     }
 
 
+    @Transactional
     public void putConstInDB(Constants constant) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(constant);
-        session.getTransaction().commit();
-        session.close();
+        sessionFactory.getCurrentSession().save(constant);
     }
 
+    @Transactional
     public void updatePostDB(UpdatePost post) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Constants constants = session.get(Constants.class, post.getKeyOld());
+        Constants constants = sessionFactory.getCurrentSession().get(Constants.class, post.getKeyOld());
         constants.setKey(post.getKeyNew());
         constants.setValue(post.getValue());
-        session.saveOrUpdate(constants);
-        session.getTransaction().commit();
-        session.close();
+        sessionFactory.getCurrentSession().update(constants);
     }
 
+    @Transactional
     public void deleteConstantDB(Key key) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -130,47 +121,45 @@ public class JDBC {
         session.close();
     }
 
+    @Transactional
     public void updatePatchDB(Constants constant) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         Constants constants = session.get(Constants.class, constant.getKey());
         constants.setValue(constant.getValue());
-        session.saveOrUpdate(constants);
+        session.update(constants);
         session.getTransaction().commit();
         session.close();
     }
 
-    public List getConstantsDB() {
-        final String SELECT_SQL = "SELECT CONSTANTS.KEY, CONSTANTS.VALUE FROM CONSTANTS";
-        Session session = sessionFactory.openSession();
-        List constants = session.createSQLQuery(SELECT_SQL).list();
-        session.close();
-        return constants;
+    @Transactional
+    public List <Constants> getConstantsDB() {
+        CriteriaQuery<Constants> criteria = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(Constants.class);
+        criteria.from(Constants.class);
+        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 
+    @Transactional
     public String getConstantValueDB(String key) {
-        Session session = sessionFactory.openSession();
-        String value = session.get(Constants.class, key).getValue();
-        session.close();
-        return value;
+        return sessionFactory.getCurrentSession().get(Constants.class, key).getValue();
     }
 
-    public List selectSessionsFromBD(String mode, String order) {
+    public List <SessionsRow> selectSessionsFromBD(String mode, String order) {
         final String SELECT_SQL = "" +
                 "select * from (select distinct sessions.id, sessions.ip,sessions.timestart,sessions.timeend, 'false' as operation from SESSIONS left join history on SESSIONS.id = HISTORY.id where operation is null\n" +
                 "union all\n" +
                 "select distinct sessions.id, sessions.ip,sessions.timestart,sessions.timeend, 'true' as operation from SESSIONS left join history on SESSIONS.id = HISTORY.id where operation is not null) order by "+mode+" "+order;
 
         Session session = sessionFactory.openSession();
-        List dbRows = session.createSQLQuery(SELECT_SQL).list();
+        List <SessionsRow> dbRows = session.createSQLQuery(SELECT_SQL).list();
         session.close();
         return dbRows;
     }
 
-    public List selectDataFromBD(String mode, String order, String id) {
+    public List <OperationsRow> selectDataFromBD(String mode, String order, String id) {
         final String SELECT_SQL = "SELECT OPERATION, FIRSTOPERAND, SECONDOPERAND, ANSWER, TIME FROM HISTORY where '"+id+"'=ID ORDER BY "+mode+" "+order;
         Session session = sessionFactory.openSession();
-        List dbRows = session.createSQLQuery(SELECT_SQL).list();
+        List<OperationsRow> dbRows = session.createSQLQuery(SELECT_SQL).list();
         session.close();
         return dbRows;
     }

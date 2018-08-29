@@ -8,7 +8,6 @@ public class Constants {
 
     private String key;
 
-
     private String value;
 
     public Constants() {}

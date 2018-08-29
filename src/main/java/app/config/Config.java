@@ -6,21 +6,16 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -30,17 +25,14 @@ import java.util.Properties;
 
 @EnableTransactionManagement
 @Configuration
-public class Config extends WebMvcConfigurerAdapter {
+public class Config implements WebMvcConfigurer {
 
     @Autowired
     ServletContext context;
 
-    @Autowired
-    DataSource dataSource;
-
-
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
+    @Autowired
+    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("app.database.entities");
@@ -50,10 +42,11 @@ public class Config extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public PlatformTransactionManager hibernateTransactionManager() {
+    @Autowired
+    public PlatformTransactionManager hibernateTransactionManager(DataSource dataSource) {
         HibernateTransactionManager transactionManager
                 = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
+        transactionManager.setSessionFactory(sessionFactory(dataSource).getObject());
         return transactionManager;
     }
 
@@ -63,15 +56,8 @@ public class Config extends WebMvcConfigurerAdapter {
                 "hibernate.hbm2ddl.auto", "create-drop");
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-
         return hibernateProperties;
     }
-
-//    @Bean
-//    @Autowired
-//    public DataSourceTransactionManager txManager(DataSource dataSource) {
-//        return new DataSourceTransactionManager(dataSource);
-//    }
 
     @Bean
     Logger rootLogger() {

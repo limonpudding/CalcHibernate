@@ -50,5 +50,4 @@ public class Sessions {
   public void setTimeend(java.sql.Timestamp timeend) {
     this.timeend = timeend;
   }
-
 }
