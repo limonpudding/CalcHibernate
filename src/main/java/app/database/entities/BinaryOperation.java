@@ -2,7 +2,6 @@ package app.database.entities;
 
 import app.database.entities.dto.BinaryOperationDto;
 import app.database.entities.dto.OperationDto;
-import app.database.entities.dto.SingleOperationDto;
 import app.math.LongArithmethic;
 
 public class BinaryOperation extends Operation {
@@ -10,8 +9,8 @@ public class BinaryOperation extends Operation {
     private LongArithmethic firstOperand;
     private LongArithmethic secondOperand;
 
-    public BinaryOperation(OperationKind name, String id, LongArithmethic answer, String idsession, LongArithmethic firstOperand, LongArithmethic secondOperand) {
-        super(name, id, answer, idsession);
+    public BinaryOperation(OperationKind name, String id, LongArithmethic answer, String idSession, LongArithmethic firstOperand, LongArithmethic secondOperand) {
+        super(name, id, answer, idSession);
         this.firstOperand = firstOperand;
         this.secondOperand = secondOperand;
     }

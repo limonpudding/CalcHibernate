@@ -5,9 +5,7 @@ import app.database.entities.Operation;
 import app.database.entities.OperationKind;
 import app.math.LongArithmeticImplList;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -44,40 +42,14 @@ public class BinaryOperationDto extends OperationDto {
         );
     }
 
-    public String getOperationKind() {
-        return operationKind;
-    }
-
-    public String getId() {
-        return id;
-    }
-
+    @Override
     public String getFirstOperand() {
         return firstOperand;
     }
 
+    @Override
     public String getSecondOperand() {
         return secondOperand;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public String getIdsession() {
-        return idSession;
-    }
-
-    public Timestamp getTime() {
-        return time;
-    }
-
-    public void setOperationKind(String operationKind) {
-        this.operationKind = operationKind;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setFirstOperand(String firstOperand) {
@@ -86,17 +58,5 @@ public class BinaryOperationDto extends OperationDto {
 
     public void setSecondOperand(String secondOperand) {
         this.secondOperand = secondOperand;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public void setIdsession(String idsession) {
-        this.idSession = idsession;
-    }
-
-    public void setTime(Timestamp time) {
-        this.time = time;
     }
 }

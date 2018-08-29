@@ -1,10 +1,10 @@
 package app.database.entities.dto;
 
 import app.database.entities.Operation;
-import app.database.entities.OperationKind;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import java.io.IOException;
 import java.sql.Timestamp;
 
@@ -13,18 +13,54 @@ import java.sql.Timestamp;
 public abstract class OperationDto {
     protected String operationKind;
     @Id
-    @Column(length = 40)
     protected String id;
     protected String answer;
-    @Column(length = 40)
     protected String idSession;
     protected java.sql.Timestamp time;
-    public abstract String getOperationKind();
+
     public abstract String getSecondOperand();
-    public abstract Operation toOperation() throws IOException;
+
     public abstract String getFirstOperand();
-    public abstract String getAnswer();
-    public abstract String getIdsession();
-    public abstract Timestamp getTime();
-    public abstract String getId();
+
+    public abstract Operation toOperation() throws IOException;
+
+    public String getOperationKind() {
+        return operationKind;
+    }
+
+    public void setOperationKind(String operationKind) {
+        this.operationKind = operationKind;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public String getIdSession() {
+        return idSession;
+    }
+
+    public void setIdSession(String idSession) {
+        this.idSession = idSession;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
 }

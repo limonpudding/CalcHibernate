@@ -4,10 +4,8 @@ import app.database.entities.Operation;
 import app.database.entities.OperationKind;
 import app.database.entities.SingleOperation;
 import app.math.LongArithmeticImplList;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -42,56 +40,17 @@ public class SingleOperationDto extends OperationDto {
         );
     }
 
-    public String getOperationKind() {
-        return operationKind;
-    }
-
     @Override
     public String getSecondOperand() {
         return "";
     }
 
-    public void setOperationKind(String operationKind) {
-        this.operationKind = operationKind;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    @Override
     public String getFirstOperand() {
         return firstOperand;
     }
 
     public void setFirstOperand(String firstOperand) {
         this.firstOperand = firstOperand;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public String getIdsession() {
-        return idSession;
-    }
-
-    public void setIdsession(String idsession) {
-        this.idSession = idsession;
-    }
-
-    public Timestamp getTime() {
-        return time;
-    }
-
-    public void setTime(Timestamp time) {
-        this.time = time;
     }
 }
