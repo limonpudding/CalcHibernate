@@ -1,5 +1,7 @@
 package app.database.entities;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 
 @Entity
@@ -50,4 +52,9 @@ public class Sessions {
     public void setTimeEnd(java.sql.Timestamp timeend) {
         this.timeEnd = timeend;
     }
+
+    @Formula("EXIST (select TOP(1) * from SESSIONS join BINARYOPERATION on SESSION.ID=BINARYOPERATION.IDSESSION" +
+            " UNION ALL " +
+            "select TOP(1) * from SESSIONS join SINGLEOPERATION on SESSION.ID=SINGLEOPERATION.IDSESSION)")
+    public String operation;
 }
