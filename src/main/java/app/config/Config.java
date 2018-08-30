@@ -69,6 +69,14 @@ public class Config implements WebMvcConfigurer {
             try (Connection connection = dataSource.getConnection()) {
                 Statement statement = connection.createStatement();
                 statement.execute("" +
+                        "create table SESSIONS\n" +
+                        "(\n" +
+                                "  ID        NVARCHAR2(40) default NULL not null\n" +
+                                "    primary key,\n" +
+                                "  IP        NVARCHAR2(25),\n" +
+                                "  TIMESTART TIMESTAMP,\n" +
+                                "  TIMEEND   TIMESTAMP\n" +
+                                ");"+
                         "create table BINARYOPERATION\n" +
                         "(\n" +
                         "  ID             NVARCHAR2(40) not null\n" +
@@ -77,7 +85,9 @@ public class Config implements WebMvcConfigurer {
                         "  FIRSTOPERAND   CLOB,\n" +
                         "  SECONDOPERAND CLOB,\n" +
                         "  ANSWER         CLOB,\n" +
-                        "  IDSESSION      NVARCHAR2(40),\n" +
+                        "  IDSESSION      NVARCHAR2(40) " +
+                        "constraint BINARYOPERATION_SESSIONS_ID_FK\n" +
+                        "    references SESSIONS,\n" +
                         "  TIME           TIMESTAMP(6)\n" +
                         ");" +
                         "create table SINGLEOPERATION\n" +
@@ -87,7 +97,9 @@ public class Config implements WebMvcConfigurer {
                         "  OPERATIONKIND         NVARCHAR2(40),\n" +
                         "  FIRSTOPERAND CLOB,\n" +
                         "  ANSWER       CLOB,\n" +
-                        "  IDSESSION    NVARCHAR2(40),\n" +
+                        "  IDSESSION    NVARCHAR2(40) " +
+                        "constraint SINGLEOPERATION_SESSIONS_ID_FK" +
+                        "   references SESSIONS,\n" +
                         "  TIME         TIMESTAMP(6)\n" +
                         ");" +
                         "create table CONSTANTS\n" +
@@ -95,14 +107,6 @@ public class Config implements WebMvcConfigurer {
                         "  KEY            NVARCHAR2(40) default NULL not null\n" +
                         "    primary key,\n" +
                         "  VALUE  CLOB" +
-                        ");"+
-                        "create table SESSIONS\n" +
-                        "(\n" +
-                        "  ID        NVARCHAR2(40) default NULL not null\n" +
-                        "    primary key,\n" +
-                        "  IP        NVARCHAR2(25),\n" +
-                        "  TIMESTART TIMESTAMP,\n" +
-                        "  TIMEEND   TIMESTAMP\n" +
                         ");" +
                         "create view HISTORY as\n" +
                         "  SELECT\n" +

@@ -1,9 +1,13 @@
 package app.database.entities;
 
+import app.database.entities.dto.BinaryOperationDto;
+import app.database.entities.dto.OperationDto;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "SESSIONS")
@@ -17,22 +21,46 @@ public class Sessions {
     private java.sql.Timestamp timeStart;
     private java.sql.Timestamp timeEnd;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "BINARYOPERATION",
+            joinColumns = @JoinColumn(name = "IDSESSION"))
+    @Column(name = "ID")
+    private Set<String> singleOperations = new HashSet<>();
+
+    @ElementCollection
+    @CollectionTable(
+            name = "SINGLEOPERATION",
+            joinColumns = @JoinColumn(name = "IDSESSION"))
+    @Column(name = "ID")
+    private Set<String> binaryOperations = new HashSet<>();
+
     @Transient
-//    @Formula("(select case when count(*) >= 1 then 'true' else 'false' end from (\n" +
-//            "    select 'true' as operation from SESSIONS join BINARYOPERATION on SESSIONS.ID = BINARYOPERATION.IDSESSION where rownum = 1\n" +
-//            "    union all\n" +
-//            "    select 'true' as operation from SESSIONS join SINGLEOPERATION on SESSIONS.ID = SINGLEOPERATION.IDSESSION where rownum = 1\n" +
-//            ") where rownum = 1)")
-    @Formula("(select 'false' from dual)")
-    private String operation;
+    private boolean isOperationsExist;
 
-    public void setOperation(String operation) {
-        this.operation = operation;
+    public void update() {
+        isOperationsExist = (singleOperations.size() + binaryOperations.size() != 0);
     }
 
-    public String getOperation() {
-        return operation;
-    }
+    //
+//    @Transient
+//    @OneToMany(mappedBy = "sessions")
+//    public Set<BinaryOperationDto> getOperations() {
+//        return this.operations;
+//    }
+//
+//    public void setOperations(Set<BinaryOperationDto> operations) {
+//        this.operations = operations;
+//    }
+//
+//    public void addOperation(BinaryOperationDto operation) {
+//        operation.setSessions(this);
+//        getOperations().add(operation);
+//    }
+//
+//    public void removeOperation(BinaryOperationDto operation) {
+//        getOperations().remove(operation);
+//    }
 
     public String getId() {
         return id;
@@ -65,5 +93,9 @@ public class Sessions {
 
     public void setTimeEnd(java.sql.Timestamp timeend) {
         this.timeEnd = timeend;
+    }
+
+    public boolean isOperationsExist() {
+        return isOperationsExist;
     }
 }

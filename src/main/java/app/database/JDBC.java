@@ -124,7 +124,11 @@ public class JDBC {
         } else {
             criteria.orderBy(builder.desc(criteriaRoot.get(mode)));
         }
-        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+        List<Sessions> resultList = sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+        for(Sessions sessions:resultList){
+            sessions.update();
+        }
+        return resultList;
     }
 
     @Transactional

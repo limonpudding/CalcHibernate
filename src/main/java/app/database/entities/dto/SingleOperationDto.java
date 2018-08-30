@@ -2,11 +2,11 @@ package app.database.entities.dto;
 
 import app.database.entities.Operation;
 import app.database.entities.OperationKind;
+import app.database.entities.Sessions;
 import app.database.entities.SingleOperation;
 import app.math.LongArithmeticImplList;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 

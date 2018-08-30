@@ -5,7 +5,7 @@
     <tr>
         <td class="col hidden" title="${row.getId()}">
             <c:choose>
-                <c:when test="${row.getOperation()=='false'}">
+                <c:when test="${!row.isOperationsExist()}">
                     ${row.getId()}
                 </c:when>
                 <c:otherwise>

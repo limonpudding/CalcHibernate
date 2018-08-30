@@ -1,10 +1,9 @@
 package app.database.entities.dto;
 
 import app.database.entities.Operation;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import app.database.entities.Sessions;
+
+import javax.persistence.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 
