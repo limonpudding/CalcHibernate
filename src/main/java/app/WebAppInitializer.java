@@ -1,17 +1,14 @@
 package app;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-
 import app.config.Config;
 import app.config.ServiceListener;
 import app.config.WebConfig;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -25,7 +22,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         // Manage the lifecycle of the root application context
         container.addListener(org.apache.tiles.extras.complete.CompleteAutoloadTilesListener.class);
         container.addListener(ServiceListener.class);
-        container.setInitParameter("dbName", "Oracle/db");
+        container.setInitParameter("dbName", "H2/db");
 
 
         // Create the dispatcher servlet's Spring application context

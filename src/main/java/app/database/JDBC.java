@@ -19,7 +19,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.OrderBy;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.sql.*;
@@ -115,6 +117,11 @@ public class JDBC {
     @Transactional
     public List<Sessions> selectSessionsFromBD(String mode, String order) {
         CriteriaQuery<Sessions> criteria = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(Sessions.class);
+        if ("ASC".equals(order.toUpperCase())) {
+            criteria.orderBy((Order) org.hibernate.criterion.Order.asc(mode));
+        } else {
+            criteria.orderBy((Order) org.hibernate.criterion.Order.desc(mode));
+        }
         criteria.from(Sessions.class);
         return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }

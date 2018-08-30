@@ -6,13 +6,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -75,7 +73,7 @@ public class Config implements WebMvcConfigurer {
                         "(\n" +
                         "  ID             NVARCHAR2(40) not null\n" +
                         "    primary key,\n" +
-                        "  NAME           NVARCHAR2(40),\n" +
+                        "  OPERATIONKIND           NVARCHAR2(40),\n" +
                         "  FIRSTOPERAND   CLOB,\n" +
                         "  SECONDOPERAND CLOB,\n" +
                         "  ANSWER         CLOB,\n" +
@@ -86,7 +84,7 @@ public class Config implements WebMvcConfigurer {
                         "(\n" +
                         "  ID           NVARCHAR2(40) not null\n" +
                         "    primary key,\n" +
-                        "  NAME         NVARCHAR2(40),\n" +
+                        "  OPERATIONKIND         NVARCHAR2(40),\n" +
                         "  FIRSTOPERAND CLOB,\n" +
                         "  ANSWER       CLOB,\n" +
                         "  IDSESSION    NVARCHAR2(40),\n" +
@@ -112,7 +110,7 @@ public class Config implements WebMvcConfigurer {
                         "    SESSIONS.ip,\n" +
                         "    SESSIONS.TIMESTART,\n" +
                         "    SESSIONS.TIMEEND,\n" +
-                        "    BINARYOPERATION.NAME,\n" +
+                        "    BINARYOPERATION.OPERATIONKIND,\n" +
                         "    BINARYOPERATION.FIRSTOPERAND,\n" +
                         "    BINARYOPERATION.SECONDOPERAND,\n" +
                         "    BINARYOPERATION.ANSWER,\n" +
@@ -125,7 +123,7 @@ public class Config implements WebMvcConfigurer {
                         "    SESSIONS.ip,\n" +
                         "    SESSIONS.TIMESTART,\n" +
                         "    SESSIONS.TIMEEND,\n" +
-                        "    SINGLEOPERATION.NAME,\n" +
+                        "    SINGLEOPERATION.OPERATIONKIND,\n" +
                         "    SINGLEOPERATION.FIRSTOPERAND,\n" +
                         "    null        as SECONDOPERAND,\n" +
                         "    SINGLEOPERATION.ANSWER,\n" +
