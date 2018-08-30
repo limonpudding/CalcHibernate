@@ -144,7 +144,7 @@
                     <div class="form-row">
                         <div class="form-group col-auto">
                             <select class="custom-select" name="mode" id="secondSelectorMode">
-                                <option value="operation">Операция</option>
+                                <option value="operationKind">Операция</option>
                                 <option value="time">Время операции</option>
                             </select>
                         </div>

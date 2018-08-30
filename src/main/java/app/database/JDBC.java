@@ -20,8 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.OrderBy;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
+import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.sql.*;
@@ -116,20 +115,30 @@ public class JDBC {
 
     @Transactional
     public List<Sessions> selectSessionsFromBD(String mode, String order) {
-        CriteriaQuery<Sessions> criteria = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(Sessions.class);
+        CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
+
+        CriteriaQuery<Sessions> criteria = builder.createQuery(Sessions.class);
+        Root criteriaRoot = criteria.from(Sessions.class);
         if ("ASC".equals(order.toUpperCase())) {
-            criteria.orderBy((Order) org.hibernate.criterion.Order.asc(mode));
+            criteria.orderBy(builder.asc(criteriaRoot.get(mode)));
         } else {
-            criteria.orderBy((Order) org.hibernate.criterion.Order.desc(mode));
+            criteria.orderBy(builder.desc(criteriaRoot.get(mode)));
         }
-        criteria.from(Sessions.class);
         return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 
     @Transactional
-    public List<OperationDto> selectDataFromBD(String mode, String order, String id) {//TODO: добавить выборку только по нужному id (where)
-        CriteriaQuery<OperationDto> criteria = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(OperationDto.class);
-        criteria.from(OperationDto.class);
+    public List<OperationDto> selectDataFromBD(String mode, String order, String id) {
+        CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
+
+        CriteriaQuery<OperationDto> criteria = builder.createQuery(OperationDto.class);
+        Root criteriaRoot = criteria.from(OperationDto.class);
+        criteria.where(builder.equal(criteriaRoot.get("idSession"),id));
+        if ("ASC".equals(order.toUpperCase())) {
+            criteria.orderBy(builder.asc(criteriaRoot.get(mode)));
+        } else {
+            criteria.orderBy(builder.desc(criteriaRoot.get(mode)));
+        }
         return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 }
