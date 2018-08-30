@@ -125,9 +125,6 @@ public class JDBC {
             criteria.orderBy(builder.desc(criteriaRoot.get(mode)));
         }
         List<Sessions> resultList = sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
-        for(Sessions sessions:resultList){
-            sessions.update();
-        }
         return resultList;
     }
 

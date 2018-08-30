@@ -21,46 +21,23 @@ public class Sessions {
     private java.sql.Timestamp timeStart;
     private java.sql.Timestamp timeEnd;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "BINARYOPERATION",
             joinColumns = @JoinColumn(name = "IDSESSION"))
     @Column(name = "ID")
     private Set<String> singleOperations = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "SINGLEOPERATION",
             joinColumns = @JoinColumn(name = "IDSESSION"))
     @Column(name = "ID")
     private Set<String> binaryOperations = new HashSet<>();
 
-    @Transient
-    private boolean isOperationsExist;
-
-    public void update() {
-        isOperationsExist = (singleOperations.size() + binaryOperations.size() != 0);
+    public boolean isOperationsExist() {
+        return (singleOperations.size() + binaryOperations.size() != 0);
     }
-
-    //
-//    @Transient
-//    @OneToMany(mappedBy = "sessions")
-//    public Set<BinaryOperationDto> getOperations() {
-//        return this.operations;
-//    }
-//
-//    public void setOperations(Set<BinaryOperationDto> operations) {
-//        this.operations = operations;
-//    }
-//
-//    public void addOperation(BinaryOperationDto operation) {
-//        operation.setSessions(this);
-//        getOperations().add(operation);
-//    }
-//
-//    public void removeOperation(BinaryOperationDto operation) {
-//        getOperations().remove(operation);
-//    }
 
     public String getId() {
         return id;
@@ -93,9 +70,5 @@ public class Sessions {
 
     public void setTimeEnd(java.sql.Timestamp timeend) {
         this.timeEnd = timeend;
-    }
-
-    public boolean isOperationsExist() {
-        return isOperationsExist;
     }
 }

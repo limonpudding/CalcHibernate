@@ -14,8 +14,6 @@ import java.sql.Timestamp;
 @Table(name = "SINGLEOPERATION")
 public class SingleOperationDto extends OperationDto {
 
-    protected String operationKind;
-
     protected String firstOperand;
 
     public SingleOperationDto(){}
