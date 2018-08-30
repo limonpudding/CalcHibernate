@@ -6,7 +6,9 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,22 +23,25 @@ public class Sessions {
     private java.sql.Timestamp timeStart;
     private java.sql.Timestamp timeEnd;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "BINARYOPERATION",
-            joinColumns = @JoinColumn(name = "IDSESSION"))
-    @Column(name = "ID")
-    private Set<String> singleOperations = new HashSet<>();
+    public Sessions(String id, String ip, long timeStart, long timeEnd) {
+        this.id = id;
+        this.ip = ip;
+        this.timeStart = new Timestamp(timeStart);
+        this.timeEnd = new Timestamp(timeEnd);
+    }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "SINGLEOPERATION",
-            joinColumns = @JoinColumn(name = "IDSESSION"))
-    @Column(name = "ID")
-    private Set<String> binaryOperations = new HashSet<>();
+    @OneToMany(mappedBy = "session")
+    List<OperationDto> operations;
 
-    public boolean isOperationsExist() {
-        return (singleOperations.size() + binaryOperations.size() != 0);
+    public List<OperationDto> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(List<OperationDto> operations) {
+        this.operations = operations;
+    }
+
+    public Sessions() {
     }
 
     public String getId() {
@@ -54,7 +59,6 @@ public class Sessions {
     public void setIp(String ip) {
         this.ip = ip;
     }
-
 
     public java.sql.Timestamp getTimeStart() {
         return timeStart;

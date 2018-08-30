@@ -3,9 +3,12 @@
 <jsp:useBean id="fullSessionsHistory" scope="request" type="java.util.List"/>
 <c:forEach var="row" items="${fullSessionsHistory}">
     <tr>
+        <td class="col hidden" title="${row.getOperations().size()}">
+                ${row.getOperations().size()}
+        </td>
         <td class="col hidden" title="${row.getId()}">
             <c:choose>
-                <c:when test="${!row.isOperationsExist()}">
+                <c:when test="${row.getOperations().size()==0}">
                     ${row.getId()}
                 </c:when>
                 <c:otherwise>

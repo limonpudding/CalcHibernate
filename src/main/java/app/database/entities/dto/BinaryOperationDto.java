@@ -1,9 +1,6 @@
 package app.database.entities.dto;
 
-import app.database.entities.BinaryOperation;
-import app.database.entities.Operation;
-import app.database.entities.OperationKind;
-import app.database.entities.Sessions;
+import app.database.entities.*;
 import app.math.LongArithmeticImplList;
 
 import javax.persistence.*;
@@ -18,30 +15,14 @@ public class BinaryOperationDto extends OperationDto {
 
     protected String secondOperand;
 
-    public BinaryOperationDto(){}
-
-    public BinaryOperationDto(String operationKind, String id, String firstOperand, String secondOperand, String answer, String idSession, Timestamp time) {
-        this.operationKind = operationKind;
-        this.id = id;
-        this.firstOperand = firstOperand;
-        this.secondOperand = secondOperand;
-        this.answer = answer;
-        this.idSession = idSession;
-        this.time = time;
+    public BinaryOperationDto(String operationKind, String id, String answer, Timestamp time, Sessions session, String firstOperand, String secondOperand) {
+        super(operationKind, id, answer, time, session);
+        this.firstOperand=firstOperand;
+        this.secondOperand=secondOperand;
     }
 
-
-//    @ManyToOne
-//    @JoinColumn(name = "idSession")
-//    protected Sessions sessions;
-//
-//    public Sessions getSessions() {
-//        return sessions;
-//    }
-//
-//    public void setSessions(Sessions sessions) {
-//        this.sessions = sessions;
-//    }
+    public BinaryOperationDto() {
+    }
 
     @Override
     public Operation toOperation() throws IOException {
@@ -49,26 +30,11 @@ public class BinaryOperationDto extends OperationDto {
                 OperationKind.getOperationKind(operationKind),
                 id,
                 new LongArithmeticImplList(answer),
-                idSession,
+                session,
                 new LongArithmeticImplList(firstOperand),
                 new LongArithmeticImplList(secondOperand)
         );
     }
-
-//    @Transient
-//    @ManyToOne
-//    @JoinColumn(name = "id")
-//    private Sessions sessions;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "ID")
-//    public String getSessions() {
-//        return this.idSession;
-//    }
-//
-//    public void setSessions(Sessions sessions) {
-//        this.sessions = sessions;
-//    }
 
     @Override
     public String getFirstOperand() {

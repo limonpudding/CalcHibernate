@@ -3,6 +3,7 @@ package app.controllers;
 import app.database.JDBC;
 import app.database.entities.Constants;
 import app.database.entities.OperationKind;
+import app.database.entities.Sessions;
 import app.database.entities.dto.BinaryOperationDto;
 import app.database.entities.dto.OperationDto;
 import app.database.entities.dto.SingleOperationDto;
@@ -59,20 +60,20 @@ public class JsonController extends AbstractController {
             operationDto = new SingleOperationDto(
                     operation,
                     UUID.randomUUID().toString(),
-                    a,
                     ans,
-                    req.getSession().getId(),
-                    new Timestamp(new Date().getTime())
+                    new Timestamp(new Date().getTime()),
+                    new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()),
+                    a
             );
         } else {
             operationDto = new BinaryOperationDto(
                     operation,
                     UUID.randomUUID().toString(),
-                    a,
-                    b,
                     ans,
-                    req.getSession().getId(),
-                    new Timestamp(new Date().getTime())
+                    new Timestamp(new Date().getTime()),
+                    new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()),
+                    a,
+                    b
             );
         }
         jdbc.putOperation(operationDto.toOperation());

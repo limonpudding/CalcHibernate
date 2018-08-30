@@ -9,8 +9,8 @@ public class BinaryOperation extends Operation {
     private LongArithmethic firstOperand;
     private LongArithmethic secondOperand;
 
-    public BinaryOperation(OperationKind name, String id, LongArithmethic answer, String idSession, LongArithmethic firstOperand, LongArithmethic secondOperand) {
-        super(name, id, answer, idSession);
+    public BinaryOperation(OperationKind name, String id, LongArithmethic answer, Sessions session, LongArithmethic firstOperand, LongArithmethic secondOperand) {
+        super(name, id, answer, session);
         this.firstOperand = firstOperand;
         this.secondOperand = secondOperand;
     }
@@ -19,15 +19,16 @@ public class BinaryOperation extends Operation {
         return new BinaryOperationDto(
                 operationKind.getKind(),
                 id,
-                firstOperand.toString(),
-                secondOperand.toString(),
                 answer.toString(),
-                idsession,
-                time
+                time,
+                session,
+                firstOperand.toString(),
+                secondOperand.toString()
         );
     }
 
-    public BinaryOperation(){}
+    public BinaryOperation() {
+    }
 
     public LongArithmethic getFirstOperand() {
         return firstOperand;

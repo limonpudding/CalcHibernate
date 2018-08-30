@@ -24,6 +24,8 @@ import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -50,9 +52,9 @@ public class JDBC {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Transactional//TODO не работает занесение в БД
+    @Transactional
     public void putOperation(Operation operation) {
-        sessionFactory.getCurrentSession().save(operation.toDto());//не, ну а вдруг заработает
+        sessionFactory.getCurrentSession().save(operation.toDto());
     }
 
     @Transactional
@@ -125,16 +127,21 @@ public class JDBC {
             criteria.orderBy(builder.desc(criteriaRoot.get(mode)));
         }
         List<Sessions> resultList = sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+        for (Sessions sessions:resultList){
+            System.out.println("Операции для сессии: "+sessions.getOperations());
+        }
         return resultList;
     }
 
     @Transactional
     public List<OperationDto> selectDataFromBD(String mode, String order, String id) {
         CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
-
+        Sessions session = sessionFactory.getCurrentSession().get(Sessions.class, id);
+//        List<OperationDto> operations = session.getOperations();
+//        Collections.sort(operations, (o1, o2) -> {return o1.});
         CriteriaQuery<OperationDto> criteria = builder.createQuery(OperationDto.class);
         Root criteriaRoot = criteria.from(OperationDto.class);
-        criteria.where(builder.equal(criteriaRoot.get("idSession"),id));
+        criteria.where(builder.equal(criteriaRoot.get("session"),session));
         if ("ASC".equals(order.toUpperCase())) {
             criteria.orderBy(builder.asc(criteriaRoot.get(mode)));
         } else {

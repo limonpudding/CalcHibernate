@@ -120,6 +120,9 @@
                     <thead>
                     <tr>
                         <th class="col hidden">
+                            Количество операций
+                        </th>
+                        <th class="col hidden">
                             ID
                         </th>
                         <th class="col">

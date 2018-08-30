@@ -15,14 +15,14 @@ public abstract class Operation {
     protected OperationKind operationKind;
     protected String id;
     protected LongArithmethic answer;
-    protected String idsession;
+    protected Sessions session;
     protected java.sql.Timestamp time;
 
-    protected Operation(OperationKind name, String id, LongArithmethic answer, String idsession) {
+    protected Operation(OperationKind name, String id, LongArithmethic answer, Sessions session) {
         this.operationKind = name;
         this.id = id;
         this.answer = answer;
-        this.idsession = idsession;
+        this.session = session;
         logger = LogManager.getLogger(this.getClass());
         time = new Timestamp(new Date().getTime());
     }
@@ -53,12 +53,12 @@ public abstract class Operation {
         this.answer = answer;
     }
 
-    public String getIdsession() {
-        return idsession;
+    public Sessions getSession() {
+        return session;
     }
 
-    public void setIdsession(String idsession) {
-        this.idsession = idsession;
+    public void setSession(Sessions session) {
+        this.session = session;
     }
 
     public java.sql.Timestamp getTime() {

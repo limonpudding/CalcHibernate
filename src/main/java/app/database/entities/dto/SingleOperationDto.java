@@ -16,15 +16,12 @@ public class SingleOperationDto extends OperationDto {
 
     protected String firstOperand;
 
-    public SingleOperationDto(){}
-
-    public SingleOperationDto(String operationKind, String id, String firstOperand, String answer, String idSession, Timestamp time) {
-        this.operationKind = operationKind;
-        this.id = id;
+    public SingleOperationDto(String operationKind, String id, String answer, Timestamp time, Sessions session, String firstOperand) {
+        super(operationKind, id, answer, time, session);
         this.firstOperand = firstOperand;
-        this.answer = answer;
-        this.idSession = idSession;
-        this.time = time;
+    }
+
+    public SingleOperationDto() {
     }
 
     @Override
@@ -33,7 +30,7 @@ public class SingleOperationDto extends OperationDto {
                 OperationKind.getOperationKind(operationKind),
                 id,
                 new LongArithmeticImplList(answer),
-                idSession,
+                session,
                 new LongArithmeticImplList(firstOperand)
         );
     }

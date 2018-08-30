@@ -8,12 +8,10 @@ public class SingleOperation extends Operation {
 
     private LongArithmethic firstOperand;
 
-    public SingleOperation(OperationKind name, String id, LongArithmethic answer, String idsession, LongArithmethic firstOperand) {
-        super(name, id, answer, idsession);
+    public SingleOperation(OperationKind name, String id, LongArithmethic answer, Sessions session, LongArithmethic firstOperand) {
+        super(name, id, answer, session);
         this.firstOperand = firstOperand;
     }
-
-
 
     public SingleOperation(){}
 
@@ -22,10 +20,10 @@ public class SingleOperation extends Operation {
         return new SingleOperationDto(
                 operationKind.getKind(),
                 id,
-                firstOperand.toString(),
                 answer.toString(),
-                idsession,
-                time
+                time,
+                session,
+                firstOperand.toString()
         );
     }
 

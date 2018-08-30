@@ -14,8 +14,22 @@ public abstract class OperationDto {
     @Id
     protected String id;
     protected String answer;
-    protected String idSession;
     protected java.sql.Timestamp time;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "IDSESSION", nullable = false)
+    protected Sessions session;
+
+    public OperationDto(String operationKind, String id, String answer, Timestamp time, Sessions session) {
+        this.operationKind = operationKind;
+        this.id = id;
+        this.answer = answer;
+        this.time = time;
+        this.session = session;
+    }
+
+    protected OperationDto() {
+    }
 
     public abstract String getSecondOperand();
 
@@ -45,14 +59,6 @@ public abstract class OperationDto {
 
     public void setAnswer(String answer) {
         this.answer = answer;
-    }
-
-    public String getIdSession() {
-        return idSession;
-    }
-
-    public void setIdSession(String idSession) {
-        this.idSession = idSession;
     }
 
     public Timestamp getTime() {

@@ -1,10 +1,7 @@
 package app.pages.logic;
 
 import app.database.JDBC;
-import app.database.entities.BinaryOperation;
-import app.database.entities.Operation;
-import app.database.entities.OperationKind;
-import app.database.entities.SingleOperation;
+import app.database.entities.*;
 import app.math.*;
 import app.utils.Log;
 import org.apache.logging.log4j.Level;
@@ -45,9 +42,9 @@ public class Answer extends Page {
         operationsHistory.getHistory(session);
         Operation operNew;
         if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
-            operNew = new SingleOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), req.getSession().getId(), new LongArithmeticImplList(a));
+            operNew = new SingleOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()), new LongArithmeticImplList(a));
         } else {
-            operNew = new BinaryOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), req.getSession().getId(), new LongArithmeticImplList(a), new LongArithmeticImplList(b));
+            operNew = new BinaryOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()), new LongArithmeticImplList(a), new LongArithmeticImplList(b));
         }
 
         jdbc.putOperation(operNew);
