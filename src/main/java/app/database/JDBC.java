@@ -26,6 +26,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Repository
@@ -135,18 +136,25 @@ public class JDBC {
 
     @Transactional
     public List<OperationDto> selectDataFromBD(String mode, String order, String id) {
-        CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
         Sessions session = sessionFactory.getCurrentSession().get(Sessions.class, id);
-//        List<OperationDto> operations = session.getOperations();
-//        Collections.sort(operations, (o1, o2) -> {return o1.});
-        CriteriaQuery<OperationDto> criteria = builder.createQuery(OperationDto.class);
-        Root criteriaRoot = criteria.from(OperationDto.class);
-        criteria.where(builder.equal(criteriaRoot.get("session"),session));
+        List<OperationDto> operations = session.getOperations();
         if ("ASC".equals(order.toUpperCase())) {
-            criteria.orderBy(builder.asc(criteriaRoot.get(mode)));
+            switch (mode){
+                case "operationKind":
+                    operations.sort(Comparator.comparing(OperationDto::getOperationKind));break;
+                case "time":
+                    operations.sort(Comparator.comparing(OperationDto::getTime));break;
+            }
         } else {
-            criteria.orderBy(builder.desc(criteriaRoot.get(mode)));
+            switch (mode){
+                case "operationKind":
+                    operations.sort(Comparator.comparing(OperationDto::getOperationKind).reversed());break;
+                case "time":
+                    operations.sort(Comparator.comparing(OperationDto::getTime).reversed());break;
+            }
         }
-        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+
+
+        return operations;
     }
 }
