@@ -11,6 +11,7 @@ import app.math.LongArithmeticImplList;
 import app.pages.logic.Answer;
 import app.rest.Key;
 import app.rest.UpdatePost;
+import app.utils.PageNamesConstants;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +42,7 @@ public class JsonController extends AbstractController {
         this.rootLogger = rootLogger;
     }
 
-    @RequestMapping(path = "/rest/calc", method = RequestMethod.GET)
+    @RequestMapping(path = PageNamesConstants.REST_CALC_PAGE, method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<OperationDao> calc(
             @RequestParam(value = "a") String a,
@@ -81,7 +82,7 @@ public class JsonController extends AbstractController {
         return new ResponseEntity<>(operationDao, HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/rest", method = RequestMethod.POST)
+    @RequestMapping(path = PageNamesConstants.REST_PAGE, method = RequestMethod.POST)
     @ResponseBody
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateConst(@RequestBody UpdatePost post) {
@@ -94,7 +95,7 @@ public class JsonController extends AbstractController {
         print(logger, Level.INFO, UPDATE_CONST_LOG, req.getRemoteAddr(), post.getKeyOld(), post.getKeyNew(), post.getValue());
     }
 
-    @RequestMapping(path = "/rest", method = RequestMethod.PUT)
+    @RequestMapping(path = PageNamesConstants.REST_PAGE, method = RequestMethod.PUT)
     public @ResponseBody
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void putConst(@RequestBody Constants constant) {
@@ -107,7 +108,7 @@ public class JsonController extends AbstractController {
         print(logger, Level.INFO, PUT_CONST_LOG, req.getRemoteAddr(), constant.getKey(), constant.getValue());
     }
 
-    @RequestMapping(path = "/rest", method = RequestMethod.PATCH)
+    @RequestMapping(path = PageNamesConstants.REST_PAGE, method = RequestMethod.PATCH)
     public @ResponseBody
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void updateValue(@RequestBody Constants constant) {
@@ -116,7 +117,7 @@ public class JsonController extends AbstractController {
         print(logger, Level.INFO, UPDATE_VALUE_LOG, req.getRemoteAddr(), constant.getKey(), constant.getValue());
     }
 
-    @RequestMapping(path = "/rest", method = RequestMethod.DELETE)
+    @RequestMapping(path = PageNamesConstants.REST_PAGE, method = RequestMethod.DELETE)
     public @ResponseBody
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteConst(@RequestBody Key key) {
@@ -125,7 +126,7 @@ public class JsonController extends AbstractController {
         print(logger, Level.INFO, DELETE_CONST_LOG, req.getRemoteAddr(), key);
     }
 
-    @RequestMapping(path = "/rest", method = RequestMethod.GET)
+    @RequestMapping(path = PageNamesConstants.REST_PAGE, method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity getConstants() {
         init();

@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.database.JDBC;
 import app.pages.logic.Page;
+import app.utils.PageNamesConstants;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,25 +44,25 @@ public class MainController extends AbstractController {
 
     //TODO привязать через Autowired и Qualifier реализации созданного абстрактного класса для каждого представления свою.
 
-    @RequestMapping(path = "/")
+    @RequestMapping(path = PageNamesConstants.ROOT_PAGE)
     public ModelAndView getHome() throws Exception {
         init();
         return getHome.build();
     }
 
-    @RequestMapping(path = "/calc")
+    @RequestMapping(path = PageNamesConstants.CALC_PAGE)
     public ModelAndView getCalc() throws Exception {
         init();
         return getCalc.build();
     }
 
-    @RequestMapping(path = "/ophistory")
+    @RequestMapping(path = PageNamesConstants.OPHISTORY_PAGE)
     public ModelAndView getOperationHistory() throws Exception {
         init();
         return getOpHistory.build();
     }
 
-    @RequestMapping(path = "/answer")
+    @RequestMapping(path = PageNamesConstants.ANSWER_PAGE)
     public ModelAndView getAnswer(
             @RequestParam(value = "a") String a,
             @RequestParam(value = "b") String b,
@@ -78,7 +79,7 @@ public class MainController extends AbstractController {
         return getAnswer.build();
     }
 
-    @RequestMapping(path = "/tables")
+    @RequestMapping(path = PageNamesConstants.TABLES_PAGE)
     public ModelAndView getTables(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "mode") String mode,
@@ -94,13 +95,13 @@ public class MainController extends AbstractController {
         return getTables.build();
     }
 
-    @RequestMapping(path = "/about")
+    @RequestMapping(path = PageNamesConstants.ABOUT_PAGE)
     public ModelAndView getAbout() throws Exception {
         init();
         return getAbout.build();
     }
 
-    @RequestMapping(path = "/*")
+    @RequestMapping(path = PageNamesConstants.PAGE_NOT_FOUND_PAGE)
     public ModelAndView getError() throws Exception {
         init();
         return getError.build();

@@ -1,6 +1,7 @@
 package app;
 
 import app.config.Config;
+import app.config.SecurityConfig;
 import app.config.ServiceListener;
 import app.config.WebConfig;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -23,6 +24,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         container.addListener(org.apache.tiles.extras.complete.CompleteAutoloadTilesListener.class);
         container.addListener(ServiceListener.class);
         container.setInitParameter("dbName", "H2/db");
+
+
 
 
         // Create the dispatcher servlet's Spring application context
