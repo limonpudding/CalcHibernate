@@ -56,10 +56,10 @@ public class MainController extends AbstractController {
         return getCalc.build();
     }
 
-    @RequestMapping(path = PageNamesConstants.OPHISTORY_PAGE)
+    @RequestMapping(path = PageNamesConstants.OPHISTORY_PAGE, method = RequestMethod.GET)
     public ModelAndView getOperationHistory() throws Exception {
         init();
-        return getOpHistory.build();
+        return new ModelAndView();
     }
 
     @RequestMapping(path = PageNamesConstants.ANSWER_PAGE)
