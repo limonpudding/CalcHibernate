@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE tiles-definitions PUBLIC
         "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
         "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
@@ -19,32 +19,47 @@
     </definition>
     <!-- Input Page  -->
     <definition name="inputPage" extends="base.definition">
-        <put-attribute name="title" value="Calculator" />
+        <put-attribute name="title" value="Калькулятор" />
         <put-attribute name="body" value="/WEB-INF/tiles/_calculator.jsp" />
     </definition>
     <!-- Answer Page  -->
     <definition name="answerPage" extends="base.definition">
-        <put-attribute name="title" value="Answer" />
+        <put-attribute name="title" value="Ответ" />
         <put-attribute name="body" value="/WEB-INF/tiles/_answer.jsp" />
     </definition>
     <!-- Home Page  -->
     <definition name="homePage" extends="base.definition">
-        <put-attribute name="title" value="Home" />
+        <put-attribute name="title" value="Домашняя" />
         <put-attribute name="body" value="/WEB-INF/tiles/_home.jsp" />
     </definition>
     <!-- About Page  -->
     <definition name="aboutPage" extends="base.definition">
-        <put-attribute name="title" value="About" />
+        <put-attribute name="title" value="О приложении" />
         <put-attribute name="body" value="/WEB-INF/tiles/_about.jsp" />
     </definition>
     <!-- Operation History Page  -->
     <definition name="operationHistoryPage" extends="history.definition">
-        <put-attribute name="title" value="Operations History" />
+        <put-attribute name="title" value="История операций" />
         <put-attribute name="body" value="/WEB-INF/tiles/_ophistory.jsp" />
     </definition>
     <!-- Error Page  -->
     <definition name="errorPage" extends="history.definition">
-        <put-attribute name="title" value="Error" />
+        <put-attribute name="title" value="Ошибка" />
         <put-attribute name="body" value="/WEB-INF/tiles/_error.jsp" />
+    </definition>
+    <!-- Access Denied Page  -->
+    <definition name="accessDeniedPage" extends="history.definition">
+        <put-attribute name="title" value="Доступ закрыт!" />
+        <put-attribute name="body" value="/WEB-INF/tiles/_accessDenied.jsp" />
+    </definition>
+    <!-- Register Page  -->
+    <definition name="registerPage" extends="base.definition">
+        <put-attribute name="title" value="Регистрация" />
+        <put-attribute name="body" value="/WEB-INF/tiles/_register.jsp" />
+    </definition>
+    <!-- Login Denied Page  -->
+    <definition name="loginPage" extends="base.definition">
+        <put-attribute name="title" value="Авторизация" />
+        <put-attribute name="body" value="/WEB-INF/tiles/_login.jsp" />
     </definition>
 </tiles-definitions>
