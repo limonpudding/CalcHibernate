@@ -18,7 +18,12 @@ public class SingleOperationDao extends OperationDao {
     @Convert(converter = ConverterLongArithmetic.class)
     protected LongArithmethic firstOperand;
 
-    public SingleOperationDao(OperationKind operationKind, String id, LongArithmethic answer, Timestamp time, Sessions session, LongArithmethic firstOperand) {
+    public SingleOperationDao(OperationKind operationKind,
+                              String id,
+                              LongArithmethic answer,
+                              Timestamp time,
+                              Sessions session,
+                              LongArithmethic firstOperand) {
         super(operationKind, id, answer, time, session);
         this.firstOperand = firstOperand;
     }

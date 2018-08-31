@@ -18,10 +18,16 @@ public class BinaryOperationDao extends OperationDao {
     @Convert(converter = ConverterLongArithmetic.class)
     protected LongArithmethic secondOperand;
 
-    public BinaryOperationDao(OperationKind operationKind, String id, LongArithmethic answer, Timestamp time, Sessions session, LongArithmethic firstOperand, LongArithmethic secondOperand) {
+    public BinaryOperationDao(OperationKind operationKind,
+                              String id,
+                              LongArithmethic answer,
+                              Timestamp time,
+                              Sessions session,
+                              LongArithmethic firstOperand,
+                              LongArithmethic secondOperand) {
         super(operationKind, id, answer, time, session);
-        this.firstOperand=firstOperand;
-        this.secondOperand=secondOperand;
+        this.firstOperand = firstOperand;
+        this.secondOperand = secondOperand;
     }
 
     public BinaryOperationDao() {
