@@ -4,9 +4,10 @@ import app.database.JDBC;
 import app.database.entities.Constants;
 import app.database.entities.OperationKind;
 import app.database.entities.Sessions;
-import app.database.entities.dto.BinaryOperationDto;
-import app.database.entities.dto.OperationDto;
-import app.database.entities.dto.SingleOperationDto;
+import app.database.entities.dao.BinaryOperationDao;
+import app.database.entities.dao.OperationDao;
+import app.database.entities.dao.SingleOperationDao;
+import app.math.LongArithmeticImplList;
 import app.pages.logic.Answer;
 import app.rest.Key;
 import app.rest.UpdatePost;
@@ -42,7 +43,7 @@ public class JsonController extends AbstractController {
 
     @RequestMapping(path = "/rest/calc", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<OperationDto> calc(
+    ResponseEntity<OperationDao> calc(
             @RequestParam(value = "a") String a,
             @RequestParam(value = "b", required = false) String b,
             @RequestParam(value = "operation") String operation) throws Exception {
@@ -55,29 +56,29 @@ public class JsonController extends AbstractController {
         }
         print(logger, Level.INFO, CALC_LOG, req.getRemoteAddr(), operation);
         String ans = Answer.calc(a, b, operation);
-        OperationDto operationDto;
+        OperationDao operationDao;
         if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
-            operationDto = new SingleOperationDto(
-                    operation,
+            operationDao = new SingleOperationDao(
+                    OperationKind.getOperationKind(operation),
                     UUID.randomUUID().toString(),
-                    ans,
+                    new LongArithmeticImplList(ans),
                     new Timestamp(new Date().getTime()),
                     new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()),
-                    a
+                    new LongArithmeticImplList(a)
             );
         } else {
-            operationDto = new BinaryOperationDto(
-                    operation,
+            operationDao = new BinaryOperationDao(
+                    OperationKind.getOperationKind(operation),
                     UUID.randomUUID().toString(),
-                    ans,
+                    new LongArithmeticImplList(ans),
                     new Timestamp(new Date().getTime()),
                     new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()),
-                    a,
-                    b
+                    new LongArithmeticImplList(a),
+                    new LongArithmeticImplList(b)
             );
         }
-        jdbc.putOperation(operationDto.toOperation());
-        return new ResponseEntity<>(operationDto, HttpStatus.OK);
+        jdbc.putOperation(operationDao.toOperation());
+        return new ResponseEntity<>(operationDao, HttpStatus.OK);
     }
 
     @RequestMapping(path = "/rest", method = RequestMethod.POST)

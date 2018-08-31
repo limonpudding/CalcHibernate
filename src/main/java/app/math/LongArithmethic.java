@@ -1,6 +1,7 @@
 package app.math;
 
 
+import javax.persistence.Converter;
 import java.io.IOException;
 
 public interface LongArithmethic extends Comparable<LongArithmethic> {
@@ -24,6 +25,4 @@ public interface LongArithmethic extends Comparable<LongArithmethic> {
     void setSign(Sign sign);
 
     String toString();
-
-
 }

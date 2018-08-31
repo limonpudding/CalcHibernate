@@ -1,7 +1,7 @@
 package app.database.entities;
 
-import app.database.entities.dto.BinaryOperationDto;
-import app.database.entities.dto.OperationDto;
+import app.database.entities.dao.BinaryOperationDao;
+import app.database.entities.dao.OperationDao;
 import app.math.LongArithmethic;
 
 public class BinaryOperation extends Operation {
@@ -15,15 +15,15 @@ public class BinaryOperation extends Operation {
         this.secondOperand = secondOperand;
     }
 
-    public OperationDto toDto() {
-        return new BinaryOperationDto(
-                operationKind.getKind(),
+    public OperationDao toDto() {
+        return new BinaryOperationDao(
+                operationKind,
                 id,
-                answer.toString(),
+                answer,
                 time,
                 session,
-                firstOperand.toString(),
-                secondOperand.toString()
+                firstOperand,
+                secondOperand
         );
     }
 

@@ -1,11 +1,10 @@
 package app.database.entities;
 
-import app.database.entities.dto.OperationDto;
+import app.database.entities.dao.OperationDao;
 import app.math.LongArithmethic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -69,7 +68,7 @@ public abstract class Operation {
         this.time = time;
     }
 
-    public abstract OperationDto toDto();
+    public abstract OperationDao toDto();
 
     @Override
     public abstract String toString();

@@ -1,31 +1,23 @@
 package app.database;
 
-import app.database.entities.BinaryOperation;
 import app.database.entities.Constants;
 import app.database.entities.Operation;
 import app.database.entities.Sessions;
-import app.database.entities.SingleOperation;
-import app.database.entities.dto.OperationDto;
-import app.database.entities.dto.SingleOperationDto;
+import app.database.entities.dao.OperationDao;
 import app.rest.Key;
 import app.rest.UpdatePost;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.OrderBy;
 import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -127,33 +119,32 @@ public class JDBC {
         } else {
             criteria.orderBy(builder.desc(criteriaRoot.get(mode)));
         }
-        List<Sessions> resultList = sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
-        for (Sessions sessions:resultList){
-            System.out.println("Операции для сессии: "+sessions.getOperations());
-        }
-        return resultList;
+        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 
     @Transactional
-    public List<OperationDto> selectDataFromBD(String mode, String order, String id) {
+    public List<OperationDao> selectDataFromBD(String mode, String order, String id) {
         Sessions session = sessionFactory.getCurrentSession().get(Sessions.class, id);
-        List<OperationDto> operations = session.getOperations();
+        List<OperationDao> operations = session.getOperations();
         if ("ASC".equals(order.toUpperCase())) {
             switch (mode){
                 case "operationKind":
-                    operations.sort(Comparator.comparing(OperationDto::getOperationKind));break;
+                    operations.sort(Comparator.comparing(OperationDao::getOperationKind));
+                    break;
                 case "time":
-                    operations.sort(Comparator.comparing(OperationDto::getTime));break;
+                    operations.sort(Comparator.comparing(OperationDao::getTime));
+                    break;
             }
         } else {
             switch (mode){
                 case "operationKind":
-                    operations.sort(Comparator.comparing(OperationDto::getOperationKind).reversed());break;
+                    operations.sort(Comparator.comparing(OperationDao::getOperationKind).reversed());
+                    break;
                 case "time":
-                    operations.sort(Comparator.comparing(OperationDto::getTime).reversed());break;
+                    operations.sort(Comparator.comparing(OperationDao::getTime).reversed());
+                    break;
             }
         }
-
 
         return operations;
     }

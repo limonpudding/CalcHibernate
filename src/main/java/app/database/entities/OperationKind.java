@@ -1,26 +1,26 @@
 package app.database.entities;
 
 public enum OperationKind {
-    SUM("SUM", "SUM"),
-    DIV("DIV", "DIV"),
-    SUB("SUB", "SUB"),
-    MUL("MUL", "MUL"),
-    FIB("FIB", "FIB");
+    SUM("SUM", "Сложение"),
+    DIV("DIV", "Деление"),
+    SUB("SUB", "Вычитание"),
+    MUL("MUL", "Умножение"),
+    FIB("FIB", "Фибоначчи");
 
     private String kind;
-    private String tableName;
+    private String fancyName;
 
     public String getKind() {
         return kind;
     }
 
-    public String getTableName() {
-        return tableName;
+    public String getFancyName() {
+        return fancyName;
     }
 
-    OperationKind(String kind, String tableName) {
+    OperationKind(String kind, String fancyName) {
         this.kind = kind;
-        this.tableName = tableName;
+        this.fancyName = fancyName;
     }
 
     public static OperationKind getOperationKind(String oper) {

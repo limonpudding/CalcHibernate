@@ -122,7 +122,6 @@ public class LongArithmeticImpl implements LongArithmethic {//реализаци
 
     }
 
-
     public int compareTo(LongArithmethic o) {
         int i = 0;
         for (i = n - 1; i >= 0 && digits[i] == 0 && o.getDigit(i) == 0; --i) ;

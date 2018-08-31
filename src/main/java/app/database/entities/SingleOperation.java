@@ -1,7 +1,7 @@
 package app.database.entities;
 
-import app.database.entities.dto.OperationDto;
-import app.database.entities.dto.SingleOperationDto;
+import app.database.entities.dao.OperationDao;
+import app.database.entities.dao.SingleOperationDao;
 import app.math.LongArithmethic;
 
 public class SingleOperation extends Operation {
@@ -16,14 +16,14 @@ public class SingleOperation extends Operation {
     public SingleOperation(){}
 
     @Override
-    public OperationDto toDto() {
-        return new SingleOperationDto(
-                operationKind.getKind(),
+    public OperationDao toDto() {
+        return new SingleOperationDao(
+                operationKind,
                 id,
-                answer.toString(),
+                answer,
                 time,
                 session,
-                firstOperand.toString()
+                firstOperand
         );
     }
 

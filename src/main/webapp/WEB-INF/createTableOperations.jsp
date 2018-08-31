@@ -3,8 +3,8 @@
 <jsp:useBean id="operationsHistory" scope="request" type="java.util.List"/>
 <c:forEach var="row" items="${operationsHistory}">
     <tr>
-        <td class="col hidden" title="${row.getOperationKind()}">
-                ${row.getOperationKind()}
+        <td class="col hidden" title="${row.getOperationKind().getFancyName()}">
+                ${row.getOperationKind().getFancyName()}
         </td>
         <td class="col hidden" title="${row.getFirstOperand()}">
                 ${row.getFirstOperand()}

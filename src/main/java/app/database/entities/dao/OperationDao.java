@@ -1,7 +1,10 @@
-package app.database.entities.dto;
+package app.database.entities.dao;
 
 import app.database.entities.Operation;
+import app.database.entities.OperationKind;
 import app.database.entities.Sessions;
+import app.database.entities.dao.converters.ConverterLongArithmetic;
+import app.math.LongArithmethic;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -9,18 +12,20 @@ import java.sql.Timestamp;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class OperationDto {
-    protected String operationKind;
+public abstract class OperationDao {
+    @Enumerated(EnumType.STRING)
+    protected OperationKind operationKind;
     @Id
     protected String id;
-    protected String answer;
+    @Convert(converter = ConverterLongArithmetic.class)
+    protected LongArithmethic answer;
     protected java.sql.Timestamp time;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "IDSESSION", nullable = false)
     protected Sessions session;
 
-    public OperationDto(String operationKind, String id, String answer, Timestamp time, Sessions session) {
+    public OperationDao(OperationKind operationKind, String id, LongArithmethic answer, Timestamp time, Sessions session) {
         this.operationKind = operationKind;
         this.id = id;
         this.answer = answer;
@@ -28,20 +33,20 @@ public abstract class OperationDto {
         this.session = session;
     }
 
-    protected OperationDto() {
+    protected OperationDao() {
     }
 
-    public abstract String getSecondOperand();
+    public abstract LongArithmethic getSecondOperand();
 
-    public abstract String getFirstOperand();
+    public abstract LongArithmethic getFirstOperand();
 
     public abstract Operation toOperation() throws IOException;
 
-    public String getOperationKind() {
+    public OperationKind getOperationKind() {
         return operationKind;
     }
 
-    public void setOperationKind(String operationKind) {
+    public void setOperationKind(OperationKind operationKind) {
         this.operationKind = operationKind;
     }
 
@@ -53,11 +58,11 @@ public abstract class OperationDto {
         this.id = id;
     }
 
-    public String getAnswer() {
+    public LongArithmethic getAnswer() {
         return answer;
     }
 
-    public void setAnswer(String answer) {
+    public void setAnswer(LongArithmethic answer) {
         this.answer = answer;
     }
 

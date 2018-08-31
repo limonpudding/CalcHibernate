@@ -1,15 +1,10 @@
 package app.database.entities;
 
-import app.database.entities.dto.BinaryOperationDto;
-import app.database.entities.dto.OperationDto;
-import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.Type;
+import app.database.entities.dao.OperationDao;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "SESSIONS")
@@ -30,14 +25,14 @@ public class Sessions {
         this.timeEnd = new Timestamp(timeEnd);
     }
 
-    @OneToMany(mappedBy = "session")
-    List<OperationDto> operations;
+    @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)
+    private List<OperationDao> operations;
 
-    public List<OperationDto> getOperations() {
+    public List<OperationDao> getOperations() {
         return operations;
     }
 
-    public void setOperations(List<OperationDto> operations) {
+    public void setOperations(List<OperationDao> operations) {
         this.operations = operations;
     }
 
