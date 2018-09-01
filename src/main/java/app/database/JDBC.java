@@ -30,8 +30,6 @@ public class JDBC {
     private HttpServletRequest req;
     @Autowired
     private Logger rootLogger;
-    private JdbcTemplate jdbcTemplate;
-
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -42,7 +40,6 @@ public class JDBC {
     @PostConstruct
     public void init() {
         System.out.println("JDBCExample postConstruct is called. datasource = " + dataSource);
-        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Transactional
@@ -64,8 +61,12 @@ public class JDBC {
     @Transactional
     public void updateSession() {
         Sessions sessions = sessionFactory.getCurrentSession().get(Sessions.class, req.getSession().getId());
+        if (sessions==null){
+            putSession();
+            return;
+        }
         sessions.setTimeEnd(new Timestamp(req.getSession().getLastAccessedTime()));
-        sessionFactory.getCurrentSession().saveOrUpdate(sessions);
+        sessionFactory.getCurrentSession().update(sessions);
         rootLogger.info("В базе данных обновлена сессия с ID: " + req.getSession().getId());
     }
 

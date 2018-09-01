@@ -3,6 +3,8 @@ package app.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.naming.InitialContext;
@@ -35,9 +38,9 @@ public class Config implements WebMvcConfigurer {
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("app.database.entities");
         sessionFactory.setHibernateProperties(hibernateProperties());
-
         return sessionFactory;
     }
+
 
     @Bean
     @Autowired
@@ -69,14 +72,6 @@ public class Config implements WebMvcConfigurer {
             try (Connection connection = dataSource.getConnection()) {
                 Statement statement = connection.createStatement();
                 statement.execute("" +
-                        "create table SESSIONS\n" +
-                        "(\n" +
-                                "  ID        NVARCHAR2(40) default NULL not null\n" +
-                                "    primary key,\n" +
-                                "  IP        NVARCHAR2(25),\n" +
-                                "  TIMESTART TIMESTAMP,\n" +
-                                "  TIMEEND   TIMESTAMP\n" +
-                                ");"+
                         "create table BINARYOPERATION\n" +
                         "(\n" +
                         "  ID             NVARCHAR2(40) not null\n" +
@@ -85,9 +80,7 @@ public class Config implements WebMvcConfigurer {
                         "  FIRSTOPERAND   CLOB,\n" +
                         "  SECONDOPERAND CLOB,\n" +
                         "  ANSWER         CLOB,\n" +
-                        "  IDSESSION      NVARCHAR2(40) " +
-                        "constraint BINARYOPERATION_SESSIONS_ID_FK\n" +
-                        "    references SESSIONS,\n" +
+                        "  IDSESSION      NVARCHAR2(40),\n" +
                         "  TIME           TIMESTAMP(6)\n" +
                         ");" +
                         "create table SINGLEOPERATION\n" +
@@ -97,9 +90,7 @@ public class Config implements WebMvcConfigurer {
                         "  OPERATIONKIND         NVARCHAR2(40),\n" +
                         "  FIRSTOPERAND CLOB,\n" +
                         "  ANSWER       CLOB,\n" +
-                        "  IDSESSION    NVARCHAR2(40) " +
-                        "constraint SINGLEOPERATION_SESSIONS_ID_FK" +
-                        "   references SESSIONS,\n" +
+                        "  IDSESSION    NVARCHAR2(40),\n" +
                         "  TIME         TIMESTAMP(6)\n" +
                         ");" +
                         "create table CONSTANTS\n" +
@@ -107,33 +98,15 @@ public class Config implements WebMvcConfigurer {
                         "  KEY            NVARCHAR2(40) default NULL not null\n" +
                         "    primary key,\n" +
                         "  VALUE  CLOB" +
-                        ");" +
-                        "create view HISTORY as\n" +
-                        "  SELECT\n" +
-                        "    SESSIONS.id,\n" +
-                        "    SESSIONS.ip,\n" +
-                        "    SESSIONS.TIMESTART,\n" +
-                        "    SESSIONS.TIMEEND,\n" +
-                        "    BINARYOPERATION.OPERATIONKIND,\n" +
-                        "    BINARYOPERATION.FIRSTOPERAND,\n" +
-                        "    BINARYOPERATION.SECONDOPERAND,\n" +
-                        "    BINARYOPERATION.ANSWER,\n" +
-                        "    BINARYOPERATION.TIME\n" +
-                        "  FROM BINARYOPERATION\n" +
-                        "    join SESSIONS on BINARYOPERATION.IDSESSION = SESSIONS.ID\n" +
-                        "  union all\n" +
-                        "  SELECT\n" +
-                        "    SESSIONS.id,\n" +
-                        "    SESSIONS.ip,\n" +
-                        "    SESSIONS.TIMESTART,\n" +
-                        "    SESSIONS.TIMEEND,\n" +
-                        "    SINGLEOPERATION.OPERATIONKIND,\n" +
-                        "    SINGLEOPERATION.FIRSTOPERAND,\n" +
-                        "    null        as SECONDOPERAND,\n" +
-                        "    SINGLEOPERATION.ANSWER,\n" +
-                        "    SINGLEOPERATION.TIME\n" +
-                        "  FROM SINGLEOPERATION\n" +
-                        "    join SESSIONS on SINGLEOPERATION.IDSESSION = SESSIONS.ID"
+                        ");"+
+                        "create table SESSIONS\n" +
+                        "(\n" +
+                        "  ID        NVARCHAR2(40) default NULL not null\n" +
+                        "    primary key,\n" +
+                        "  IP        NVARCHAR2(25),\n" +
+                        "  TIMESTART TIMESTAMP,\n" +
+                        "  TIMEEND   TIMESTAMP\n" +
+                        ");"
                 );
 
             } catch (Exception e) {
