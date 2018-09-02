@@ -3,16 +3,15 @@ package app.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.naming.InitialContext;
@@ -72,6 +71,16 @@ public class Config implements WebMvcConfigurer {
             try (Connection connection = dataSource.getConnection()) {
                 Statement statement = connection.createStatement();
                 statement.execute("" +
+                        "create table USERS\n" +
+                        "(\n" +
+                        "  USERNAME             NVARCHAR2(40) not null\n" +
+                        "    primary key,\n" +
+                        "  PASSWORD           NVARCHAR2(40) not null,\n" +
+                        "  ROLE           NVARCHAR2(40) not null\n" +
+                        ");" +
+                        "INSERT INTO USERS\n" +
+                        "(USERNAME,PASSWORD, ROLE)\n" +
+                        "VALUES  ('admin', 'admin', 'ROLE_ADMIN');\n" +
                         "create table BINARYOPERATION\n" +
                         "(\n" +
                         "  ID             NVARCHAR2(40) not null\n" +
@@ -98,7 +107,7 @@ public class Config implements WebMvcConfigurer {
                         "  KEY            NVARCHAR2(40) default NULL not null\n" +
                         "    primary key,\n" +
                         "  VALUE  CLOB" +
-                        ");"+
+                        ");" +
                         "create table SESSIONS\n" +
                         "(\n" +
                         "  ID        NVARCHAR2(40) default NULL not null\n" +
