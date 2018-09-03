@@ -8,6 +8,12 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -60,6 +66,9 @@ public class Answer extends Page {
     }
 
     public static String calc(String strA, String strB, String operation) throws IOException {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         LongArithmethic res;
         LongArithmethic a = new LongArithmeticImplList();
         LongArithmethic b = new LongArithmeticImplList();
@@ -67,7 +76,10 @@ public class Answer extends Page {
         if (strB != null) {
             b.setValue(strB);
         }
+
         if ("fib".equals(operation) && Integer.parseInt(strA) > 50000) {
+            if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                throw new AccessDeniedException("Доступ запрещён");
             Log.print(logger, Level.WARN, CALC_FIB_LOG, Integer.parseInt(strA));
         }
         switch (operation) {

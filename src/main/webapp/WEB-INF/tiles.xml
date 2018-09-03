@@ -57,7 +57,7 @@
         <put-attribute name="title" value="Регистрация" />
         <put-attribute name="body" value="/WEB-INF/tiles/_register.jsp" />
     </definition>
-    <!-- Login Denied Page  -->
+    <!-- Registration Denied Page  -->
     <definition name="loginPage" extends="base.definition">
         <put-attribute name="title" value="Авторизация" />
         <put-attribute name="body" value="/WEB-INF/tiles/_login.jsp" />

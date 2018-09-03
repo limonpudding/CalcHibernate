@@ -10,4 +10,5 @@ public class PageNamesConstants {
     public static final String PAGE_NOT_FOUND_PAGE = "/*";
     public static final String REST_PAGE = "/rest";
     public static final String REST_CALC_PAGE = "/rest/calc";
+    public static final String REGISTRATION_PAGE = "/register";
 }

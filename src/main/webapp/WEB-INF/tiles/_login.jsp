@@ -2,7 +2,7 @@
 <div class="container">
     <h3>Авторизация</h3>
     <hr class="my-4">
-    <form action="authorize" method="post">
+    <form action method="post">
         <div class="form-group">
             <div class="form-group row">
                 <label for="inputLogin">Логин</label>

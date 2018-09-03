@@ -1,10 +1,13 @@
 package app.controllers;
 
 import app.database.JDBC;
+import app.database.entities.Roles;
+import app.database.entities.Users;
 import app.pages.logic.Page;
 import app.utils.PageNamesConstants;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+
+import static app.utils.PageNamesConstants.*;
 
 @Controller
 public class MainController extends AbstractController {
@@ -27,9 +32,10 @@ public class MainController extends AbstractController {
     private final Page getCalc;
     private final Page getOpHistory;
     private final Logger rootLogger;
+    private final Page getRegistration;
 
     @Autowired
-    public MainController(HttpServletRequest req, JDBC jdbc, Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger) {
+    public MainController(HttpServletRequest req, JDBC jdbc, Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration) {
         this.req = req;
         this.jdbc = jdbc;
         this.getAbout = getAbout;
@@ -40,29 +46,30 @@ public class MainController extends AbstractController {
         this.getCalc = getCalc;
         this.getOpHistory = getOpHistory;
         this.rootLogger = rootLogger;
+        this.getRegistration = getRegistration;
     }
 
     //TODO привязать через Autowired и Qualifier реализации созданного абстрактного класса для каждого представления свою.
 
-    @RequestMapping(path = PageNamesConstants.ROOT_PAGE)
+    @RequestMapping(path = ROOT_PAGE)
     public ModelAndView getHome() throws Exception {
         init();
         return getHome.build();
     }
 
-    @RequestMapping(path = PageNamesConstants.CALC_PAGE)
+    @RequestMapping(path = CALC_PAGE)
     public ModelAndView getCalc() throws Exception {
         init();
         return getCalc.build();
     }
 
-    @RequestMapping(path = PageNamesConstants.OPHISTORY_PAGE, method = RequestMethod.GET)
+    @RequestMapping(path = OPHISTORY_PAGE, method = RequestMethod.GET)
     public ModelAndView getOperationHistory() throws Exception {
         init();
         return getOpHistory.build();
     }
 
-    @RequestMapping(path = PageNamesConstants.ANSWER_PAGE)
+    @RequestMapping(path = ANSWER_PAGE)
     public ModelAndView getAnswer(
             @RequestParam(value = "a") String a,
             @RequestParam(value = "b") String b,
@@ -79,7 +86,7 @@ public class MainController extends AbstractController {
         return getAnswer.build();
     }
 
-    @RequestMapping(path = PageNamesConstants.TABLES_PAGE)
+    @RequestMapping(path = TABLES_PAGE)
     public ModelAndView getTables(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "mode") String mode,
@@ -95,13 +102,33 @@ public class MainController extends AbstractController {
         return getTables.build();
     }
 
-    @RequestMapping(path = PageNamesConstants.ABOUT_PAGE)
+    @RequestMapping(path = ABOUT_PAGE)
     public ModelAndView getAbout() throws Exception {
         init();
         return getAbout.build();
     }
 
-    @RequestMapping(path = PageNamesConstants.PAGE_NOT_FOUND_PAGE)
+    @RequestMapping(path = REGISTRATION_PAGE)
+    public ModelAndView getRegistration() throws Exception {
+        init();
+        return getRegistration.build();
+    }
+
+    @RequestMapping(path = "/reg", method = RequestMethod.GET)
+    public ModelAndView getReg(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "password") String password) throws Exception {
+        init();
+        Users user = new Users();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setRole(Roles.ROLE_USER);
+        jdbc.putUserInDB(user);
+        SecurityContextHolder.getContext().getAuthentication();
+        return getHome.build();
+    }
+
+    @RequestMapping(path = PAGE_NOT_FOUND_PAGE)
     public ModelAndView getError() throws Exception {
         init();
         return getError.build();

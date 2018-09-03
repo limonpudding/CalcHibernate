@@ -1,8 +1,6 @@
 package app.database;
 
-import app.database.entities.Constants;
-import app.database.entities.Operation;
-import app.database.entities.Sessions;
+import app.database.entities.*;
 import app.database.entities.dao.OperationDao;
 import app.rest.Key;
 import app.rest.UpdatePost;
@@ -74,6 +72,12 @@ public class JDBC {
     @Transactional
     public void putConstInDB(Constants constant) {
         sessionFactory.getCurrentSession().save(constant);
+    }
+
+    @Transactional
+    public void putUserInDB(Users user) {
+        sessionFactory.getCurrentSession().save(user);
+        rootLogger.info("В БД добавлен пользователь: "+user.getUsername()+" "+user.getPassword());
     }
 
     @Transactional
