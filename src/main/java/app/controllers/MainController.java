@@ -114,6 +114,12 @@ public class MainController extends AbstractController {
         return getRegistration.build();
     }
 
+    @RequestMapping(path = "/login")
+    public String getLogin() throws Exception {
+        init();
+        return "login";
+    }
+
     @RequestMapping(path = "/reg", method = RequestMethod.GET)
     public ModelAndView getReg(
             @RequestParam(value = "username") String username,
