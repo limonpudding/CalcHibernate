@@ -21,8 +21,6 @@ import static app.utils.PageNamesConstants.*;
 @Controller
 public class MainController extends AbstractController {
 
-    private final HttpServletRequest req;
-    private final JDBC jdbc;
     private final Page getAbout;
     private final Page getHome;
     private final Page getTables;
@@ -36,9 +34,7 @@ public class MainController extends AbstractController {
     private final Page getLogin;
 
     @Autowired
-    public MainController(HttpServletRequest req, JDBC jdbc, Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration, Page getReg, Page getLogin) {
-        this.req = req;
-        this.jdbc = jdbc;
+    public MainController(Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration, Page getReg, Page getLogin) {
         this.getAbout = getAbout;
         this.getHome = getHome;
         this.getTables = getTables;
@@ -117,13 +113,13 @@ public class MainController extends AbstractController {
         return getRegistration.build();
     }
 
-    @RequestMapping(path = "/login")
+    @RequestMapping(path = LOGIN_PAGE)
     public ModelAndView getLogin() throws Exception {
         init();
         return getLogin.build();
     }
 
-    @RequestMapping(path = "/reg", method = RequestMethod.POST)
+    @RequestMapping(path = REG_PAGE, method = RequestMethod.POST)
     public ModelAndView getReg(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "password") String password,
