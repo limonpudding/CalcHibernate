@@ -12,10 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Service("getReg")
 public class Reg extends Page {
 
+    private final JDBC jdbc;
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    JDBC jdbc;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    public Reg(JDBC jdbc, PasswordEncoder passwordEncoder) {
+        this.jdbc = jdbc;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public ModelAndView build() {
