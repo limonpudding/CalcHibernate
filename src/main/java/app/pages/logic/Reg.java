@@ -4,9 +4,12 @@ import app.database.JDBC;
 import app.database.entities.Roles;
 import app.database.entities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.sql.SQLException;
 
 @Service("getReg")
 public class Reg extends Page {
@@ -27,9 +30,14 @@ public class Reg extends Page {
             user.setUsername((String) params.get("username"));
             user.setPassword(passwordEncoder.encode((String) params.get("password")));
             user.setRole(Roles.ROLE_USER);
-            jdbc.putUserInDB(user);
-            mav = new ModelAndView("home");
-            mav.addObject("message", "Вы успешно зарегистрировались!");
+            try {
+                jdbc.putUserInDB(user);
+                mav = new ModelAndView("home");
+                mav.addObject("message", "Вы успешно зарегистрировались!");
+            } catch (DataIntegrityViolationException e){
+                mav = new ModelAndView("register");
+                mav.addObject("error", "Пользователь с таким именем уже существует");
+            }
         }
         return mav;
     }
