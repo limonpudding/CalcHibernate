@@ -4,7 +4,6 @@ import app.database.JDBC;
 import app.database.entities.Roles;
 import app.database.entities.Users;
 import app.pages.logic.Page;
-import app.utils.PageNamesConstants;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,9 +32,11 @@ public class MainController extends AbstractController {
     private final Page getOpHistory;
     private final Logger rootLogger;
     private final Page getRegistration;
+    private final Page getReg;
+    private final Page getLogin;
 
     @Autowired
-    public MainController(HttpServletRequest req, JDBC jdbc, Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration) {
+    public MainController(HttpServletRequest req, JDBC jdbc, Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration, Page getReg, Page getLogin) {
         this.req = req;
         this.jdbc = jdbc;
         this.getAbout = getAbout;
@@ -47,6 +48,8 @@ public class MainController extends AbstractController {
         this.getOpHistory = getOpHistory;
         this.rootLogger = rootLogger;
         this.getRegistration = getRegistration;
+        this.getReg = getReg;
+        this.getLogin = getLogin;
     }
 
     //TODO привязать через Autowired и Qualifier реализации созданного абстрактного класса для каждого представления свою.
@@ -63,7 +66,7 @@ public class MainController extends AbstractController {
         return getCalc.build();
     }
 
-    @RequestMapping(path = OPHISTORY_PAGE, method = RequestMethod.GET)
+    @RequestMapping(path = OPHISTORY_PAGE)
     public ModelAndView getOperationHistory() throws Exception {
         init();
         return getOpHistory.build();
@@ -115,23 +118,23 @@ public class MainController extends AbstractController {
     }
 
     @RequestMapping(path = "/login")
-    public String getLogin() throws Exception {
+    public ModelAndView getLogin() throws Exception {
         init();
-        return "login";
+        return getLogin.build();
     }
 
-    @RequestMapping(path = "/reg", method = RequestMethod.GET)
+    @RequestMapping(path = "/reg", method = RequestMethod.POST)
     public ModelAndView getReg(
             @RequestParam(value = "username") String username,
-            @RequestParam(value = "password") String password) throws Exception {
+            @RequestParam(value = "password") String password,
+    @RequestParam(value = "rpassword") String rpassword) throws Exception {
         init();
-        Users user = new Users();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setRole(Roles.ROLE_USER);
-        jdbc.putUserInDB(user);
-        SecurityContextHolder.getContext().getAuthentication();
-        return getHome.build();
+        Map<String, Object> params = new HashMap<>();
+        params.put("username",username);
+        params.put("password",password);
+        params.put("rpassword",rpassword);
+        getReg.setParams(params);
+        return getReg.build();
     }
 
     @RequestMapping(path = PAGE_NOT_FOUND_PAGE)

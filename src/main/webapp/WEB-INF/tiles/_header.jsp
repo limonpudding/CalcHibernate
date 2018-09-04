@@ -9,16 +9,22 @@
     <div class="collapse navbar-collapse" id="navbar1">
         <ul class="navbar-nav mr-auto">
             <li>
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/">Домашняя</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
+                <a class="nav-link" href="/about">О ресурсе</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/calc">Calculate!</a>
+                <a class="nav-link" href="/calc">Вычисления</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/ophistory">Opearion history</a>
+                <a class="nav-link" href="/ophistory">История операций</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/register">Зарегистрироваться</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login">Войти</a>
             </li>
             <!--
             <li class="nav-item dropdown">
