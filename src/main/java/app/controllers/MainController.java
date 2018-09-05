@@ -92,7 +92,7 @@ public class MainController extends AbstractController {
     }
 
     @RequestMapping(path = TABLES_PAGE)
-    @Secured(value = {"ROLE_USER"})
+    @Secured(value = {"ROLE_USER", "ROLE_SUM_SUB", "ROLE_MATH", "ROLE_ADMIN"})
     public ModelAndView getTables(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "mode") String mode,

@@ -50,15 +50,16 @@
 <div class="container" style="height: 80%;overflow-y: auto">
 
     <h4>Управление пользователями </h4>
+    <hr class="my-4">
     <c:forEach var="user" items="${users}">
         <form class="form-inline">
             <div class="form-group row">
-                <div class="col">
-                    <label for="${user.getUsername()}">${user.getUsername()}</label>
-                </div>
-                <div class="col">
-                    <select class="form-control" id="${user.getUsername()}" onchange="changeUserRole('${user.getUsername()}')">
-                        <%--<jsp:useBean id="Roles" scope="application" type="app.database.entities.Roles"/>--%>
+                    <div class="input-group-prepend" style="margin-right: 20px">
+                        <span class="input-group-text">${user.getUsername()}</span>
+                    </div>
+                    <select class="form-control" id="${user.getUsername()}"
+                            onchange="changeUserRole('${user.getUsername()}')" aria-describedby="${user.getUsername()}">
+                            <%--<jsp:useBean id="Roles" scope="application" type="app.database.entities.Roles"/>--%>
                         <c:forEach var="role" items="${Roles.values()}">
                             <c:choose>
                                 <c:when test="${user.getRole().toString()==role.toString()}">
@@ -71,7 +72,6 @@
                         </c:forEach>
                     </select>
                 </div>
-            </div>
         </form>
     </c:forEach>
 </div>
