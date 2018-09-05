@@ -22,7 +22,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="/ophistory">История операций</a>
             </li>
-            <sec:authorize access="isAuthenticated()">
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
             <li class="nav-item">
                 <a class="nav-link" href="/accountsManager">Управление аккаунтами</a>
             </li>
