@@ -2,8 +2,7 @@ package app.database.entities;
 
 public enum Roles {
     ROLE_ADMIN("Админимтратор"),
-    ROLE_USER("Пользователь"),
-    ROLE_ANONYMOUS("Не авторизированный");
+    ROLE_USER("Пользователь");
     String name;
 
     public String getName() {
