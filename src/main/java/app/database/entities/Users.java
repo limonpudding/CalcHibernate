@@ -1,7 +1,5 @@
 package app.database.entities;
 
-import app.database.entities.dao.Userroles;
-
 import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;

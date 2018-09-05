@@ -46,13 +46,13 @@
             }
         });
     }
+
     function test(username, role) {
-        if($('#'+username+role).prop('checked')){
-            changeUserRole(username, role, 'delete');
-        } else
-        {
+        if ($('#' + username + role).prop('checked')) {
             changeUserRole(username, role, 'add');
-        };
+        } else {
+            changeUserRole(username, role, 'delete');
+        }
     }
 </script>
 
@@ -64,7 +64,7 @@
         <thead>
         <tr>
             <th class="col">
-                Пользователь
+                Логин
             </th>
             <c:forEach var="role" items="${Roles.values()}">
                 <th class="col">
@@ -74,8 +74,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <c:forEach var="user" items="${users}">
+        <c:forEach var="user" items="${users}">
+            <tr>
                 <td class="col">
                         ${user.getUsername()}
                 </td>
@@ -83,44 +83,45 @@
                     <td class="col">
                         <c:choose>
                             <c:when test="${user.isInRole(role)==true}">
-                                <input type="checkbox" value="${user.getUsername()}${role.toString()}" onclick="test('${user.getUsername()}', '${role.toString()}')" checked>
+                                <input type="checkbox" id="${user.getUsername()}${role.toString()}"
+                                       onclick="test('${user.getUsername()}', '${role.toString()}')" checked>
                             </c:when>
                             <c:otherwise>
-                                <input type="checkbox" value="${user.getUsername()}${role.toString()}" onclick="test('${user.getUsername()}', '${role.toString()}')">
+                                <input type="checkbox" id="${user.getUsername()}${role.toString()}"
+                                       onclick="test('${user.getUsername()}', '${role.toString()}')">
                             </c:otherwise>
                         </c:choose>
                     </td>
                 </c:forEach>
-            </c:forEach>
-
-        </tr>
+            </tr>
+        </c:forEach>
         </tbody>
     </table>
 
     <%--<c:set var="count"--%>
 
     <%--<c:forEach var="user" items="${users}">--%>
-        <%--<form class="form-inline">--%>
-            <%--<div class="form-group row">--%>
-                <%--<div class="input-group-prepend" style="margin-right: 20px">--%>
-                    <%--<span class="input-group-text">${user.getUsername()}</span>--%>
-                <%--</div>--%>
-                <%--<select class="form-control" id="${user.getUsername()}"--%>
-                        <%--onchange="changeUserRole('${user.getUsername()}')" aria-describedby="${user.getUsername()}">--%>
-                        <%--&lt;%&ndash;<jsp:useBean id="Roles" scope="application" type="app.database.entities.Roles"/>&ndash;%&gt;--%>
-                    <%--<c:forEach var="role" items="${Roles.values()}">--%>
-                        <%--<c:choose>--%>
-                            <%--<c:when test="${user.getRole().toString()==role.toString()}">--%>
-                                <%--<option value="${role.toString()}" selected>${role.getName()}</option>--%>
-                            <%--</c:when>--%>
-                            <%--<c:otherwise>--%>
-                                <%--<option value="${role.toString()}">${role.getName()}</option>--%>
-                            <%--</c:otherwise>--%>
-                        <%--</c:choose>--%>
-                    <%--</c:forEach>--%>
-                <%--</select>--%>
-            <%--</div>--%>
-        <%--</form>--%>
+    <%--<form class="form-inline">--%>
+    <%--<div class="form-group row">--%>
+    <%--<div class="input-group-prepend" style="margin-right: 20px">--%>
+    <%--<span class="input-group-text">${user.getUsername()}</span>--%>
+    <%--</div>--%>
+    <%--<select class="form-control" id="${user.getUsername()}"--%>
+    <%--onchange="changeUserRole('${user.getUsername()}')" aria-describedby="${user.getUsername()}">--%>
+    <%--&lt;%&ndash;<jsp:useBean id="Roles" scope="application" type="app.database.entities.Roles"/>&ndash;%&gt;--%>
+    <%--<c:forEach var="role" items="${Roles.values()}">--%>
+    <%--<c:choose>--%>
+    <%--<c:when test="${user.getRole().toString()==role.toString()}">--%>
+    <%--<option value="${role.toString()}" selected>${role.getName()}</option>--%>
+    <%--</c:when>--%>
+    <%--<c:otherwise>--%>
+    <%--<option value="${role.toString()}">${role.getName()}</option>--%>
+    <%--</c:otherwise>--%>
+    <%--</c:choose>--%>
+    <%--</c:forEach>--%>
+    <%--</select>--%>
+    <%--</div>--%>
+    <%--</form>--%>
     <%--</c:forEach>--%>
 </div>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"

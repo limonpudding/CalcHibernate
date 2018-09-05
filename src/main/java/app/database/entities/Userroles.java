@@ -1,4 +1,4 @@
-package app.database.entities.dao;
+package app.database.entities;
 
 import app.database.entities.Roles;
 import app.database.entities.Users;
@@ -10,10 +10,12 @@ import java.io.Serializable;
 @Table(name = "USERROLES")
 public class Userroles implements Serializable {
 
+    @Id
     @Column(name = "ROLE")
     @Enumerated(EnumType.STRING)
     private Roles role;
 
+    @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "USERNAME", nullable = false)
     protected Users user;
@@ -34,14 +36,10 @@ public class Userroles implements Serializable {
         this.role = role;
     }
 
-    @Id
-    private int id;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public boolean equals(Object obj) {
+        Userroles o = (Userroles)obj;
+        return role.equals(o.role)&&user.getUsername().equals(o.getUser().getUsername());
     }
 }

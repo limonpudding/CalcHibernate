@@ -1,9 +1,8 @@
 package app.security;
 
-import app.database.JDBC;
 import app.database.entities.Roles;
 import app.database.entities.Users;
-import app.database.entities.dao.Userroles;
+import app.database.entities.Userroles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

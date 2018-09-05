@@ -5,9 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -81,10 +79,9 @@ public class Config implements WebMvcConfigurer {
                         "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm');\n" +
                         "create table USERROLES\n" +
                         "(\n" +
-                        "ID int not null AUTO_INCREMENT,"+
-                        "  USERNAME             NVARCHAR2(40) not null\n" +
-                        "    primary key,\n" +
-                        "  ROLE           NVARCHAR2(40) not null\n" +
+                        "  USERNAME             NVARCHAR2(40) not null,\n" +
+                        "  ROLE           NVARCHAR2(40) not null,\n" +
+                        "CONSTRAINT PK PRIMARY KEY (USERNAME, ROLE)"+
                         ");" +
                         "INSERT INTO USERROLES\n" +
                         "(USERNAME,ROLE)\n" +
