@@ -81,6 +81,7 @@ public class Config implements WebMvcConfigurer {
                         "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm');\n" +
                         "create table USERROLES\n" +
                         "(\n" +
+                        "ID int not null AUTO_INCREMENT,"+
                         "  USERNAME             NVARCHAR2(40) not null\n" +
                         "    primary key,\n" +
                         "  ROLE           NVARCHAR2(40) not null\n" +

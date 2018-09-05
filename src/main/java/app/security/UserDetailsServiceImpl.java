@@ -5,6 +5,8 @@ import app.database.entities.Roles;
 import app.database.entities.Users;
 import app.database.entities.dao.Userroles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,7 +38,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             for (Userroles userrole : user.getUserroles()) {
                 roles.add(userrole.getRole());
             }
-            builder.authorities(roles::toString);
+            List<GrantedAuthority> grRoles = new LinkedList<>();
+            for (Roles role:roles) {
+                grRoles.add(new SimpleGrantedAuthority(role.toString()));
+            }
+            builder.authorities(grRoles);
         } else {
             throw new UsernameNotFoundException("Пользователь не найден");
         }

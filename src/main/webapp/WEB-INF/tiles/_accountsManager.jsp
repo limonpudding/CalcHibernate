@@ -48,11 +48,9 @@
     }
     function test(username, role) {
         if($('#'+username+role).prop('checked')){
-            $('#'+username+role).prop('checked', false);
             changeUserRole(username, role, 'delete');
         } else
         {
-            $('#'+username+role).prop('checked', true);
             changeUserRole(username, role, 'add');
         };
     }
@@ -84,11 +82,11 @@
                 <c:forEach var="role" items="${Roles.values()}">
                     <td class="col">
                         <c:choose>
-                            <c:when test="${user.isInRole(role)}">
-                                <input type="checkbox" value="${user.getUsername()}${role.toString()}" onclick="test(${user.getUsername()}, ${role.toString()})" checked>
+                            <c:when test="${user.isInRole(role)==true}">
+                                <input type="checkbox" value="${user.getUsername()}${role.toString()}" onclick="test('${user.getUsername()}', '${role.toString()}')" checked>
                             </c:when>
                             <c:otherwise>
-                                <input type="checkbox" value="${user.getUsername()}${role.toString()}" onclick="test(${user.getUsername()}, ${role.toString()})">
+                                <input type="checkbox" value="${user.getUsername()}${role.toString()}" onclick="test('${user.getUsername()}', '${role.toString()}')">
                             </c:otherwise>
                         </c:choose>
                     </td>

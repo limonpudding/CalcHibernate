@@ -4,16 +4,16 @@ import app.database.entities.Roles;
 import app.database.entities.Users;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "USERROLES")
-public class Userroles {
+public class Userroles implements Serializable {
 
     @Column(name = "ROLE")
     @Enumerated(EnumType.STRING)
     private Roles role;
 
-    @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "USERNAME", nullable = false)
     protected Users user;
@@ -34,4 +34,14 @@ public class Userroles {
         this.role = role;
     }
 
+    @Id
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
