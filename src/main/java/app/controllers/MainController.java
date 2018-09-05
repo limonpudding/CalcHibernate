@@ -6,12 +6,11 @@ import app.database.entities.Users;
 import app.pages.logic.Page;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +32,11 @@ public class MainController extends AbstractController {
     private final Page getReg;
     private final Page getLogin;
     private final Page getAccessDenied;
-
+    private final Page getAccountsManager;
+    private final JDBC jdbc;
 
     @Autowired
-    public MainController(Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration, Page getReg, Page getLogin, Page getAccessDenied) {
+    public MainController(Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration, Page getReg, Page getLogin, Page getAccessDenied, Page getAccountsManager, JDBC jdbc) {
         this.getAbout = getAbout;
         this.getHome = getHome;
         this.getTables = getTables;
@@ -49,6 +49,8 @@ public class MainController extends AbstractController {
         this.getReg = getReg;
         this.getLogin = getLogin;
         this.getAccessDenied = getAccessDenied;
+        this.getAccountsManager = getAccountsManager;
+        this.jdbc = jdbc;
     }
 
     //TODO привязать через Autowired и Qualifier реализации созданного абстрактного класса для каждого представления свою.
@@ -126,12 +128,12 @@ public class MainController extends AbstractController {
     public ModelAndView getReg(
             @RequestParam(value = "username") String username,
             @RequestParam(value = "password") String password,
-    @RequestParam(value = "rpassword") String rpassword) throws Exception {
+            @RequestParam(value = "rpassword") String rpassword) throws Exception {
         init();
         Map<String, Object> params = new HashMap<>();
-        params.put("username",username);
-        params.put("password",password);
-        params.put("rpassword",rpassword);
+        params.put("username", username);
+        params.put("password", password);
+        params.put("rpassword", rpassword);
         getReg.setParams(params);
         return getReg.build();
     }
@@ -146,6 +148,21 @@ public class MainController extends AbstractController {
     public ModelAndView getAccessDenied() throws Exception {
         init();
         return getAccessDenied.build();
+    }
+
+    @RequestMapping(path = ACCOUNTS_MANAGER_PAGE)
+    public ModelAndView getAccountsManager() throws Exception {
+        init();
+        return getAccountsManager.build();
+    }
+
+    @RequestMapping(path = ROLE_CHANGE_PAGE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void getRoleChange(
+            @RequestParam(value = "username") String username,
+            @RequestParam(value = "role") Roles role) throws Exception {
+        init();
+        jdbc.changeUserRoleInDB(username,role);
     }
 
 }

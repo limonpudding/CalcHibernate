@@ -81,6 +81,14 @@ public class JDBC {
     }
 
     @Transactional
+    public void changeUserRoleInDB(String username, Roles role) {
+        Users user=sessionFactory.getCurrentSession().get(Users.class, username);
+        user.setRole(role);
+        sessionFactory.getCurrentSession().update(user);
+        rootLogger.info("В БД изменены права пользователя: "+user.getUsername()+" ("+user.getRole().getName()+")");
+    }
+
+    @Transactional
     public void updatePostDB(UpdatePost post) {
         Constants constants = sessionFactory.getCurrentSession().get(Constants.class, post.getKeyOld());
         constants.setKey(post.getKeyNew());
