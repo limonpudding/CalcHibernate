@@ -84,18 +84,28 @@ public class Answer extends Page {
         }
         switch (operation) {
             case "sum":
+                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUM_SUB"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                    throw new AccessDeniedException("Доступ запрещён");
                 res = LongArithmeticMath.sum(a, b);
                 break;
             case "sub":
+                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUM_SUB"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                    throw new AccessDeniedException("Доступ запрещён");
                 res = LongArithmeticMath.sub(a, b);
                 break;
             case "mul":
+                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUM_SUB"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                    throw new AccessDeniedException("Доступ запрещён");
                 res = LongArithmeticMath.mul(a, b);
                 break;
             case "div":
+                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                    throw new AccessDeniedException("Доступ запрещён");
                 res = LongArithmeticMath.div(a, b);
                 break;
             case "fib":
+                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH"))&&!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                    throw new AccessDeniedException("Доступ запрещён");
                 res = new Fibonacci(Integer.parseInt(strA)).number;
                 break;
             default:

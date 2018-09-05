@@ -3,6 +3,7 @@ package app.math;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.springframework.security.access.annotation.Secured;
 
 import java.util.Stack;
 
