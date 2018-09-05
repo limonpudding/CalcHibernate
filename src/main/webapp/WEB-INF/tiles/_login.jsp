@@ -4,6 +4,11 @@
     <h3>Авторизация</h3>
     <h4>${message}</h4>
     <h4>${error}</h4>
+    <c:choose>
+        <c:when test="${param.error=='true'}">
+            <h4>Проверьте данные для входа</h4>
+        </c:when>
+    </c:choose>
     <hr class="my-4">
     <c:url value="perform_login" var="loginUrl" />
     <form action = "${loginUrl}" method="post">

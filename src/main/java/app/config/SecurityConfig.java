@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(OPHISTORY_PAGE).access("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')").and()
                 .formLogin().defaultSuccessUrl("/", false)
                 .loginPage("/login")
-                .failureUrl("/login?error")
+                .failureUrl("/login?error=true")
                 .loginProcessingUrl("/perform_login")
                 .usernameParameter("login")
                 .passwordParameter("password")
