@@ -46,6 +46,13 @@ public class JDBC {
     }
 
     @Transactional
+    public List<Users> selectUsersFromBD() {
+        CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
+        CriteriaQuery<Users> criteria = builder.createQuery(Users.class);
+        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+    }
+
+    @Transactional
     public void putSession() {
         Sessions sessions = new Sessions();
         sessions.setId(req.getSession().getId());
@@ -79,6 +86,8 @@ public class JDBC {
         sessionFactory.getCurrentSession().save(user);
         rootLogger.info("В БД добавлен пользователь: "+user.getUsername()+" "+user.getPassword());
     }
+
+
 
     @Transactional
     public void changeUserRoleInDB(String username, Roles role) {
