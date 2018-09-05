@@ -74,12 +74,20 @@ public class Config implements WebMvcConfigurer {
                         "(\n" +
                         "  USERNAME             NVARCHAR2(40) not null\n" +
                         "    primary key,\n" +
-                        "  PASSWORD           NVARCHAR2(100) not null,\n" +
-                        "  ROLE           NVARCHAR2(40) not null\n" +
+                        "  PASSWORD           NVARCHAR2(100) not null\n" +
                         ");" +
                         "INSERT INTO USERS\n" +
-                        "(USERNAME,PASSWORD, ROLE)\n" +
-                        "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm', 'ROLE_ADMIN');\n" +
+                        "(USERNAME,PASSWORD)\n" +
+                        "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm');\n" +
+                        "create table USERROLES\n" +
+                        "(\n" +
+                        "  USERNAME             NVARCHAR2(40) not null\n" +
+                        "    primary key,\n" +
+                        "  ROLE           NVARCHAR2(40) not null\n" +
+                        ");" +
+                        "INSERT INTO USERROLES\n" +
+                        "(USERNAME,ROLE)\n" +
+                        "VALUES  ('admin', 'ROLE_ADMIN');\n" +
                         "create table BINARYOPERATION\n" +
                         "(\n" +
                         "  ID             NVARCHAR2(40) not null\n" +

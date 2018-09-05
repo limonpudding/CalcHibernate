@@ -88,14 +88,20 @@ public class JDBC {
         rootLogger.info("В БД добавлен пользователь: "+user.getUsername()+" "+user.getPassword());
     }
 
-
+    @Transactional
+    public void deleteUserRoleInDB(String username, Roles role) {
+        Users user=sessionFactory.getCurrentSession().get(Users.class, username);
+        user.deleteUserrole(role);
+        sessionFactory.getCurrentSession().update(user);
+        rootLogger.info("В БД убрано право пользователя: "+user.getUsername());
+    }
 
     @Transactional
-    public void changeUserRoleInDB(String username, Roles role) {
+    public void addUserRoleInDB(String username, Roles role) {
         Users user=sessionFactory.getCurrentSession().get(Users.class, username);
-        user.setRole(role);
+        user.addUserrole(role);
         sessionFactory.getCurrentSession().update(user);
-        rootLogger.info("В БД изменены права пользователя: "+user.getUsername()+" ("+user.getRole().getName()+")");
+        rootLogger.info("В БД добавлено право пользователя: "+user.getUsername());
     }
 
     @Transactional

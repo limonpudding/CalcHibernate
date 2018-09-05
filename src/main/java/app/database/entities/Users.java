@@ -1,6 +1,10 @@
 package app.database.entities;
 
+import app.database.entities.dao.Userroles;
+
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "USERS")
@@ -8,6 +12,12 @@ public class Users {
     @Id
     @Column(name = "USERNAME")
     private String username;
+
+    @Column(name = "PASSWORD", nullable = false)
+    private String password;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Userroles> userroles = new LinkedList<>();
 
     public String getUsername() {
         return username;
@@ -21,22 +31,32 @@ public class Users {
         return password;
     }
 
+    public List<Userroles> getUserroles() {
+        return userroles;
+    }
+
+    public Boolean isInRole(Roles role) {
+        Userroles userrole = new Userroles();
+        userrole.setUser(this);
+        userrole.setRole(role);
+        return this.userroles.contains(userrole);
+    }
+
+    public void addUserrole(Roles role) {
+        Userroles userrole = new Userroles();
+        userrole.setUser(this);
+        userrole.setRole(role);
+        this.userroles.add(userrole);
+    }
+
+    public void deleteUserrole(Roles role) {
+        Userroles userrole = new Userroles();
+        userrole.setUser(this);
+        userrole.setRole(role);
+        this.userroles.remove(userrole);
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public Roles getRole() {
-        return role;
-    }
-
-    public void setRole(Roles role) {
-        this.role = role;
-    }
-
-    @Column(name = "PASSWORD", nullable = false)
-    private String password;
-
-    @Column(name = "ROLE")
-    @Enumerated(EnumType.STRING)
-    protected Roles role;
 }

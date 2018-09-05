@@ -163,10 +163,15 @@ public class MainController extends AbstractController {
     @RequestMapping(path = ROLE_CHANGE_PAGE, method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void getRoleChange(
+            @RequestParam(value = "type") String type,
             @RequestParam(value = "username") String username,
-            @RequestParam(value = "role") Roles role) throws Exception {
+            @RequestParam(value = "role") Roles role) {
         init();
-        jdbc.changeUserRoleInDB(username,role);
+        if ("add".equals(type)) {
+            jdbc.addUserRoleInDB(username,role);
+        } else {
+            jdbc.deleteUserRoleInDB(username, role);
+        }
     }
 
 }

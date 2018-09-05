@@ -31,7 +31,7 @@ public class Reg extends Page {
         } else {
             user.setUsername((String) params.get("username"));
             user.setPassword(passwordEncoder.encode((String) params.get("password")));
-            user.setRole(Roles.ROLE_USER);
+            user.addUserrole(Roles.ROLE_USER);
             try {
                 jdbc.putUserInDB(user);
                 mav = new ModelAndView("login");
