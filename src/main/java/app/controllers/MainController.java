@@ -156,7 +156,7 @@ public class MainController extends AbstractController {
         return getAccountsManager.build();
     }
 
-    @RequestMapping(path = ROLE_CHANGE_PAGE)
+    @RequestMapping(path = ROLE_CHANGE_PAGE, method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void getRoleChange(
             @RequestParam(value = "username") String username,

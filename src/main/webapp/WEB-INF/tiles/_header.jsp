@@ -22,6 +22,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="/ophistory">История операций</a>
             </li>
+            <sec:authorize access="isAuthenticated()">
+            <li class="nav-item">
+                <a class="nav-link" href="/accountsManager">Управление аккаунтами</a>
+            </li>
+            </sec:authorize>
+
         </ul>
     </div>
         <div class="collapse navbar-collapse order-2"  id="navbar2">

@@ -49,6 +49,7 @@ public class JDBC {
     public List<Users> selectUsersFromBD() {
         CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
         CriteriaQuery<Users> criteria = builder.createQuery(Users.class);
+        criteria.from(Users.class);
         return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
     }
 

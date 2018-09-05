@@ -10,9 +10,9 @@
             </div>
             <div class="form-group row">
                 <input type="password" class="form-control" name="password" id="inputPassword" required placeholder="Пароль">
-                <small id="passwordHelpInline" class="text-muted">
-                    Must be 8-20 characters long.
-                </small>
+                <%--<small id="passwordHelpInline" class="text-muted">--%>
+                    <%--Must be 8-20 characters long.--%>
+                <%--</small>--%>
             </div>
             <div class="form-group row">
                 <input type="password" class="form-control" name="rpassword" id="repeatPassword" required placeholder="Повторите пароль">
