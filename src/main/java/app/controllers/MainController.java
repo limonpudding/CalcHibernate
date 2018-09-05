@@ -7,6 +7,7 @@ import app.pages.logic.Page;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -91,6 +92,7 @@ public class MainController extends AbstractController {
     }
 
     @RequestMapping(path = TABLES_PAGE)
+    @Secured(value = {"ROLE_USER"})
     public ModelAndView getTables(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "mode") String mode,
@@ -151,11 +153,13 @@ public class MainController extends AbstractController {
     }
 
     @RequestMapping(path = ACCOUNTS_MANAGER_PAGE)
+    @Secured(value = "ROLE_ADMIN")
     public ModelAndView getAccountsManager() throws Exception {
         init();
         return getAccountsManager.build();
     }
 
+    @Secured(value = "ROLE_ADMIN")
     @RequestMapping(path = ROLE_CHANGE_PAGE, method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void getRoleChange(

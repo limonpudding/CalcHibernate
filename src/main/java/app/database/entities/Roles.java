@@ -1,7 +1,7 @@
 package app.database.entities;
 
 public enum Roles {
-    ROLE_ADMIN("Админимтратор"),
+    ROLE_ADMIN("Администратор"),
     ROLE_USER("Пользователь");
     String name;
 
