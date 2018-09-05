@@ -13,4 +13,5 @@ public class PageNamesConstants {
     public static final String REGISTRATION_PAGE = "/register";
     public static final String REG_PAGE = "/reg";
     public static final String LOGIN_PAGE = "/login";
+    public static final String ACCESS_DENIED_PAGE = "/accessDenied";
 }

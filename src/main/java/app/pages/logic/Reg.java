@@ -34,8 +34,8 @@ public class Reg extends Page {
             user.setRole(Roles.ROLE_USER);
             try {
                 jdbc.putUserInDB(user);
-                mav = new ModelAndView("home");
-                mav.addObject("message", "Вы успешно зарегистрировались!");
+                mav = new ModelAndView("login");
+                mav.addObject("message", "Вы успешно зарегистрировались! Пожалуйста, войдите под своей учётной записью");
             } catch (DataIntegrityViolationException e){
                 mav = new ModelAndView("register");
                 mav.addObject("error", "Пользователь с таким именем уже существует");

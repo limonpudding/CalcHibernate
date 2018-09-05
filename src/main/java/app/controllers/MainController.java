@@ -21,6 +21,7 @@ import static app.utils.PageNamesConstants.*;
 @Controller
 public class MainController extends AbstractController {
 
+    private final Logger rootLogger;
     private final Page getAbout;
     private final Page getHome;
     private final Page getTables;
@@ -28,13 +29,14 @@ public class MainController extends AbstractController {
     private final Page getError;
     private final Page getCalc;
     private final Page getOpHistory;
-    private final Logger rootLogger;
     private final Page getRegistration;
     private final Page getReg;
     private final Page getLogin;
+    private final Page getAccessDenied;
+
 
     @Autowired
-    public MainController(Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration, Page getReg, Page getLogin) {
+    public MainController(Page getAbout, Page getHome, Page getTables, Page getAnswer, Page getError, Page getCalc, Page getOpHistory, Logger rootLogger, Page getRegistration, Page getReg, Page getLogin, Page getAccessDenied) {
         this.getAbout = getAbout;
         this.getHome = getHome;
         this.getTables = getTables;
@@ -46,6 +48,7 @@ public class MainController extends AbstractController {
         this.getRegistration = getRegistration;
         this.getReg = getReg;
         this.getLogin = getLogin;
+        this.getAccessDenied = getAccessDenied;
     }
 
     //TODO привязать через Autowired и Qualifier реализации созданного абстрактного класса для каждого представления свою.
@@ -137,6 +140,12 @@ public class MainController extends AbstractController {
     public ModelAndView getError() throws Exception {
         init();
         return getError.build();
+    }
+
+    @RequestMapping(path = ACCESS_DENIED_PAGE)
+    public ModelAndView getAccessDenied() throws Exception {
+        init();
+        return getAccessDenied.build();
     }
 
 }

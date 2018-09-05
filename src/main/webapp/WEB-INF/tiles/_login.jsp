@@ -2,6 +2,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <div class="container">
     <h3>Авторизация</h3>
+    <h4>${message}</h4>
+    <h4>${error}</h4>
     <hr class="my-4">
     <c:url value="perform_login" var="loginUrl" />
     <form action = "${loginUrl}" method="post">

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <div class="container">
     <h3>Регистрация нового пользователя</h3>
-    <h2>${error}</h2>
+    <h4>${error}</h4>
     <hr class="my-4">
     <form action="reg" method="post">
         <div class="form-group">
