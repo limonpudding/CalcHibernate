@@ -1,4 +1,4 @@
-package app.config;
+package config;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -79,10 +79,10 @@ public class Config implements WebMvcConfigurer {
                         "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm');\n" +
                         "create table USERROLES\n" +
                         "(\n" +
+                        "  ID int auto_increment primary key, \n" +
                         "  USERNAME             NVARCHAR2(40) not null,\n" +
-                        "  ROLE           NVARCHAR2(40) not null,\n" +
-                        "CONSTRAINT PK PRIMARY KEY (USERNAME, ROLE)"+
-                        ");" +
+                        "  ROLE           NVARCHAR2(40) not null\n" +
+                        "); " +
                         "INSERT INTO USERROLES\n" +
                         "(USERNAME,ROLE)\n" +
                         "VALUES  ('admin', 'ROLE_ADMIN');\n" +

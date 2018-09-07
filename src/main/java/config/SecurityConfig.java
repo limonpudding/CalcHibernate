@@ -1,4 +1,4 @@
-package app.config;
+package config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

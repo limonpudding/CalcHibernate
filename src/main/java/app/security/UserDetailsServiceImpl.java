@@ -34,9 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             builder = User.withUsername(username);
             builder.password(user.getPassword());
             List<Roles> roles = new LinkedList<>();
-            for (Userroles userrole : user.getUserroles()) {
-                roles.add(userrole.getRole());
-            }
+            roles.addAll(user.getUserroles());
             List<GrantedAuthority> grRoles = new LinkedList<>();
             for (Roles role:roles) {
                 grRoles.add(new SimpleGrantedAuthority(role.toString()));

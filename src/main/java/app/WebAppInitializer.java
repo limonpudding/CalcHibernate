@@ -1,8 +1,8 @@
 package app;
 
-import app.config.Config;
-import app.config.SecurityConfig;
-import app.config.WebConfig;
+import config.Config;
+import config.SecurityConfig;
+import config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.ServletContext;
@@ -20,13 +20,13 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     @Override
     protected Class<?>[] getRootConfigClasses() {
         // TODO Auto-generated method stub
-        return new Class[]{Config.class, SecurityConfig.class};
+        return new Class[]{Config.class, SecurityConfig.class,WebConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
         // TODO Auto-generated method stub
-        return new Class[]{WebConfig.class};
+        return new Class[]{};
     }
 
     @Override

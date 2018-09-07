@@ -6,26 +6,29 @@ import app.database.entities.Users;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
 @Table(name = "USERROLES")
 public class Userroles implements Serializable {
 
+    public int getId() {
+        return id;
+    }
+
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
     @Column(name = "ROLE")
     @Enumerated(EnumType.STRING)
     private Roles role;
 
-    @Id
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "USERNAME", nullable = false)
-    protected Users user;
+    protected String username;
 
-    public Users getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser(Users username) {
-        this.user = username;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Roles getRole() {
@@ -39,7 +42,7 @@ public class Userroles implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        Userroles o = (Userroles)obj;
-        return role.equals(o.role)&&user.getUsername().equals(o.getUser().getUsername());
+        Userroles o = (Userroles) obj;
+        return role.equals(o.role) && username.equals(o.getUsername());
     }
 }
