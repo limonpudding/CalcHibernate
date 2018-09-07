@@ -1,14 +1,11 @@
-package app.database.entities;
+package app.database.entities.dto;
 
-import app.database.entities.dto.UsersDto;
+import app.database.entities.Users;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface UsersMapper {
     UsersMapper INSTANCE = Mappers.getMapper(UsersMapper.class);
-
-
     UsersDto toDto(Users users);
 }

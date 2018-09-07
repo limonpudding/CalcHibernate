@@ -3,13 +3,13 @@ package app.database;
 import app.database.entities.*;
 import app.database.entities.dao.OperationDao;
 import app.database.entities.dto.UsersDto;
+import app.database.entities.dto.UsersMapper;
 import app.rest.Key;
 import app.rest.UpdatePost;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,13 +55,10 @@ public class JDBC {
         CriteriaQuery<Users> criteria = builder.createQuery(Users.class);
         criteria.from(Users.class);
         List<UsersDto> usersDtos = new LinkedList<>();
-        List<Users> lol = sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
-        for (Users user : lol) {
+        for (Users user : sessionFactory.getCurrentSession().createQuery(criteria).getResultList()) {
             Hibernate.initialize(user.getUserroles());
             usersDtos.add(UsersMapper.INSTANCE.toDto(user));
         }
-
-
         return usersDtos;
     }
 
