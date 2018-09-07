@@ -39,12 +39,18 @@
             method: "POST",
             url: "/roleChange",
             data: userRole,
+            success: successMessage("Вы успешно "+((type==="add")?"добавили":"удалили")+" роль "+role+" для пользователя "+username),
             statusCode: {
                 200: function () { // выполнить функцию если код ответа HTTP 200
                     console.log("Ok");
                 }
             }
         });
+    }
+
+    function successMessage(msg) {
+        $("#success").html(msg);
+        $("#success").alert();
     }
 
     function test(username, role) {
@@ -97,36 +103,11 @@
         </c:forEach>
         </tbody>
     </table>
-
-    <%--<c:set var="count"--%>
-
-    <%--<c:forEach var="user" items="${users}">--%>
-    <%--<form class="form-inline">--%>
-    <%--<div class="form-group row">--%>
-    <%--<div class="input-group-prepend" style="margin-right: 20px">--%>
-    <%--<span class="input-group-text">${user.getUsername()}</span>--%>
-    <%--</div>--%>
-    <%--<select class="form-control" id="${user.getUsername()}"--%>
-    <%--onchange="changeUserRole('${user.getUsername()}')" aria-describedby="${user.getUsername()}">--%>
-    <%--&lt;%&ndash;<jsp:useBean id="Roles" scope="application" type="app.database.entities.Roles"/>&ndash;%&gt;--%>
-    <%--<c:forEach var="role" items="${Roles.values()}">--%>
-    <%--<c:choose>--%>
-    <%--<c:when test="${user.getRole().toString()==role.toString()}">--%>
-    <%--<option value="${role.toString()}" selected>${role.getName()}</option>--%>
-    <%--</c:when>--%>
-    <%--<c:otherwise>--%>
-    <%--<option value="${role.toString()}">${role.getName()}</option>--%>
-    <%--</c:otherwise>--%>
-    <%--</c:choose>--%>
-    <%--</c:forEach>--%>
-    <%--</select>--%>
-    <%--</div>--%>
-    <%--</form>--%>
-    <%--</c:forEach>--%>
+    <div class="alert alert-success alert-dismissible fade show" style="position: fixed; bottom: 60px; left: 0; padding: 15px; visi" id="success">
+    </div>
 </div>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-
 
 
