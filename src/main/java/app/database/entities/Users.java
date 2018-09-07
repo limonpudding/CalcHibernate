@@ -23,6 +23,14 @@ public class Users {
     @Column(name = "ROLE")
     private Set<Roles> userroles = new HashSet<>();
 
+    public void deleteUserrole(Roles role){
+        userroles.remove(role);
+    }
+
+    public void addUserrole(Roles role){
+        userroles.add(role);
+    }
+
     public String getUsername() {
         return username;
     }
@@ -44,10 +52,7 @@ public class Users {
     }
 
     public Boolean isInRole(Roles role) {
-        Userroles userrole = new Userroles();
-        userrole.setUsername(username);
-        userrole.setRole(role);
-        return this.userroles.contains(userrole);
+        return this.userroles.contains(role);
     }
 
     public void setPassword(String password) {

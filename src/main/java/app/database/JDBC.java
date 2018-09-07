@@ -90,16 +90,17 @@ public class JDBC {
 
     @Transactional
     public void deleteUserRoleInDB(String username, Roles role) {
-        Userroles userrole = new Userroles();
-        userrole.setUsername(username);
-        userrole.setRole(role);
-        sessionFactory.getCurrentSession().delete(userrole);
+        Users user = sessionFactory.getCurrentSession().get(Users.class, username);
+        user.deleteUserrole(role);
+        sessionFactory.getCurrentSession().update(user);
         rootLogger.info("В БД убрано право пользователя: "+username+" "+role.getName());
     }
 
     @Transactional
     public void addUserRoleInDB(String username, Roles role) {
         Users user = sessionFactory.getCurrentSession().get(Users.class, username);
+        user.addUserrole(role);
+        sessionFactory.getCurrentSession().update(user);
         rootLogger.info("В БД добавлено право пользователя: "+username+" "+role.getName());
     }
 
