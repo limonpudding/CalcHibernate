@@ -1,43 +1,24 @@
-package app.database.entities;
-import app.database.entities.dto.UsersDto;
+package app.database.entities.dto;
+
+import app.database.entities.Roles;
+import app.database.entities.Users;
+
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "USERS")
-public class Users {
-    @Id
-    @Column(name = "USERNAME")
+public class UsersDto {
     private String username;
-
-    @Column(name = "PASSWORD", nullable = false)
     private String password;
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "USERROLES",
-            joinColumns = @JoinColumn(name = "USERNAME"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ROLE")
     private Set<Roles> userroles = new HashSet<>();
 
-    public Users() {
+    public UsersDto() {
     }
 
-    public Users(String username, String password, Set<Roles> userroles) {
+    public UsersDto(String username, String password, Set<Roles> userroles) {
         this.username = username;
         this.password = password;
         this.userroles = userroles;
-    }
-
-    public void deleteUserrole(Roles role){
-        userroles.remove(role);
-    }
-
-    public void addUserrole(Roles role){
-        userroles.add(role);
     }
 
     public String getUsername() {

@@ -1,6 +1,7 @@
 package app.database.entities;
 
 import app.database.entities.dao.OperationDao;
+import jdk.nashorn.internal.objects.annotations.Getter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

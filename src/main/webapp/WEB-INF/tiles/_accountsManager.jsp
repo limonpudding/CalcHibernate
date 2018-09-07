@@ -103,7 +103,7 @@
         </c:forEach>
         </tbody>
     </table>
-    <div class="alert alert-success alert-dismissible fade show" style="position: fixed; bottom: 60px; left: 0; padding: 15px; visi" id="success">
+    <div class="alert alert-success alert-dismissible alert-dismissible fade show" role="alert" style="position: fixed; bottom: 60px; left: 0; padding: 15px; visi" id="success">
     </div>
 </div>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"

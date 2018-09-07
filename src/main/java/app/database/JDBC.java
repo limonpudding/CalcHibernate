@@ -2,13 +2,16 @@ package app.database;
 
 import app.database.entities.*;
 import app.database.entities.dao.OperationDao;
+import app.database.entities.dto.UsersDto;
 import app.rest.Key;
 import app.rest.UpdatePost;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -45,12 +49,20 @@ public class JDBC {
         sessionFactory.getCurrentSession().save(operation.toDto());
     }
 
-    @Transactional
-    public List<Users> selectUsersFromBD() {
+    @Transactional(propagation=Propagation.REQUIRED, readOnly=true, noRollbackFor=Exception.class)
+    public List<UsersDto> selectUsersFromBD() {
         CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
         CriteriaQuery<Users> criteria = builder.createQuery(Users.class);
         criteria.from(Users.class);
-        return sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+        List<UsersDto> usersDtos = new LinkedList<>();
+        List<Users> lol = sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
+        for (Users user : lol) {
+            Hibernate.initialize(user.getUserroles());
+            usersDtos.add(UsersMapper.INSTANCE.toDto(user));
+        }
+
+
+        return usersDtos;
     }
 
     @Transactional
@@ -67,7 +79,7 @@ public class JDBC {
     @Transactional
     public void updateSession() {
         Sessions sessions = sessionFactory.getCurrentSession().get(Sessions.class, req.getSession().getId());
-        if (sessions==null){
+        if (sessions == null) {
             putSession();
             return;
         }
@@ -85,7 +97,7 @@ public class JDBC {
     @Transactional
     public void putUserInDB(Users user) {
         sessionFactory.getCurrentSession().save(user);
-        rootLogger.info("В БД добавлен пользователь: "+user.getUsername()+" "+user.getPassword());
+        rootLogger.info("В БД добавлен пользователь: " + user.getUsername() + " " + user.getPassword());
     }
 
     @Transactional
@@ -93,7 +105,7 @@ public class JDBC {
         Users user = sessionFactory.getCurrentSession().get(Users.class, username);
         user.deleteUserrole(role);
         sessionFactory.getCurrentSession().update(user);
-        rootLogger.info("В БД убрано право пользователя: "+username+" "+role.getName());
+        rootLogger.info("В БД убрано право пользователя: " + username + " " + role.getName());
     }
 
     @Transactional
@@ -101,7 +113,7 @@ public class JDBC {
         Users user = sessionFactory.getCurrentSession().get(Users.class, username);
         user.addUserrole(role);
         sessionFactory.getCurrentSession().update(user);
-        rootLogger.info("В БД добавлено право пользователя: "+username+" "+role.getName());
+        rootLogger.info("В БД добавлено право пользователя: " + username + " " + role.getName());
     }
 
     @Transactional
@@ -156,7 +168,7 @@ public class JDBC {
         Sessions session = sessionFactory.getCurrentSession().get(Sessions.class, id);
         List<OperationDao> operations = session.getOperations();
         if ("ASC".equals(order.toUpperCase())) {
-            switch (mode){
+            switch (mode) {
                 case "operationKind":
                     operations.sort(Comparator.comparing(OperationDao::getOperationKind));
                     break;
@@ -165,7 +177,7 @@ public class JDBC {
                     break;
             }
         } else {
-            switch (mode){
+            switch (mode) {
                 case "operationKind":
                     operations.sort(Comparator.comparing(OperationDao::getOperationKind).reversed());
                     break;
