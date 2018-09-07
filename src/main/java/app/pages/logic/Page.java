@@ -1,18 +1,17 @@
 package app.pages.logic;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
 
 public abstract class Page {
-    public Map<String, Object> getParams() {
-        return params;
+
+    public ModelAndView build() throws Exception {
+        return null;
     }
 
-    public void setParams(Map<String, Object> params) {
-        this.params = params;
+    public ModelAndView build(Map params) throws Exception {
+        return null;
     }
-
-    Map<String, Object> params;
-    public abstract ModelAndView build() throws Exception;
 }

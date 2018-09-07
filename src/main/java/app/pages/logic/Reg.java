@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Map;
+
 @Service("getReg")
 public class Reg extends Page {
 
@@ -22,7 +24,7 @@ public class Reg extends Page {
     }
 
     @Override
-    public ModelAndView build() {
+    public ModelAndView build(Map params) {
         ModelAndView mav;
         Users user = new Users();
         if (!params.get("rpassword").equals(params.get("password"))) {

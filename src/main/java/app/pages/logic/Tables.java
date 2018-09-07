@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Map;
+
 @Service("getTables")
 public class Tables extends Page {
 
@@ -12,12 +14,12 @@ public class Tables extends Page {
     JDBC jdbc;
 
     @Override
-    public ModelAndView build() throws Exception {
-        String modeSort = (String) getParams().get("mode");
-        String orderSort = (String) getParams().get("order");
-        String id = (String) getParams().get("id");
+    public ModelAndView build(Map params) throws Exception {
+        String modeSort = (String) params.get("mode");
+        String orderSort = (String) params.get("order");
+        String id = (String) params.get("id");
         ModelAndView mav;
-        if ("1".equals(getParams().get("table"))) {
+        if ("1".equals(params.get("table"))) {
             mav = new ModelAndView("createTableSessions");
             mav.addObject("fullSessionsHistory", jdbc.selectSessionsFromBD(modeSort, orderSort));
         } else {

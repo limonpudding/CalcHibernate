@@ -88,8 +88,7 @@ public class MainController extends AbstractController {
         params.put("b", b);
         params.put("operation", operation);
         params.put("session", session);
-        getAnswer.setParams(params);
-        return getAnswer.build();
+        return getAnswer.build(params);
     }
 
     @RequestMapping(path = TABLES_PAGE)
@@ -105,8 +104,7 @@ public class MainController extends AbstractController {
         params.put("mode", mode);
         params.put("order", order);
         params.put("table", table);
-        getTables.setParams(params);
-        return getTables.build();
+        return getTables.build(params);
     }
 
     @RequestMapping(path = ABOUT_PAGE)
@@ -137,8 +135,8 @@ public class MainController extends AbstractController {
         params.put("username", username);
         params.put("password", password);
         params.put("rpassword", rpassword);
-        getReg.setParams(params);
-        return getReg.build();
+        Thread.sleep(5000);
+        return getReg.build(params);
     }
 
     @RequestMapping(path = PAGE_NOT_FOUND_PAGE)

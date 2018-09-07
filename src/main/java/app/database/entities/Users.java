@@ -1,5 +1,7 @@
 package app.database.entities;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -16,10 +18,10 @@ public class Users {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "USERROLES",
             joinColumns = @JoinColumn(name = "USERNAME"))
+    @Enumerated(EnumType.STRING)
     @Column(name = "ROLE")
     private Set<Roles> userroles = new HashSet<>();
 

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import static app.utils.Log.*;
@@ -36,15 +37,15 @@ public class Answer extends Page {
     @Autowired
     HttpServletRequest req;
 
-    public ModelAndView build() throws Exception {
-        String a = (String) getParams().get("a");
-        String b = (String) getParams().get("b");
-        String operation = (String) getParams().get("operation");
+    public ModelAndView build(Map params) throws Exception {
+        String a = (String) params.get("a");
+        String b = (String) params.get("b");
+        String operation = (String) params.get("operation");
 
         String ans = calc(a, b, operation);
 
         OperationsHistory operationsHistory = new OperationsHistory();
-        HttpSession session = (HttpSession) getParams().get("session");
+        HttpSession session = (HttpSession) params.get("session");
         operationsHistory.getHistory(session);
         Operation operNew;
         if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
