@@ -63,6 +63,11 @@ public class Config implements WebMvcConfigurer {
     DataSource getDataSource() throws NamingException, SQLException {
         String dbName = context.getInitParameter("dbName");
         DataSource dataSource = (DataSource) new InitialContext().lookup("java:comp/env/" + dbName);
+//        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+//        dataSource.setDriverClass(org.h2.Driver.class);
+//        dataSource.setUrl("jdbc:h2:mem:test");
+//        dataSource.setUsername("asd");
+//        dataSource.setPassword("asd");
         if (dataSource.getConnection().getMetaData().getDatabaseProductName().toUpperCase().contains("H2")) {
 
             try (Connection connection = dataSource.getConnection()) {

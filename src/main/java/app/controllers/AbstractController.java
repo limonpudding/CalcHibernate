@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
 
 import static app.utils.Log.USER_CONNECTED_LOG;
 
@@ -15,6 +16,8 @@ public abstract class AbstractController {
     private HttpServletRequest req;
     @Autowired
     private JDBC jdbc;
+    @Autowired
+    private DataSource dataSource;
     @Autowired
     private Logger rootLogger;
     protected void init() {

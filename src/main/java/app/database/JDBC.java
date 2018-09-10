@@ -49,7 +49,7 @@ public class JDBC {
         sessionFactory.getCurrentSession().save(operation.toDto());
     }
 
-    @Transactional(propagation=Propagation.REQUIRED, readOnly=true, noRollbackFor=Exception.class)
+    @Transactional
     public List<UsersDto> selectUsersFromBD() {
         CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
         CriteriaQuery<Users> criteria = builder.createQuery(Users.class);

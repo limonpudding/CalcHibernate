@@ -135,7 +135,6 @@ public class MainController extends AbstractController {
         params.put("username", username);
         params.put("password", password);
         params.put("rpassword", rpassword);
-        Thread.sleep(5000);
         return getReg.build(params);
     }
 

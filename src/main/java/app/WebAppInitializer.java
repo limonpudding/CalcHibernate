@@ -3,9 +3,6 @@ package app;
 import config.Config;
 import config.SecurityConfig;
 import config.WebConfig;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.ServletContext;
