@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -124,6 +125,15 @@ public class MyTest {
                 ");");
         transaction.commit();
         session.close();
+    }
+
+    private ResultActions prepareConstants() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .put("/rest")
+                .header("Content-Type", "application/json")
+                .characterEncoding("UTF-8")
+                .content("{\"key\":\"one\",\"value\":\"1\"}");//om.writeValueAsString(new Constants("one","1"))
+        return this.mockMvc.perform(builder);
     }
 
     @Test
@@ -238,13 +248,8 @@ public class MyTest {
     @WithMockUser(roles = {"MATH"})
     @Transactional
     public void testRestPutConstant() throws Exception {
-        ObjectMapper om = new ObjectMapper();
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-                .put("/rest")
-                .header("Content-Type", "application/json")
-                .characterEncoding("UTF-8")
-                .content("{\"key\":\"one\",\"value\":\"1\"}");//om.writeValueAsString(new Constants("one","1"))
-        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isNoContent());
+        ResultActions request = prepareConstants();
+        request.andExpect(MockMvcResultMatchers.status().isNoContent());
         MockHttpServletRequestBuilder builder2 = MockMvcRequestBuilders
                 .get("/rest")
                 .characterEncoding("UTF-8");
@@ -262,5 +267,18 @@ public class MyTest {
                 .get("/rest/calc?a=123&b=123&operation=sum")
                 .characterEncoding("UTF-8");
         this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("246"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"MATH"})
+    @Transactional
+    public void testRestCalcMul() throws Exception {
+        ObjectMapper om = new ObjectMapper();
+        ResultMatcher ok = status().isOk();
+        prepareConstants();
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest/calc?a=123&b=123&operation=mul")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("15129"));
     }
 }

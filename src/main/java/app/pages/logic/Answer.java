@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ public class Answer extends Page {
     @Autowired
     SessionFactory sessionFactory;
 
+    @Transactional
     public ModelAndView build(Map params) throws Exception {
         String a = (String) params.get("a");
         String b = (String) params.get("b");
