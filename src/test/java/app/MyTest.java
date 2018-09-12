@@ -4,14 +4,10 @@ import config.SecurityConfig;
 import config.WebConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,19 +17,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.NestedServletException;
 import testconfig.TestConfig;
 
-import javax.sql.DataSource;
-import javax.transaction.TransactionManager;
-
-import java.sql.Connection;
-import java.sql.Statement;
+import javax.annotation.Resource;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -46,76 +35,78 @@ public class MyTest {
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mockMvc;
-    @Autowired
+    @Resource
     private SessionFactory sessionFactory;
 
+    private Session session;
 
     @Before
     public void init() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .apply(SecurityMockMvcConfigurers.springSecurity()).build();
+        session = sessionFactory.openSession();
         initDB();
     }
 
     private void initDB() {
-//        sessionFactory.getCurrentSession().createSQLQuery("" +
-//                "create table USERS\n" +
-//                "(\n" +
-//                "  USERNAME             NVARCHAR2(40) not null\n" +
-//                "    primary key,\n" +
-//                "  PASSWORD           NVARCHAR2(100) not null\n" +
-//                ");" +
-//                "INSERT INTO USERS\n" +
-//                "(USERNAME,PASSWORD)\n" +
-//                "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm');\n" +
-//                "create table USERROLES\n" +
-//                "(\n" +
-//                "  ID int auto_increment primary key, \n" +
-//                "  USERNAME             NVARCHAR2(40) not null,\n" +
-//                "  ROLE           NVARCHAR2(40) not null\n" +
-//                "); " +
-//                "INSERT INTO USERROLES\n" +
-//                "(USERNAME,ROLE)\n" +
-//                "VALUES  ('admin', 'ROLE_ADMIN');\n" +
-//                "create table BINARYOPERATION\n" +
-//                "(\n" +
-//                "  ID             NVARCHAR2(40) not null\n" +
-//                "    primary key,\n" +
-//                "  OPERATIONKIND           NVARCHAR2(40),\n" +
-//                "  FIRSTOPERAND   CLOB,\n" +
-//                "  SECONDOPERAND CLOB,\n" +
-//                "  ANSWER         CLOB,\n" +
-//                "  IDSESSION      NVARCHAR2(40),\n" +
-//                "  TIME           TIMESTAMP(6)\n" +
-//                ");" +
-//                "create table SINGLEOPERATION\n" +
-//                "(\n" +
-//                "  ID           NVARCHAR2(40) not null\n" +
-//                "    primary key,\n" +
-//                "  OPERATIONKIND         NVARCHAR2(40),\n" +
-//                "  FIRSTOPERAND CLOB,\n" +
-//                "  ANSWER       CLOB,\n" +
-//                "  IDSESSION    NVARCHAR2(40),\n" +
-//                "  TIME         TIMESTAMP(6)\n" +
-//                ");" +
-//                "create table CONSTANTS\n" +
-//                "(\n" +
-//                "  KEY            NVARCHAR2(40) default NULL not null\n" +
-//                "    primary key,\n" +
-//                "  VALUE  CLOB" +
-//                ");" +
-//                "create table SESSIONS\n" +
-//                "(\n" +
-//                "  ID        NVARCHAR2(40) default NULL not null\n" +
-//                "    primary key,\n" +
-//                "  IP        NVARCHAR2(25),\n" +
-//                "  TIMESTART TIMESTAMP,\n" +
-//                "  TIMEEND   TIMESTAMP\n" +
-//                ");");
+        session.createSQLQuery("" +
+                "" +
+                "create table USERS\n" +
+                "(\n" +
+                "  USERNAME             NVARCHAR2(40) not null\n" +
+                "    primary key,\n" +
+                "  PASSWORD           NVARCHAR2(100) not null\n" +
+                ");" +
+                "INSERT INTO USERS\n" +
+                "(USERNAME,PASSWORD)\n" +
+                "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm');\n" +
+                "create table USERROLES\n" +
+                "(\n" +
+                "  ID int auto_increment primary key, \n" +
+                "  USERNAME             NVARCHAR2(40) not null,\n" +
+                "  ROLE           NVARCHAR2(40) not null\n" +
+                "); " +
+                "INSERT INTO USERROLES\n" +
+                "(USERNAME,ROLE)\n" +
+                "VALUES  ('admin', 'ROLE_ADMIN');\n" +
+                "create table BINARYOPERATION\n" +
+                "(\n" +
+                "  ID             NVARCHAR2(40) not null\n" +
+                "    primary key,\n" +
+                "  OPERATIONKIND           NVARCHAR2(40),\n" +
+                "  FIRSTOPERAND   CLOB,\n" +
+                "  SECONDOPERAND CLOB,\n" +
+                "  ANSWER         CLOB,\n" +
+                "  IDSESSION      NVARCHAR2(40),\n" +
+                "  TIME           TIMESTAMP(6)\n" +
+                ");" +
+                "create table SINGLEOPERATION\n" +
+                "(\n" +
+                "  ID           NVARCHAR2(40) not null\n" +
+                "    primary key,\n" +
+                "  OPERATIONKIND         NVARCHAR2(40),\n" +
+                "  FIRSTOPERAND CLOB,\n" +
+                "  ANSWER       CLOB,\n" +
+                "  IDSESSION    NVARCHAR2(40),\n" +
+                "  TIME         TIMESTAMP(6)\n" +
+                ");" +
+                "create table CONSTANTS\n" +
+                "(\n" +
+                "  KEY            NVARCHAR2(40) default NULL not null\n" +
+                "    primary key,\n" +
+                "  VALUE  CLOB" +
+                ");" +
+                "create table SESSIONS\n" +
+                "(\n" +
+                "  ID        NVARCHAR2(40) default NULL not null\n" +
+                "    primary key,\n" +
+                "  IP        NVARCHAR2(25),\n" +
+                "  TIMESTART TIMESTAMP,\n" +
+                "  TIMEEND   TIMESTAMP\n" +
+                ");");
     }
 
     @Test
-    @Transactional
     public void testMyMvcControllerHome() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/");
@@ -125,7 +116,6 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     public void testMyMvcControllerAbout() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/about");
@@ -135,7 +125,6 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     public void testMyMvcControllerCalc() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/calc");
@@ -145,7 +134,6 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     @WithMockUser//(roles = {"ROLE_ADMIN"})
     public void testMyMvcControllerOphistory() throws Exception {
         ResultMatcher ok = status().isOk();
@@ -156,14 +144,12 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     public void testMyMvcControllerOphistoryLOGIN() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/ophistory");
         this.mockMvc.perform(builder)
                 .andExpect(status().is(302));//редирект на страницу логина
     }
 
-    @Transactional
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void testMyMvcControllerOphistoryDENIED() throws Exception {
@@ -173,7 +159,6 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     @WithMockUser(roles = {"MATH"})
     public void testMyMvcControllerAnswer() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/answer?a=1&b=2&operation=mul");
@@ -182,7 +167,6 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     public void testMyMvcControllerRegister() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/register");
@@ -192,7 +176,6 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     public void testMyMvcControllerLogin() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/login");
@@ -202,7 +185,6 @@ public class MyTest {
     }
 
     @Test
-    @Transactional
     @WithMockUser(roles = {"ADMIN"})
     public void testMyMvcControllerAccountsManager() throws Exception {
         ResultMatcher ok = status().isOk();

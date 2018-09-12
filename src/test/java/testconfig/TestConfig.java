@@ -48,9 +48,8 @@ public class TestConfig implements WebMvcConfigurer {
 
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty(
-                "hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        //hibernateProperties.setProperty("hibernate.hbm2ddl.auto","create");
+        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");//Oracle10gDialect
+        //hibernateProperties.setProperty("hibernate.hbm2ddl.auto","update");
         return hibernateProperties;
     }
 
