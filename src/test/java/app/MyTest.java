@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
+@TransactionConfiguration(defaultRollback = false)
 @ContextConfiguration(classes = {WebConfig.class, TestConfig.class, TestSecurityConfig.class})
 public class MyTest {
 
@@ -48,10 +50,12 @@ public class MyTest {
     private SessionFactory sessionFactory;
     @Autowired
     DataSource dataSource;
+    private Connection connection;
 
 
     @Before
-    public void init() {
+    public void init() throws SQLException {
+        connection = dataSource.getConnection();
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .apply(SecurityMockMvcConfigurers.springSecurity()).build();
     }
