@@ -201,6 +201,16 @@ public class MyTest {
 
     @Test
     @Transactional
+    public void testMyMvcControllerRestCalc() throws Exception {
+        ResultMatcher ok = status().isOk();
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/register");
+        this.mockMvc.perform(builder)
+                .andExpect(view().name("register"))
+                .andExpect(ok);
+    }
+
+    @Test
+    @Transactional
     public void testMyMvcControllerLogin() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/login");
