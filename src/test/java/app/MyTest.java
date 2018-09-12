@@ -4,7 +4,9 @@ import config.SecurityConfig;
 import config.WebConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -23,6 +26,10 @@ import org.springframework.web.context.WebApplicationContext;
 import testconfig.TestConfig;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -35,20 +42,21 @@ public class MyTest {
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mockMvc;
-    @Resource
+    @Autowired
     private SessionFactory sessionFactory;
+    @Autowired
+    DataSource dataSource;
 
-    private Session session;
 
     @Before
     public void init() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .apply(SecurityMockMvcConfigurers.springSecurity()).build();
-        session = sessionFactory.openSession();
-        initDB();
     }
 
     private void initDB() {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         session.createSQLQuery("" +
                 "" +
                 "create table USERS\n" +
@@ -104,9 +112,12 @@ public class MyTest {
                 "  TIMESTART TIMESTAMP,\n" +
                 "  TIMEEND   TIMESTAMP\n" +
                 ");");
+        transaction.commit();
+        session.close();
     }
 
     @Test
+    @Transactional
     public void testMyMvcControllerHome() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/");
@@ -116,6 +127,7 @@ public class MyTest {
     }
 
     @Test
+    @Transactional
     public void testMyMvcControllerAbout() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/about");
@@ -125,6 +137,7 @@ public class MyTest {
     }
 
     @Test
+    @Transactional
     public void testMyMvcControllerCalc() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/calc");
@@ -135,6 +148,7 @@ public class MyTest {
 
     @Test
     @WithMockUser//(roles = {"ROLE_ADMIN"})
+    @Transactional
     public void testMyMvcControllerOphistory() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/ophistory");
@@ -144,6 +158,7 @@ public class MyTest {
     }
 
     @Test
+    @Transactional
     public void testMyMvcControllerOphistoryLOGIN() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/ophistory");
         this.mockMvc.perform(builder)
@@ -152,6 +167,7 @@ public class MyTest {
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
+    @Transactional
     public void testMyMvcControllerOphistoryDENIED() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/ophistory");
         this.mockMvc.perform(builder)
@@ -159,6 +175,7 @@ public class MyTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(roles = {"MATH"})
     public void testMyMvcControllerAnswer() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/answer?a=1&b=2&operation=mul");
@@ -167,6 +184,7 @@ public class MyTest {
     }
 
     @Test
+    @Transactional
     public void testMyMvcControllerRegister() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/register");
@@ -176,6 +194,7 @@ public class MyTest {
     }
 
     @Test
+    @Transactional
     public void testMyMvcControllerLogin() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/login");
@@ -186,6 +205,7 @@ public class MyTest {
 
     @Test
     @WithMockUser(roles = {"ADMIN"})
+    @Transactional
     public void testMyMvcControllerAccountsManager() throws Exception {
         ResultMatcher ok = status().isOk();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/accountsManager");
