@@ -22,7 +22,7 @@ public abstract class OperationDao {
     protected java.sql.Timestamp time;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "IDSESSION", nullable = false)
+    @JoinColumn(name = "IDSESSION")
     protected Sessions session;
 
     public OperationDao(OperationKind operationKind, String id, LongArithmethic answer, Timestamp time, Sessions session) {

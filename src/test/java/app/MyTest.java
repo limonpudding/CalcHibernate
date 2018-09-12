@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import testconfig.TestConfig;
+import testconfig.TestSecurityConfig;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -36,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebConfig.class, TestConfig.class, SecurityConfig.class})
+@ContextConfiguration(classes = {WebConfig.class, TestConfig.class, TestSecurityConfig.class})
 public class MyTest {
 
     @Autowired
@@ -165,7 +167,7 @@ public class MyTest {
                 .andExpect(status().is(302));//редирект на страницу логина
     }
 
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(roles = {"SUM_SUB"})
     @Test
     @Transactional
     public void testMyMvcControllerOphistoryDENIED() throws Exception {
@@ -204,7 +206,7 @@ public class MyTest {
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @WithUserDetails("admin")
     @Transactional
     public void testMyMvcControllerAccountsManager() throws Exception {
         ResultMatcher ok = status().isOk();

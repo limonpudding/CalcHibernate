@@ -7,6 +7,7 @@ import app.utils.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,8 @@ public class Answer extends Page {
     Logger rootLogger;
     @Autowired
     HttpServletRequest req;
+    @Autowired
+    SessionFactory sessionFactory;
 
     public ModelAndView build(Map params) throws Exception {
         String a = (String) params.get("a");
@@ -49,9 +52,9 @@ public class Answer extends Page {
         operationsHistory.getHistory(session);
         Operation operNew;
         if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
-            operNew = new SingleOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()), new LongArithmeticImplList(a));
+            operNew = new SingleOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()), new LongArithmeticImplList(a));
         } else {
-            operNew = new BinaryOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()), new LongArithmeticImplList(a), new LongArithmeticImplList(b));
+            operNew = new BinaryOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()), new LongArithmeticImplList(a), new LongArithmeticImplList(b));
         }
 
         jdbc.putOperation(operNew);
