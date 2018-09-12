@@ -21,14 +21,9 @@ public class AccountsManager extends Page {
 
     @Autowired
     JDBC jdbc;
-    @Autowired
-    SessionFactory sessionFactory;
+
     @Override
     public ModelAndView build() {
-        CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
-        CriteriaQuery<Sessions> criteria = builder.createQuery(Sessions.class);
-        criteria.from(Sessions.class);
-        List<Sessions> sessions = sessionFactory.getCurrentSession().createQuery(criteria).getResultList();
         ModelAndView mav = new ModelAndView("accountsManager");
         mav.addObject("users",jdbc.selectUsersFromBD());
         return mav;

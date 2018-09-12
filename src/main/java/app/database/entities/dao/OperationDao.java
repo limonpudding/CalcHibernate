@@ -9,6 +9,7 @@ import app.math.LongArithmethic;
 import javax.persistence.*;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Map;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

@@ -11,7 +11,6 @@ public class Constants {
     @Id
     @Column(length = 40)
     private String key;
-    @Type(type = "clob")
     private String value;
 
     public Constants() {}

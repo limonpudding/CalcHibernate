@@ -15,6 +15,7 @@ import app.utils.PageNamesConstants;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,9 @@ public class JsonController extends AbstractController {
     private final String regex = "^[-+]?[0-9]+$";
 
     @Autowired
+    SessionFactory sessionFactory;
+
+    @Autowired
     public JsonController(HttpServletRequest req, JDBC jdbc, Logger rootLogger) {
         this.req = req;
         this.jdbc = jdbc;
@@ -44,7 +48,7 @@ public class JsonController extends AbstractController {
 
     @RequestMapping(path = PageNamesConstants.REST_CALC_PAGE, method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<OperationDao> calc(
+    String calc(
             @RequestParam(value = "a") String a,
             @RequestParam(value = "b", required = false) String b,
             @RequestParam(value = "operation") String operation) throws Exception {
@@ -64,7 +68,7 @@ public class JsonController extends AbstractController {
                     UUID.randomUUID().toString(),
                     new LongArithmeticImplList(ans),
                     new Timestamp(new Date().getTime()),
-                    new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()),
+                    sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()),
                     new LongArithmeticImplList(a)
             );
         } else {
@@ -73,13 +77,13 @@ public class JsonController extends AbstractController {
                     UUID.randomUUID().toString(),
                     new LongArithmeticImplList(ans),
                     new Timestamp(new Date().getTime()),
-                    new Sessions(req.getSession().getId(),req.getRemoteAddr(),req.getSession().getCreationTime(),req.getSession().getLastAccessedTime()),
+                    sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()),
                     new LongArithmeticImplList(a),
                     new LongArithmeticImplList(b)
             );
         }
         jdbc.putOperation(operationDao.toOperation());
-        return new ResponseEntity<>(operationDao, HttpStatus.OK);
+        return operationDao.getAnswer().toString();
     }
 
     @RequestMapping(path = PageNamesConstants.REST_PAGE, method = RequestMethod.POST)

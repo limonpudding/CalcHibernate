@@ -1,5 +1,6 @@
 package app;
 
+import app.database.entities.Constants;
 import config.SecurityConfig;
 import config.WebConfig;
 import org.hibernate.Session;
@@ -10,22 +11,26 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import testconfig.TestConfig;
 import testconfig.TestSecurityConfig;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -39,7 +44,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@TransactionConfiguration(defaultRollback = false)
 @ContextConfiguration(classes = {WebConfig.class, TestConfig.class, TestSecurityConfig.class})
 public class MyTest {
 
@@ -228,5 +232,35 @@ public class MyTest {
         this.mockMvc.perform(builder)
                 .andExpect(view().name("accountsManager"))
                 .andExpect(ok);
+    }
+
+    @Test
+    @WithMockUser(roles = {"MATH"})
+    @Transactional
+    public void testRestPutConstant() throws Exception {
+        ObjectMapper om = new ObjectMapper();
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .put("/rest")
+                .header("Content-Type", "application/json")
+                .characterEncoding("UTF-8")
+                .content("{\"key\":\"one\",\"value\":\"1\"}");//om.writeValueAsString(new Constants("one","1"))
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isNoContent());
+        MockHttpServletRequestBuilder builder2 = MockMvcRequestBuilders
+                .get("/rest")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder2).andExpect(MockMvcResultMatchers.content().string("[{\"key\":\"one\",\"value\":\"1\"}]"));
+
+    }
+
+    @Test
+    @WithMockUser(roles = {"SUM_SUB"})
+    @Transactional
+    public void testRestCalc() throws Exception {
+        ObjectMapper om = new ObjectMapper();
+        ResultMatcher ok = status().isOk();
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest/calc?a=123&b=123&operation=sum")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("246"));
     }
 }
