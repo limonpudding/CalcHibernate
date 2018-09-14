@@ -62,6 +62,7 @@ public class JsonController extends AbstractController {
         print(logger, Level.INFO, CALC_LOG, req.getRemoteAddr(), operation);
         String ans = Answer.calc(a, b, operation);
         OperationDao operationDao;
+        //TODO убрать дублирование
         if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
             operationDao = new SingleOperationDao(
                     OperationKind.getOperationKind(operation),

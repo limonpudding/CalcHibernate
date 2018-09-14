@@ -52,6 +52,7 @@ public class Answer extends Page {
         HttpSession session = (HttpSession) params.get("session");
         operationsHistory.getHistory(session);
         Operation operNew;
+        //TODO Убрать дублирование кода
         if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
             operNew = new SingleOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()), new LongArithmeticImplList(a));
         } else {
@@ -87,6 +88,7 @@ public class Answer extends Page {
                 throw new AccessDeniedException("Доступ запрещён");
             Log.print(logger, Level.WARN, CALC_FIB_LOG, Integer.parseInt(strA));
         }
+        //TODO Вынести в метод проверки на роли
         switch (operation) {
             case "sum":
                 if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUM_SUB")))

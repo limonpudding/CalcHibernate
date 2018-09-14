@@ -59,6 +59,7 @@ public class TestConfig implements WebMvcConfigurer {
         return LogManager.getRootLogger();
     }
 
+    //TODO Заменить запрос на файл
     @Bean
     DataSource getDataSource() throws NamingException, SQLException {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();

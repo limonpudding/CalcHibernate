@@ -31,6 +31,7 @@ public class Reg extends Page {
         } else {
             user.setUsername((String) params.get("username"));
             user.setPassword(passwordEncoder.encode((String) params.get("password")));
+            //TODO Убрать лишний блок try catch (заменить на if)
             try {
                 jdbc.putUserInDB(user);
                 mav = new ModelAndView("login");

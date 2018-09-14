@@ -3,7 +3,7 @@ package app.math;
 import com.google.inject.AbstractModule;
 
 public class LongArithmeticModule extends AbstractModule {
-    //TODO убрать juice
+    //TODO убрать Guice
 
     @Override
     protected void configure() {
