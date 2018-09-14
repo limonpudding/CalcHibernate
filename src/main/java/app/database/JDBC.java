@@ -116,9 +116,10 @@ public class JDBC {
     @Transactional
     public void updatePostDB(UpdatePost post) {
         Constants constants = sessionFactory.getCurrentSession().get(Constants.class, post.getKeyOld());
+        sessionFactory.getCurrentSession().delete(constants);
         constants.setKey(post.getKeyNew());
         constants.setValue(post.getValue());
-        sessionFactory.getCurrentSession().update(constants);
+        sessionFactory.getCurrentSession().save(constants);
     }
 
     @Transactional

@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.NestedServletException;
 import testconfig.TestConfig;
 import testconfig.TestSecurityConfig;
 
@@ -40,6 +42,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -65,72 +71,10 @@ public class MyTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity()).build();
     }
 
-    private void initDB() {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        session.createSQLQuery("" +
-                "" +
-                "create table USERS\n" +
-                "(\n" +
-                "  USERNAME             NVARCHAR2(40) not null\n" +
-                "    primary key,\n" +
-                "  PASSWORD           NVARCHAR2(100) not null\n" +
-                ");" +
-                "INSERT INTO USERS\n" +
-                "(USERNAME,PASSWORD)\n" +
-                "VALUES  ('admin', '$2a$10$5a6vv3yJZuAbpUSU04vAce2d6MACeDHJeDspyulKzbR2.tAu5W2Tm');\n" +
-                "create table USERROLES\n" +
-                "(\n" +
-                "  ID int auto_increment primary key, \n" +
-                "  USERNAME             NVARCHAR2(40) not null,\n" +
-                "  ROLE           NVARCHAR2(40) not null\n" +
-                "); " +
-                "INSERT INTO USERROLES\n" +
-                "(USERNAME,ROLE)\n" +
-                "VALUES  ('admin', 'ROLE_ADMIN');\n" +
-                "create table BINARYOPERATION\n" +
-                "(\n" +
-                "  ID             NVARCHAR2(40) not null\n" +
-                "    primary key,\n" +
-                "  OPERATIONKIND           NVARCHAR2(40),\n" +
-                "  FIRSTOPERAND   CLOB,\n" +
-                "  SECONDOPERAND CLOB,\n" +
-                "  ANSWER         CLOB,\n" +
-                "  IDSESSION      NVARCHAR2(40),\n" +
-                "  TIME           TIMESTAMP(6)\n" +
-                ");" +
-                "create table SINGLEOPERATION\n" +
-                "(\n" +
-                "  ID           NVARCHAR2(40) not null\n" +
-                "    primary key,\n" +
-                "  OPERATIONKIND         NVARCHAR2(40),\n" +
-                "  FIRSTOPERAND CLOB,\n" +
-                "  ANSWER       CLOB,\n" +
-                "  IDSESSION    NVARCHAR2(40),\n" +
-                "  TIME         TIMESTAMP(6)\n" +
-                ");" +
-                "create table CONSTANTS\n" +
-                "(\n" +
-                "  KEY            NVARCHAR2(40) default NULL not null\n" +
-                "    primary key,\n" +
-                "  VALUE  CLOB" +
-                ");" +
-                "create table SESSIONS\n" +
-                "(\n" +
-                "  ID        NVARCHAR2(40) default NULL not null\n" +
-                "    primary key,\n" +
-                "  IP        NVARCHAR2(25),\n" +
-                "  TIMESTART TIMESTAMP,\n" +
-                "  TIMEEND   TIMESTAMP\n" +
-                ");");
-        transaction.commit();
-        session.close();
-    }
-
     private ResultActions prepareConstants() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .put("/rest")
-                .header("Content-Type", "application/json")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)//"Content-Type", "application/json"
                 .characterEncoding("UTF-8")
                 .content("{\"key\":\"one\",\"value\":\"1\"}");//om.writeValueAsString(new Constants("one","1"))
         return this.mockMvc.perform(builder);
@@ -250,19 +194,67 @@ public class MyTest {
     public void testRestPutConstant() throws Exception {
         ResultActions request = prepareConstants();
         request.andExpect(MockMvcResultMatchers.status().isNoContent());
-        MockHttpServletRequestBuilder builder2 = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .get("/rest")
                 .characterEncoding("UTF-8");
-        this.mockMvc.perform(builder2).andExpect(MockMvcResultMatchers.content().string("[{\"key\":\"one\",\"value\":\"1\"}]"));
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("[{\"key\":\"one\",\"value\":\"1\"}]"));
+    }
 
+    @Test
+    @Transactional
+    public void testRestPatchConstant() throws Exception {
+        prepareConstants();
+        MockHttpServletRequestBuilder builder2 = MockMvcRequestBuilders
+                .patch("/rest")
+                .content("{\"key\":\"one\",\"value\":\"2\"}")
+                .header("Content-Type", "application/json")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder2);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("[{\"key\":\"one\",\"value\":\"2\"}]"));
+    }
+
+    @Test
+    @Transactional
+    public void testRestDeleteConstant() throws Exception {
+        prepareConstants();
+        MockHttpServletRequestBuilder builder2 = MockMvcRequestBuilders
+                .delete("/rest")
+                .content("{\"key\":\"one\"}")
+                .header("Content-Type", "application/json")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder2);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("[]"));
+    }
+
+    @Test
+    @Transactional
+    public void testRestPostConstant() throws Exception {
+        prepareConstants();
+        MockHttpServletRequestBuilder builder2 = MockMvcRequestBuilders
+                .post("/rest")
+                .content("{\"keyOld\":\"one\",\"keyNew\":\"two\",\"value\":\"2\"}")
+                .header("Content-Type", "application/json")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder2);
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("[{\"key\":\"two\",\"value\":\"2\"}]"));
     }
 
     @Test
     @WithMockUser(roles = {"SUM_SUB"})
     @Transactional
-    public void testRestCalc() throws Exception {
-        ObjectMapper om = new ObjectMapper();
-        ResultMatcher ok = status().isOk();
+    public void testRestCalcSum() throws Exception {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .get("/rest/calc?a=123&b=123&operation=sum")
                 .characterEncoding("UTF-8");
@@ -270,15 +262,73 @@ public class MyTest {
     }
 
     @Test
+    @WithMockUser(roles = {"SUM_SUB"})
+    @Transactional
+    public void testRestCalcSub() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest/calc?a=322&b=23&operation=sub")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("299"));
+    }
+
+    @Test
     @WithMockUser(roles = {"MATH"})
     @Transactional
     public void testRestCalcMul() throws Exception {
-        ObjectMapper om = new ObjectMapper();
-        ResultMatcher ok = status().isOk();
         prepareConstants();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .get("/rest/calc?a=123&b=123&operation=mul")
                 .characterEncoding("UTF-8");
         this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("15129"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"MATH"})
+    @Transactional
+    public void testRestCalcMulWithConst() throws Exception {
+        prepareConstants();
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest/calc?a=one&b=123&operation=mul")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("123"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"MATH"})
+    @Transactional
+    public void testRestCalcDiv() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest/calc?a=573&b=100&operation=div")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("5"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"MATH"})
+    @Transactional
+    public void testRestCalcDivByZero() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest/calc?a=573&b=0&operation=div")
+                .characterEncoding("UTF-8");
+        Throwable cause = null;
+        try {
+            this.mockMvc.perform(builder);
+        } catch (NestedServletException e){
+            cause = e.getCause();
+        }
+
+        assertNotNull(cause);
+        assertEquals(ArithmeticException.class, cause.getClass());
+        assertTrue(cause.getLocalizedMessage().toLowerCase().contains("division by zero"));
+    }
+
+    @Test
+    @WithMockUser(roles = {"MATH"})
+    @Transactional
+    public void testRestCalcFib() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/rest/calc?a=10&operation=fib")
+                .characterEncoding("UTF-8");
+        this.mockMvc.perform(builder).andExpect(MockMvcResultMatchers.content().string("55"));
     }
 }
