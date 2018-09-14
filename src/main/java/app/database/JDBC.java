@@ -6,6 +6,7 @@ import app.database.entities.dto.UsersDto;
 import app.database.entities.dto.UsersMapper;
 import app.rest.Key;
 import app.rest.UpdatePost;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
@@ -23,11 +24,11 @@ import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import static app.utils.Log.*;
 
 @Repository
 public class JDBC {
 
-    //TODO поменять все логгеры на сниппет
     @Autowired
     private DataSource dataSource;
     @Autowired
@@ -36,7 +37,6 @@ public class JDBC {
     private Logger rootLogger;
     @Autowired
     private SessionFactory sessionFactory;
-
 
     JDBC() {}
 
@@ -73,7 +73,7 @@ public class JDBC {
         sessions.setTimeStart(new Timestamp(req.getSession().getCreationTime()));
         sessions.setTimeEnd(new Timestamp(req.getSession().getLastAccessedTime()));
         sessionFactory.getCurrentSession().save(sessions);
-        rootLogger.info("В базу даных добалена новая сессия с ID: " + req.getSession().getId());
+        print(rootLogger, Level.INFO, "В базу даных добалена новая сессия с ID: {}", req.getSession().getId());
     }
 
     @Transactional
@@ -85,7 +85,7 @@ public class JDBC {
         }
         sessions.setTimeEnd(new Timestamp(req.getSession().getLastAccessedTime()));
         sessionFactory.getCurrentSession().update(sessions);
-        rootLogger.info("В базе данных обновлена сессия с ID: " + req.getSession().getId());
+        print(rootLogger, Level.INFO, "В базе данных обновлена сессия с ID: {}", req.getSession().getId());
     }
 
 
@@ -97,7 +97,7 @@ public class JDBC {
     @Transactional
     public void putUserInDB(Users user) {
         sessionFactory.getCurrentSession().save(user);
-        rootLogger.info("В БД добавлен пользователь: " + user.getUsername() + " " + user.getPassword());
+        print(rootLogger, Level.INFO, "В БД добавлен пользователь с логином \'{}\' и паролем \'{}\'", user.getUsername(), user.getPassword());
     }
 
     @Transactional
@@ -105,7 +105,7 @@ public class JDBC {
         Users user = sessionFactory.getCurrentSession().get(Users.class, username);
         user.deleteUserrole(role);
         sessionFactory.getCurrentSession().update(user);
-        rootLogger.info("В БД убрано право пользователя: " + username + " " + role.getName());
+        print(rootLogger, Level.INFO, "В БД убрано право пользователя с логином \'{}\' и паролем \'{}\'", username, role.getName());
     }
 
     @Transactional
@@ -113,7 +113,7 @@ public class JDBC {
         Users user = sessionFactory.getCurrentSession().get(Users.class, username);
         user.addUserrole(role);
         sessionFactory.getCurrentSession().update(user);
-        rootLogger.info("В БД добавлено право пользователя: " + username + " " + role.getName());
+        print(rootLogger, Level.INFO, "В БД добавлено право пользователя с логином \'{}\' и паролем \'{}\'", username, role.getName());
     }
 
     @Transactional
@@ -153,7 +153,6 @@ public class JDBC {
     @Transactional
     public List<Sessions> selectSessionsFromBD(String mode, String order) {
         CriteriaBuilder builder = sessionFactory.getCurrentSession().getCriteriaBuilder();
-
         CriteriaQuery<Sessions> criteria = builder.createQuery(Sessions.class);
         Root criteriaRoot = criteria.from(Sessions.class);
         if ("ASC".equals(order.toUpperCase())) {
@@ -187,7 +186,6 @@ public class JDBC {
                     break;
             }
         }
-
         return operations;
     }
 }

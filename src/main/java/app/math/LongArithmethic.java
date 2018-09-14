@@ -1,5 +1,6 @@
 package app.math;
 
+
 import java.io.IOException;
 
 public interface LongArithmethic extends Comparable<LongArithmethic> {

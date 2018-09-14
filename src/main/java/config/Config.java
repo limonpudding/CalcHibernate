@@ -1,6 +1,8 @@
 package config;
 
 
+import app.math.LongArithmethic;
+import app.math.LongArithmeticImplList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class Config implements WebMvcConfigurer {
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }
+
+
 
     @Bean
     @Autowired

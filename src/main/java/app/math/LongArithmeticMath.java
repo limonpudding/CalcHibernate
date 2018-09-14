@@ -1,24 +1,33 @@
 package app.math;
 
+import app.utils.ApplicationContextProvider;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.ServletContext;
 import java.util.Stack;
 
+@Component
 public class LongArithmeticMath {
 
+    @Autowired
+    static BeanFactory beanFactory;
+
     private static int n = 10000;//максимальная длина числа
-    private static Injector injector = Guice.createInjector(new LongArithmeticModule());
     public static void setDigitsCount(int dimension) {
         n = dimension;
     }
 
-    @Inject
     public static LongArithmethic sum(LongArithmethic addendum, LongArithmethic term) {
         LongArithmethic a = addendum;
         LongArithmethic b = term;
-        LongArithmethic result = injector.getInstance(LongArithmethic.class);
+        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
         result.setSign(a.getSign());
         if (a.getSign() == Sign.PLUS && b.getSign() == Sign.MINUS) {
             b.setSign(Sign.PLUS);
@@ -47,11 +56,10 @@ public class LongArithmeticMath {
      * @param factor     второй множитель
      * @return результат умножения
      */
-    @Inject
     public static LongArithmethic mul(LongArithmethic multiplied, LongArithmethic factor) {
         LongArithmethic a = multiplied;
         LongArithmethic b = factor;
-        LongArithmethic result = injector.getInstance(LongArithmethic.class);
+        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
         if (a.getSign() != b.getSign()) {
             result.setSign(Sign.MINUS);
         }
@@ -88,7 +96,6 @@ public class LongArithmeticMath {
      * @param subtrahend Вычетаемое значение
      * @return Разность
      */
-    @Inject
     public static LongArithmethic sub(LongArithmethic minuend, LongArithmethic subtrahend) {
         LongArithmethic a = minuend;
         LongArithmethic b = subtrahend;
@@ -108,7 +115,7 @@ public class LongArithmeticMath {
         }
 
         int maxLength = a.getLength() > b.getLength() ? a.getLength() : b.getLength();
-        LongArithmethic c = injector.getInstance(LongArithmethic.class);
+        LongArithmethic c = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
 
         if (a.compareTo(b) == -1) {
             LongArithmethic temp = a;
@@ -136,7 +143,6 @@ public class LongArithmeticMath {
      * @param b Делитель
      * @return Результат деления без остатка
      */
-    @Inject
     public static LongArithmethic div(LongArithmethic a, LongArithmethic b) {
         LongArithmethic result;
         Sign sign = Sign.PLUS;
