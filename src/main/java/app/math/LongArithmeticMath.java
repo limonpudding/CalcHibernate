@@ -3,7 +3,6 @@ package app.math;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.springframework.security.access.annotation.Secured;
 
 import java.util.Stack;
 
@@ -129,20 +128,6 @@ public class LongArithmeticMath {
         c.getLength();
         return c;
     }
-
-    /*  1 если a>b
-        0 a=b
-       -1 a<b
-     */
-
-    /**
-     * Функция сравнения двух длинных чисел.
-     *
-     * @param a Первое число для сравнения
-     * @param b Второе число для сравнения
-     * @return результат сравнения: 1 если a больше b; 0 a равно b; -1 a меньше b.
-     */
-
 
     /**
      * Функция деления без остатка двух длинных чисел

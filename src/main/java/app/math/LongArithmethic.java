@@ -1,12 +1,8 @@
 package app.math;
 
-
-import javax.persistence.Converter;
 import java.io.IOException;
 
 public interface LongArithmethic extends Comparable<LongArithmethic> {
-
-    byte[] getDigits();
 
     void setValue(String strValue) throws IOException;
 

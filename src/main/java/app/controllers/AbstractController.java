@@ -4,6 +4,7 @@ import app.database.JDBC;
 import app.utils.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ public abstract class AbstractController {
     private DataSource dataSource;
     @Autowired
     private Logger rootLogger;
-    protected void init() {
+    void init() {
         if (req.getSession().isNew()) {
             jdbc.putSession();
             Log.print(rootLogger, Level.INFO, USER_CONNECTED_LOG, req.getRemoteAddr());

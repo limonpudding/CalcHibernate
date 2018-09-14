@@ -1,9 +1,7 @@
 package app.database.entities.dto;
 
 import app.database.entities.Roles;
-import app.database.entities.Users;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 

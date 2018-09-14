@@ -1,8 +1,5 @@
 package app.database.entities;
 
-import app.database.entities.Roles;
-import app.database.entities.Users;
-
 import javax.persistence.*;
 import java.io.Serializable;
 

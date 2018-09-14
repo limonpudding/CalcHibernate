@@ -11,14 +11,15 @@ import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 @Repository
 public class JDBC {
 
+    //TODO поменять все логгеры на сниппет
     @Autowired
     private DataSource dataSource;
     @Autowired
@@ -36,8 +38,7 @@ public class JDBC {
     private SessionFactory sessionFactory;
 
 
-    JDBC() {
-    }
+    JDBC() {}
 
     @PostConstruct
     public void init() {
@@ -48,6 +49,8 @@ public class JDBC {
     public void putOperation(Operation operation) {
         sessionFactory.getCurrentSession().save(operation.toDto());
     }
+
+    //TODO создать конструкторы для Entity
 
     @Transactional
     public List<UsersDto> selectUsersFromBD() {

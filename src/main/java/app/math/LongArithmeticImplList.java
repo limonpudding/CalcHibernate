@@ -88,15 +88,6 @@ public class LongArithmeticImplList implements LongArithmethic {
         }
     }
 
-    public byte[] getDigits() {
-        int i = 0;
-        byte[] arr = new byte[digits.size()];
-        for (Byte obj : digits) {
-            arr[i++] = obj;
-        }
-        return arr;
-    }
-
     public void setDigit(byte digit, int index) {
         int len = digits.size();
         while (index + 1 > len) {

@@ -1,6 +1,5 @@
 package app.pages.logic;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 

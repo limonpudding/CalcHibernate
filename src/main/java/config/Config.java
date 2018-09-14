@@ -11,7 +11,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
@@ -59,15 +58,12 @@ public class Config implements WebMvcConfigurer {
         return LogManager.getRootLogger();
     }
 
+
+    //TODO перенести в отдельный DDL файл
     @Bean
     DataSource getDataSource() throws NamingException, SQLException {
         String dbName = context.getInitParameter("dbName");
         DataSource dataSource = (DataSource) new InitialContext().lookup("java:comp/env/" + dbName);
-//        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-//        dataSource.setDriverClass(org.h2.Driver.class);
-//        dataSource.setUrl("jdbc:h2:mem:test");
-//        dataSource.setUsername("asd");
-//        dataSource.setPassword("asd");
         if (dataSource.getConnection().getMetaData().getDatabaseProductName().toUpperCase().contains("H2")) {
 
             try (Connection connection = dataSource.getConnection()) {
@@ -127,11 +123,9 @@ public class Config implements WebMvcConfigurer {
                         "  TIMEEND   TIMESTAMP\n" +
                         ");"
                 );
-
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-
             return dataSource;
         } else if (dataSource.getConnection().getMetaData().getDatabaseProductName().toUpperCase().contains("ORACLE")) {
             return dataSource;

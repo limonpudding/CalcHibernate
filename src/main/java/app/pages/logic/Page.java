@@ -1,8 +1,6 @@
 package app.pages.logic;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.servlet.ModelAndView;
-
 import java.util.Map;
 
 public abstract class Page {

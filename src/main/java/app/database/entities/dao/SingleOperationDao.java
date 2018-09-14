@@ -7,7 +7,9 @@ import app.database.entities.SingleOperation;
 import app.database.entities.dao.converters.ConverterLongArithmetic;
 import app.math.LongArithmethic;
 
-import javax.persistence.*;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.IOException;
 import java.sql.Timestamp;
 
@@ -16,7 +18,7 @@ import java.sql.Timestamp;
 public class SingleOperationDao extends OperationDao {
 
     @Convert(converter = ConverterLongArithmetic.class)
-    protected LongArithmethic firstOperand;
+    private LongArithmethic firstOperand;
 
     public SingleOperationDao(OperationKind operationKind,
                               String id,

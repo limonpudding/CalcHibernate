@@ -2,7 +2,6 @@ package app.security;
 
 import app.database.entities.Roles;
 import app.database.entities.Users;
-import app.database.entities.Userroles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,12 +11,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.springframework.security.core.userdetails.User.*;
-
+import static org.springframework.security.core.userdetails.User.UserBuilder;
 
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {

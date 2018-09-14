@@ -5,11 +5,9 @@ import app.database.entities.OperationKind;
 import app.database.entities.Sessions;
 import app.database.entities.dao.converters.ConverterLongArithmetic;
 import app.math.LongArithmethic;
-
 import javax.persistence.*;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Map;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

@@ -1,14 +1,12 @@
 package app.pages.logic;
 
 import app.database.JDBC;
-import app.database.entities.Roles;
 import app.database.entities.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
-
 import java.util.Map;
 
 @Service("getReg")

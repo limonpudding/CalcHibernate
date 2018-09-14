@@ -2,7 +2,10 @@ package app.pages.logic;
 
 import app.database.JDBC;
 import app.database.entities.*;
-import app.math.*;
+import app.math.Fibonacci;
+import app.math.LongArithmethic;
+import app.math.LongArithmeticImplList;
+import app.math.LongArithmeticMath;
 import app.utils.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -12,21 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-import static app.utils.Log.*;
+import static app.utils.Log.CALC_FIB_LOG;
 
 @Service("getAnswer")
 public class Answer extends Page {

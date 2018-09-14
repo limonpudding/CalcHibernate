@@ -7,7 +7,7 @@
             <c:when test="${not empty exception}">
                 <h3>Ошибка: ${exception}</h3>
             </c:when>
-            <c:otherwise><%--@elvariable id="answer" type="java"--%>
+            <c:otherwise>
                 <div class="form-group">
                     <label for="exampleFormControlTextarea1">Ответ:</label>
                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="8" readonly>${answer}</textarea>
@@ -19,7 +19,6 @@
                         <c:forEach var="operation" items="${operationsHistory}">
                             ${operation.toString()}
                         </c:forEach>
-                            <%--${strOperationsHistory}--%>
                     </textarea>
                 </div>
             </c:otherwise>

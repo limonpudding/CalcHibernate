@@ -2,14 +2,16 @@ package app.controllers;
 
 import app.database.JDBC;
 import app.database.entities.Roles;
-import app.database.entities.Users;
 import app.pages.logic.Page;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -54,8 +56,6 @@ public class MainController extends AbstractController {
         this.jdbc = jdbc;
     }
 
-    //TODO привязать через Autowired и Qualifier реализации созданного абстрактного класса для каждого представления свою.
-
     @RequestMapping(path = ROOT_PAGE)
     public ModelAndView getHome() throws Exception {
         init();
@@ -82,7 +82,6 @@ public class MainController extends AbstractController {
             @RequestParam(value = "operation") String operation,
             HttpSession session) throws Exception {
         init();
-        //TODO убрать получение экземпляра напрямую из контекста.
         Map<String, Object> params = new HashMap<>();
         params.put("a", a);
         params.put("b", b);

@@ -2,19 +2,15 @@ package app.math;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class LongArithmeticImpl implements LongArithmethic {//реализация интерфейса LongArithmetic
+public class LongArithmeticImpl implements LongArithmethic {
 
     private static int n = 10000;//максимальная длина числа
     private byte[] digits = new byte[n];
     private int length = 1;
-    Sign sign = Sign.PLUS;
+    private Sign sign = Sign.PLUS;
 
     private boolean isDigit(char x) {
-        if (x >= '0' && x <= '9') {
-            return true;
-        } else {
-            return false;
-        }
+        return x >= '0' && x <= '9';
     }
 
     public LongArithmeticImpl(String number) {
@@ -77,14 +73,6 @@ public class LongArithmeticImpl implements LongArithmethic {//реализаци
         digits[index] = digit;
     }
 
-    public byte[] getDigits() {
-        return digits;
-    }
-
-    public void setDigits(byte[] digits) {
-        this.digits = digits;
-    }
-
     public void setLength(int length) {
         this.length = length;
     }
@@ -97,7 +85,10 @@ public class LongArithmeticImpl implements LongArithmethic {//реализаци
 
     public int getLength() {
         int i;
-        for (i = n - 1; i >= 0 && digits[i] == 0; --i) ;
+        i = n - 1;
+        while (i >= 0 && digits[i] == 0) {
+            --i;
+        }
         length = i + 1;
         return length;
     }
@@ -123,8 +114,10 @@ public class LongArithmeticImpl implements LongArithmethic {//реализаци
     }
 
     public int compareTo(LongArithmethic o) {
-        int i = 0;
-        for (i = n - 1; i >= 0 && digits[i] == 0 && o.getDigit(i) == 0; --i) ;
+        int i = n - 1;
+        while (i >= 0 && digits[i] == 0 && o.getDigit(i) == 0) {
+            --i;
+        }
         while (i >= 0 && digits[i] == o.getDigit(i))
             --i;
         if (i < 0)

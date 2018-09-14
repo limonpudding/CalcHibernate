@@ -11,7 +11,6 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
     @Autowired
     SessionFactory sessionFactory;
 
-
     @Override
     public Users findUserByUsername(String username) {
         return sessionFactory.getCurrentSession().get(Users.class,username);

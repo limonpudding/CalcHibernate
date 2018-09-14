@@ -38,8 +38,6 @@
                     <div class="dropdown-menu" aria-labelledby="loginDropdown">
                         <a class="dropdown-item" href="/login">Вход</a>
                         <a class="dropdown-item" href="/register">Регистрация</a>
-                            <%--<div class="dropdown-divider"></div>--%>
-                            <%--<a class="dropdown-item" href="#">Something else here</a>--%>
                     </div>
                 </li>
             </sec:authorize>
@@ -53,20 +51,7 @@
                 </li>
 
             </sec:authorize>
-            <%--<li class="nav-item dropdown">--%>
-                <%--<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Авторизация</a>--%>
-                <%--<div class="dropdown-menu" aria-labelledby="navbarDropdown1">--%>
-                    <%--<a class="dropdown-item" href="/login">Вход</a>--%>
-                    <%--<a class="dropdown-item" href="/register">Регистрация</a>--%>
-                    <%--&lt;%&ndash;<div class="dropdown-divider"></div>&ndash;%&gt;--%>
-                    <%--&lt;%&ndash;<a class="dropdown-item" href="#">Something else here</a>&ndash;%&gt;--%>
-                <%--</div>--%>
-            <%--</li>--%>
         </ul>
-        <!--<form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
-        </form>-->
     </div>
     </div>
 </nav>

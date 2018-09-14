@@ -39,7 +39,7 @@
             method: "POST",
             url: "/roleChange",
             data: userRole,
-            success: successMessage("Вы успешно "+((type==="add")?"добавили":"удалили")+" роль "+role+" для пользователя "+username),
+            success: successMessage("Вы успешно " + ((type === "add") ? "добавили" : "удалили") + " роль " + role + " для пользователя " + username),
             statusCode: {
                 200: function () { // выполнить функцию если код ответа HTTP 200
                     console.log("Ok");
@@ -103,7 +103,8 @@
         </c:forEach>
         </tbody>
     </table>
-    <div class="alert alert-success alert-dismissible alert-dismissible fade show" role="alert" style="position: fixed; bottom: 60px; left: 0; padding: 15px; visi" id="success">
+    <div class="alert alert-success alert-dismissible alert-dismissible fade show" role="alert"
+         style="position: fixed; bottom: 60px; left: 0; padding: 15px;" id="success">
     </div>
 </div>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"

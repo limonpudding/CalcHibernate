@@ -1,5 +1,5 @@
 package app.pages.logic;
-
+//TODO удалить класс RESTParams
 public class RESTParams {
     private String a;
     private String b;
