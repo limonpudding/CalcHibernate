@@ -7,6 +7,7 @@ import app.math.LongArithmethic;
 import app.math.LongArithmeticImplList;
 import app.math.LongArithmeticMath;
 import app.utils.Log;
+import app.utils.OperationBuilder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,13 +53,13 @@ public class Answer extends Page {
         HttpSession session = (HttpSession) params.get("session");
         operationsHistory.getHistory(session);
         Operation operNew;
-        //TODO Убрать дублирование кода
-        if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
-            operNew = new SingleOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()), new LongArithmeticImplList(a));
-        } else {
-            operNew = new BinaryOperation(OperationKind.getOperationKind(operation), UUID.randomUUID().toString(), new LongArithmeticImplList(ans), sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()), new LongArithmeticImplList(a), new LongArithmeticImplList(b));
-        }
-
+        OperationBuilder builder = new OperationBuilder();
+        builder.setAnswer(ans);
+        builder.setFirstOperand(a);
+        builder.setSecondOperand(b);
+        builder.setOperationKind(OperationKind.getOperationKind(operation));
+        builder.setSession(sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()));
+        operNew=builder.build().toOperation();
         jdbc.putOperation(operNew);
 
         operationsHistory.addOperation(operNew);
@@ -84,41 +85,39 @@ public class Answer extends Page {
         }
 
         if ("fib".equals(operation) && Integer.parseInt(strA) > 50000) {
-            if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
-                throw new AccessDeniedException("Доступ запрещён");
+            ThrowExceptionIfAccessDenied(auth,"ROLE_ADMIN");
             Log.print(logger, Level.WARN, CALC_FIB_LOG, Integer.parseInt(strA));
         }
-        //TODO Вынести в метод проверки на роли
         switch (operation) {
             case "sum":
-                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUM_SUB")))
-                    throw new AccessDeniedException("Доступ запрещён");
+                ThrowExceptionIfAccessDenied(auth,"ROLE_SUM_SUB");
                 res = LongArithmeticMath.sum(a, b);
                 break;
             case "sub":
-                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SUM_SUB")))
-                    throw new AccessDeniedException("Доступ запрещён");
+                ThrowExceptionIfAccessDenied(auth,"ROLE_SUM_SUB");
                 res = LongArithmeticMath.sub(a, b);
                 break;
             case "mul":
-                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH")))
-                    throw new AccessDeniedException("Доступ запрещён");
+                ThrowExceptionIfAccessDenied(auth,"ROLE_MATH");
                 res = LongArithmeticMath.mul(a, b);
                 break;
             case "div":
-                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH")))
-                    throw new AccessDeniedException("Доступ запрещён");
+                ThrowExceptionIfAccessDenied(auth,"ROLE_MATH");
                 res = LongArithmeticMath.div(a, b);
                 break;
             case "fib":
-                if(!auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MATH")))
-                    throw new AccessDeniedException("Доступ запрещён");
+                ThrowExceptionIfAccessDenied(auth,"ROLE_MATH");
                 res = new Fibonacci(Integer.parseInt(strA)).number;
                 break;
             default:
                 throw new IOException("Unexpected operation!");
         }
         return res.toString();
+    }
+
+    private static void ThrowExceptionIfAccessDenied(Authentication authentication, String role){
+        if(!authentication.getAuthorities().contains(new SimpleGrantedAuthority(role)))
+            throw new AccessDeniedException("Доступ запрещён");
     }
 
 

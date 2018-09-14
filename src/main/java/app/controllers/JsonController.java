@@ -4,13 +4,12 @@ import app.database.JDBC;
 import app.database.entities.Constants;
 import app.database.entities.OperationKind;
 import app.database.entities.Sessions;
-import app.database.entities.dao.BinaryOperationDao;
 import app.database.entities.dao.OperationDao;
-import app.database.entities.dao.SingleOperationDao;
 import app.math.LongArithmeticImplList;
 import app.pages.logic.Answer;
 import app.rest.Key;
 import app.rest.UpdatePost;
+import app.utils.OperationBuilder;
 import app.utils.PageNamesConstants;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -22,9 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.UUID;
 
 import static app.utils.Log.*;
 
@@ -62,27 +58,13 @@ public class JsonController extends AbstractController {
         print(logger, Level.INFO, CALC_LOG, req.getRemoteAddr(), operation);
         String ans = Answer.calc(a, b, operation);
         OperationDao operationDao;
-        //TODO убрать дублирование
-        if (OperationKind.getOperationKind(operation) == OperationKind.FIB) {
-            operationDao = new SingleOperationDao(
-                    OperationKind.getOperationKind(operation),
-                    UUID.randomUUID().toString(),
-                    new LongArithmeticImplList(ans),
-                    new Timestamp(new Date().getTime()),
-                    sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()),
-                    new LongArithmeticImplList(a)
-            );
-        } else {
-            operationDao = new BinaryOperationDao(
-                    OperationKind.getOperationKind(operation),
-                    UUID.randomUUID().toString(),
-                    new LongArithmeticImplList(ans),
-                    new Timestamp(new Date().getTime()),
-                    sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()),
-                    new LongArithmeticImplList(a),
-                    new LongArithmeticImplList(b)
-            );
-        }
+        OperationBuilder builder = new OperationBuilder();
+        builder.setAnswer(ans);
+        builder.setFirstOperand(a);
+        builder.setSecondOperand(b);
+        builder.setOperationKind(OperationKind.getOperationKind(operation));
+        builder.setSession(sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()));
+        operationDao=builder.build();
         jdbc.putOperation(operationDao.toOperation());
         return operationDao.getAnswer().toString();
     }
