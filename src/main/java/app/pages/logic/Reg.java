@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
@@ -26,6 +27,7 @@ public class Reg extends Page {
     }
 
     @Override
+    @Transactional
     public ModelAndView build(Map params) {
         ModelAndView mav;
         Users user = new Users();
@@ -35,7 +37,7 @@ public class Reg extends Page {
         } else {
             user.setUsername((String) params.get("username"));
             user.setPassword(passwordEncoder.encode((String) params.get("password")));
-            if (userDetailsDao.findUserByUsername(user.getUsername()) != null) {
+            if (userDetailsDao.findUserByUsername(user.getUsername()) == null) {
                 jdbc.putUserInDB(user);
                 mav = new ModelAndView("login");
                 mav.addObject("message", "Вы успешно зарегистрировались! Пожалуйста, войдите под своей учётной записью");
