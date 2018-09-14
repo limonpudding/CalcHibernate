@@ -2,11 +2,13 @@ package app.pages.logic;
 
 import app.database.JDBC;
 import app.database.entities.Users;
+import app.security.UserDetailsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
+
 import java.util.Map;
 
 @Service("getReg")
@@ -14,11 +16,13 @@ public class Reg extends Page {
 
     private final JDBC jdbc;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsDao userDetailsDao;
 
     @Autowired
-    public Reg(JDBC jdbc, PasswordEncoder passwordEncoder) {
+    public Reg(JDBC jdbc, PasswordEncoder passwordEncoder, UserDetailsDao userDetailsDao) {
         this.jdbc = jdbc;
         this.passwordEncoder = passwordEncoder;
+        this.userDetailsDao = userDetailsDao;
     }
 
     @Override
@@ -31,12 +35,11 @@ public class Reg extends Page {
         } else {
             user.setUsername((String) params.get("username"));
             user.setPassword(passwordEncoder.encode((String) params.get("password")));
-            //TODO Убрать лишний блок try catch (заменить на if)
-            try {
+            if (userDetailsDao.findUserByUsername(user.getUsername()) != null) {
                 jdbc.putUserInDB(user);
                 mav = new ModelAndView("login");
                 mav.addObject("message", "Вы успешно зарегистрировались! Пожалуйста, войдите под своей учётной записью");
-            } catch (DataIntegrityViolationException e){
+            } else {
                 mav = new ModelAndView("register");
                 mav.addObject("error", "Пользователь с таким именем уже существует");
             }

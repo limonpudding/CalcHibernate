@@ -4,6 +4,7 @@ import app.database.entities.dao.OperationDao;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,13 @@ public class Sessions {
         this.ip = ip;
         this.timeStart = new Timestamp(timeStart);
         this.timeEnd = new Timestamp(timeEnd);
+    }
+
+    public Sessions(String id, String ip) {
+        this.id = id;
+        this.ip = ip;
+        this.timeStart = new Timestamp(new Date().getTime());
+        this.timeEnd = new Timestamp(new Date().getTime());
     }
 
     @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)

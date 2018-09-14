@@ -50,7 +50,6 @@ public class JDBC {
         sessionFactory.getCurrentSession().save(operation.toDto());
     }
 
-    //TODO создать конструкторы для Entity
 
     @Transactional
     public List<UsersDto> selectUsersFromBD() {
@@ -67,11 +66,9 @@ public class JDBC {
 
     @Transactional
     public void putSession() {
-        Sessions sessions = new Sessions();
-        sessions.setId(req.getSession().getId());
-        sessions.setIp(req.getRemoteAddr());
-        sessions.setTimeStart(new Timestamp(req.getSession().getCreationTime()));
-        sessions.setTimeEnd(new Timestamp(req.getSession().getLastAccessedTime()));
+        Sessions sessions = new Sessions(
+                req.getSession().getId(),
+                req.getRemoteAddr());
         sessionFactory.getCurrentSession().save(sessions);
         print(rootLogger, Level.INFO, "В базу даных добалена новая сессия с ID: {}", req.getSession().getId());
     }
