@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
+import java.io.IOException;
 import java.util.Stack;
 
 @Component
@@ -17,6 +18,7 @@ public class LongArithmeticMath {
     static BeanFactory beanFactory;
 
     private static int n = 10000;//максимальная длина числа
+
     public static void setDigitsCount(int dimension) {
         n = dimension;
     }
@@ -46,13 +48,7 @@ public class LongArithmeticMath {
         return result;
     }
 
-    /**
-     * Функция умножения двух длинных чисел
-     *
-     * @param multiplied первый множитель
-     * @param factor     второй множитель
-     * @return результат умножения
-     */
+
     public static LongArithmethic mul(LongArithmethic multiplied, LongArithmethic factor) {
         LongArithmethic a = multiplied;
         LongArithmethic b = factor;
@@ -75,6 +71,51 @@ public class LongArithmeticMath {
                 result.setDigit((byte) (result.getDigit(result.getLengthMul()) + (tmp % 10)), result.getLengthMul());
             result.setLength(result.getLength());
             tmp = 0;
+        }
+        return result;
+    }
+
+    /**
+     * Функция умножения двух длинных чисел
+     *
+     * @param multiplied первый множитель
+     * @param factor     второй множитель
+     * @return результат умножения
+     */
+    public static LongArithmethic newMul(LongArithmethic multiplied, LongArithmethic factor) {
+        LongArithmethic a = multiplied;
+        LongArithmethic b = factor;
+        Stack <LongArithmethic> rows = new Stack<>();
+        Stack <Thread> mulHelper = new Stack<>();
+        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
+        if (a.getSign() != b.getSign()) {
+            result.setSign(Sign.MINUS);
+        }
+        for (int i = 0; i < b.getLength(); ++i) {
+            LongArithmethic row = new LongArithmeticImplList();
+            rows.add(row);
+            mulHelper.add(new Thread(new MulHelper(a,b.getDigit(i),i,row)));
+        }
+        for (Thread thread:mulHelper){
+            thread.start();
+        }
+        for (Thread thread:mulHelper){
+            try {
+                thread.join();
+            } catch (InterruptedException ignored) {
+            }
+        }
+        return masSum(rows);
+    }
+
+    public static LongArithmethic masSum(Stack<LongArithmethic> terms) {
+        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
+        try {
+            result.setValue("0");
+        } catch (IOException ignored) {
+        }
+        for (LongArithmethic term : terms) {
+            result = LongArithmeticMath.sum(term, result);
         }
         return result;
     }
@@ -151,7 +192,7 @@ public class LongArithmeticMath {
         }
         if (a.compareTo(b) < 0) {
             return LongConst.ZERO.getValue();
-        } else if (a.compareTo(b) == 0){
+        } else if (a.compareTo(b) == 0) {
             result = LongConst.ONE.getValue();
             result.setSign(sign);
             return result;
