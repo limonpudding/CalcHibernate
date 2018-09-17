@@ -65,8 +65,9 @@ public class OperationBuilder {
         this.secondOperand = secondOperand;
     }
 
-    public OperationDao build(){
-        //TODO сделать искючение если не все поля заполнены.
+    public OperationDao build() throws Exception {
+        if (operationKind==null||id==null||session==null)
+            throw new Exception("Не все поля заполнены");
         if (operationKind==OperationKind.FIB) {
             return new SingleOperationDao(operationKind,id,answer,time,session,firstOperand);
         } else {
