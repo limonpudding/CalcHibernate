@@ -162,11 +162,13 @@ public class LongArithmeticMath {
         return result;
     }
 
+    private final static int threadsCount = 2;
+
     public static LongArithmethic futureMulAdv(LongArithmethic multiplied, LongArithmethic factor) {
         LongArithmethic a = multiplied;
         LongArithmethic b = factor;
         Stack<Future<LongArithmethic>> futures = new Stack<>();
-        ExecutorService threadPool = Executors.newFixedThreadPool(8);
+        ExecutorService threadPool = Executors.newFixedThreadPool(threadsCount);
         LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
         try {
             result.setValue("0");
@@ -176,14 +178,14 @@ public class LongArithmeticMath {
         if (a.getSign() != b.getSign()) {
             result.setSign(Sign.MINUS);
         }
-        for (int i = 0; i < 8; ++i) {
-            final int it = b.getLength()/8*i;
+        for (int i = 0; i < threadsCount; ++i) {
+            final int it = b.getLength()/threadsCount*i;
             futures.add(CompletableFuture.supplyAsync(
                     () -> {
                         LongArithmethic tempAnswer = LongConst.ZERO.getValue();
                         //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " start");
-                        for (int j = it; j < it + b.getLength() / 8; ++j)
-                            tempAnswer = LongArithmeticMath.sum(mulHelp(b.getDigit(it), it, a), tempAnswer);
+                        for (int j = it; j < it + b.getLength() / threadsCount; ++j)
+                            tempAnswer = LongArithmeticMath.sum(mulHelp(b.getDigit(j), j, a), tempAnswer);
                         //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " finish");
                         return tempAnswer;
                     },
@@ -198,7 +200,7 @@ public class LongArithmeticMath {
             }
         }
 
-        for(int i=b.getLength()-b.getLength()%8;i<b.getLength();++i) {
+        for(int i=b.getLength()-b.getLength()%threadsCount;i<b.getLength();++i) {
             result = LongArithmeticMath.sum(mulHelp(b.getDigit(i), i, a), result);
         }
 
