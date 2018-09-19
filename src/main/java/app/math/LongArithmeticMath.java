@@ -10,6 +10,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.util.Stack;
+import java.util.concurrent.*;
 
 @Component
 public class LongArithmeticMath {
@@ -85,8 +86,8 @@ public class LongArithmeticMath {
     public static LongArithmethic newMul(LongArithmethic multiplied, LongArithmethic factor) {
         LongArithmethic a = multiplied;
         LongArithmethic b = factor;
-        Stack <LongArithmethic> rows = new Stack<>();
-        Stack <Thread> mulHelper = new Stack<>();
+        Stack<LongArithmethic> rows = new Stack<>();
+        Stack<Thread> mulHelper = new Stack<>();
         LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
         if (a.getSign() != b.getSign()) {
             result.setSign(Sign.MINUS);
@@ -94,18 +95,67 @@ public class LongArithmeticMath {
         for (int i = 0; i < b.getLength(); ++i) {
             LongArithmethic row = new LongArithmeticImplList();
             rows.add(row);
-            mulHelper.add(new Thread(new MulHelper(a,b.getDigit(i),i,row)));
+            mulHelper.add(new Thread(new MulHelper(a, b.getDigit(i), i, row)));
         }
-        for (Thread thread:mulHelper){
+        for (Thread thread : mulHelper) {
             thread.start();
         }
-        for (Thread thread:mulHelper){
+        for (Thread thread : mulHelper) {
             try {
                 thread.join();
             } catch (InterruptedException ignored) {
             }
         }
         return masSum(rows);
+    }
+
+    private static LongArithmethic mulHelp(int digit, int i, LongArithmethic a) {
+        int tmp1, tmp = 0;
+        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
+        for (int j = 0; j < a.getLength(); ++j) {
+            tmp1 = result.getDigit(j + i);
+            result.setDigit((byte) ((a.getDigit(j) * digit + tmp1 + tmp) % 10), j + i);
+            tmp = (byte) (tmp1 + a.getDigit(j) * digit + tmp) / 10;
+        }
+        if (tmp > 0) {
+            result.setDigit((byte) (result.getDigit(result.getLengthMul()) + (tmp % 10)), result.getLengthMul());
+        }
+        result.setLength(result.getLength());
+        return result;
+    }
+
+
+    public static LongArithmethic futureMul(LongArithmethic multiplied, LongArithmethic factor) {
+        LongArithmethic a = multiplied;
+        LongArithmethic b = factor;
+        Stack<Future<LongArithmethic>> futures = new Stack<>();
+        ExecutorService threadPool = Executors.newFixedThreadPool(8);
+        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
+        try {
+            result.setValue("0");
+        } catch (IOException ignored) {
+        }
+
+        if (a.getSign() != b.getSign()) {
+            result.setSign(Sign.MINUS);
+        }
+        for (int i = 0; i < b.getLength(); ++i) {
+            LongArithmethic row = new LongArithmeticImplList();
+            final int it = i;
+            futures.add(CompletableFuture.supplyAsync(
+                    () -> mulHelp(b.getDigit(it), it, a),
+                    threadPool
+            ));
+        }
+
+        for (Future<LongArithmethic> future : futures) {
+            try {
+                result = LongArithmeticMath.sum(result, future.get());
+            } catch (Exception ignored) {
+            }
+        }
+
+        return result;
     }
 
     public static LongArithmethic masSum(Stack<LongArithmethic> terms) {
