@@ -77,9 +77,9 @@ public class MathTest {
 
     @Test
     public void future2AdvTest() throws IOException {
+        LongArithmeticImplList dig1=new LongArithmeticImplList("23423423423423212312321312321");
+        LongArithmeticImplList dig2=new LongArithmeticImplList("2342341234534234332324");
         for (int i=0;i<50;++i)
-            assertEquals(LongArithmeticMath.futureMulAdv(new LongArithmeticImplList("3"),
-                    new LongArithmeticImplList("5")).toString(),
-                    new LongArithmeticImplList("15").toString());
+            assertEquals(LongArithmeticMath.futureMulAdv(dig1,dig2).toString(),LongArithmeticMath.mul(dig1,dig2).toString());
     }
 }
