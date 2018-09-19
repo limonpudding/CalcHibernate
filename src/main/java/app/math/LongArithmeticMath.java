@@ -140,10 +140,14 @@ public class LongArithmeticMath {
             result.setSign(Sign.MINUS);
         }
         for (int i = 0; i < b.getLength(); ++i) {
-            LongArithmethic row = new LongArithmeticImplList();
             final int it = i;
             futures.add(CompletableFuture.supplyAsync(
-                    () -> mulHelp(b.getDigit(it), it, a),
+                    () -> {
+                        System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " start");
+                        LongArithmethic partialResult = mulHelp(b.getDigit(it), it, a);
+                        System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " finish");
+                        return partialResult;
+                    },
                     threadPool
             ));
         }
@@ -153,6 +157,49 @@ public class LongArithmeticMath {
                 result = LongArithmeticMath.sum(result, future.get());
             } catch (Exception ignored) {
             }
+        }
+
+        return result;
+    }
+
+    public static LongArithmethic futureMulAdv(LongArithmethic multiplied, LongArithmethic factor) {
+        LongArithmethic a = multiplied;
+        LongArithmethic b = factor;
+        Stack<Future<LongArithmethic>> futures = new Stack<>();
+        ExecutorService threadPool = Executors.newFixedThreadPool(8);
+        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
+        try {
+            result.setValue("0");
+        } catch (IOException ignored) {
+        }
+
+        if (a.getSign() != b.getSign()) {
+            result.setSign(Sign.MINUS);
+        }
+        for (int i = 0; i < 8; ++i) {
+            final int it = b.getLength()/8*i;
+            futures.add(CompletableFuture.supplyAsync(
+                    () -> {
+                        LongArithmethic tempAnswer = LongConst.ZERO.getValue();
+                        //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " start");
+                        for (int j = it; j < it + b.getLength() / 8; ++j)
+                            tempAnswer = LongArithmeticMath.sum(mulHelp(b.getDigit(it), it, a), tempAnswer);
+                        //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " finish");
+                        return tempAnswer;
+                    },
+                    threadPool
+            ));
+        }
+
+        for (Future<LongArithmethic> future : futures) {
+            try {
+                result = LongArithmeticMath.sum(result, future.get());
+            } catch (Exception ignored) {
+            }
+        }
+
+        for(int i=b.getLength()-b.getLength()%8;i<b.getLength();++i) {
+            result = LongArithmeticMath.sum(mulHelp(b.getDigit(i), i, a), result);
         }
 
         return result;
