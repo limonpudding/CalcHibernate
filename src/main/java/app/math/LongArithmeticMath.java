@@ -143,9 +143,9 @@ public class LongArithmeticMath {
             final int it = i;
             futures.add(CompletableFuture.supplyAsync(
                     () -> {
-                        System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " start");
+                        //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " start");
                         LongArithmethic partialResult = mulHelp(b.getDigit(it), it, a);
-                        System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " finish");
+                        //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " finish");
                         return partialResult;
                     },
                     threadPool
@@ -162,7 +162,7 @@ public class LongArithmeticMath {
         return result;
     }
 
-    private final static int threadsCount = 2;
+    private final static int threadsCount = 4;
 
     public static LongArithmethic futureMulAdv(LongArithmethic multiplied, LongArithmethic factor) {
         LongArithmethic a = multiplied;
