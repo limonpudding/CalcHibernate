@@ -2,7 +2,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <div class="container" ng-controller="answerController" id="container">
     <script>
-
+//TODO вынести js скрипты в отдельные файлы
+//TODO заменить ajax на http
         function getAnswer() {
             $.ajax({
                 method: "GET", // метод HTTP, используемый для запроса
@@ -22,7 +23,7 @@
             });
         }
 
-        var answer = "answer";
+        var answer = "";
         var answerApp = angular.module("answerApp", []);
         answerApp.controller("answerController", function ($scope) {
             $scope.message = answer;
@@ -113,8 +114,6 @@
                         }
                     }
                 }
-                //var scope = angular.element(document.getElementById("container")).scope();
-                //scope.updateAnswer();
                 getAnswer();
             }
 
