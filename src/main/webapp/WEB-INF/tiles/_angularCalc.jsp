@@ -20,9 +20,9 @@
             });
         }
 
-        var answer;
-        var purchaseApp = angular.module("answerApp", []);
-        purchaseApp.controller("answerController", function ($scope) {
+        var answer = "answer";
+        var answerApp = angular.module("answerApp", []);
+        answerApp.controller("answerController", function ($scope) {
             $scope.message=answer;
             $scope.updateAnswer = function (ans) {
                 $scope.message = ans;
