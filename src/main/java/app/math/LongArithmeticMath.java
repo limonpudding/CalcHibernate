@@ -3,14 +3,14 @@ package app.math;
 import app.utils.ApplicationContextProvider;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.*;
+
+import static app.math.MulThread.mulHelp;
 
 @Component
 public class LongArithmeticMath {
@@ -106,60 +106,23 @@ public class LongArithmeticMath {
             } catch (InterruptedException ignored) {
             }
         }
-        return masSum(rows);
-    }
-
-    private static LongArithmethic mulHelp(int digit, int i, LongArithmethic a) {
-        int tmp1, tmp = 0;
-        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
-        for (int j = 0; j < a.getLength(); ++j) {
-            tmp1 = result.getDigit(j + i);
-            result.setDigit((byte) ((a.getDigit(j) * digit + tmp1 + tmp) % 10), j + i);
-            tmp = (byte) (tmp1 + a.getDigit(j) * digit + tmp) / 10;
-        }
-        if (tmp > 0) {
-            result.setDigit((byte) (result.getDigit(result.getLengthMul()) + (tmp % 10)), result.getLengthMul());
-        }
-        result.setLength(result.getLength());
+        masSum(rows, result);
         return result;
     }
-
 
     public static LongArithmethic futureMul(LongArithmethic multiplied, LongArithmethic factor) {
         LongArithmethic a = multiplied;
         LongArithmethic b = factor;
-        Stack<Future<LongArithmethic>> futures = new Stack<>();
-        ExecutorService threadPool = Executors.newFixedThreadPool(8);
         LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
         try {
             result.setValue("0");
         } catch (IOException ignored) {
         }
-
         if (a.getSign() != b.getSign()) {
             result.setSign(Sign.MINUS);
         }
-        for (int i = 0; i < b.getLength(); ++i) {
-            final int it = i;
-            futures.add(CompletableFuture.supplyAsync(
-                    () -> {
-                        //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " start");
-                        LongArithmethic partialResult = mulHelp(b.getDigit(it), it, a);
-                        //System.out.println("Thread " + Thread.currentThread().getName() + " with params it = " + it + " finish");
-                        return partialResult;
-                    },
-                    threadPool
-            ));
-        }
-
-        for (Future<LongArithmethic> future : futures) {
-            try {
-                result = LongArithmeticMath.sum(result, future.get());
-            } catch (Exception ignored) {
-            }
-        }
-
-        return result;
+        MulThreadsLoader loader = new MulThreadsLoader(a,b,threadsCount);
+        return masSum(loader.execute(),result);
     }
 
     private final static int threadsCount = 4;
@@ -200,19 +163,10 @@ public class LongArithmeticMath {
             }
         }
 
-        for(int i=b.getLength()-b.getLength()%threadsCount;i<b.getLength();++i) {
-            result = LongArithmeticMath.sum(mulHelp(b.getDigit(i), i, a), result);
-        }
-
         return result;
     }
 
-    public static LongArithmethic masSum(Stack<LongArithmethic> terms) {
-        LongArithmethic result = ApplicationContextProvider.getApplicationContext().getBean(LongArithmethic.class);
-        try {
-            result.setValue("0");
-        } catch (IOException ignored) {
-        }
+    public static LongArithmethic masSum(List <LongArithmethic> terms, LongArithmethic result) {
         for (LongArithmethic term : terms) {
             result = LongArithmeticMath.sum(term, result);
         }
