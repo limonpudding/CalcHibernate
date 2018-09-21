@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <div class="container" ng-controller="answerController" id="container">
-    <script><%@include file="angularCalc.js"%></script>
+    <script charset="utf-8"><%@include file="angularCalc.js"%></script>
     <form>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
