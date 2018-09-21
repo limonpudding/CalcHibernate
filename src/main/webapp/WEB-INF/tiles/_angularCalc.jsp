@@ -1,6 +1,34 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<div class="container">
+<div class="container" ng-controller="answerController">
+    <script>
+
+        function getAnswer() {
+            $.ajax({
+                method: "GET", // метод HTTP, используемый для запроса
+                url: "/rest/calc?a="+$("#a").val()+"&b="+$("#b").val()+"&operation="+$("#operation").val(),
+                success: [function (ans) {
+                    //$("p").text("User saved: " + msg);
+                    window.answer=ans;
+                }],
+                failure: window.location.replace('/error'),
+                statusCode: {
+                    200: function () { // выполнить функцию если код ответа HTTP 200
+                        console.log("Ok");
+                    }
+                }
+            });
+        }
+
+        var answer;
+        var purchaseApp = angular.module("answerApp", []);
+        purchaseApp.controller("answerController", function ($scope) {
+            $scope.message=answer;
+            $scope.updateAnswer = function (ans) {
+                $scope.message = ans;
+            }
+        });
+    </script>
     <form>
         <script>
             function isEmpty(str) {
@@ -74,14 +102,16 @@
             }
 
             function confirmFibonacci() {
+
                 if ($("#operation").val() === 'fib') {
                     if (+$("#a").val() > 50000) {
-                        if(!confirm('Вы ввели слишком большое число фибоначчи, ' +
-                            'его рассчёт может занять продолжительное время. Хотите продолжить?')){
-                            event.preventDefault();
+                        if (!confirm('Вы ввели слишком большое число фибоначчи, ' +
+                            'его рассчёт может занять продолжительное время. Хотите продолжить?')) {
+                            return;
                         }
                     }
                 }
+                getAnswer();
             }
 
             addEventListener("keyup", keyUp);
@@ -116,19 +146,7 @@
 
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Ответ:</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="8" readonly></textarea>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="8" readonly>{{message}}</textarea>
         </div>
     </form>
 </div>
-<c:choose>
-    <c:when test="${operationsHistory.isEmpty()=='false'}">
-
-        <div class="form-group" style="padding-top: 30px">
-            <label for="inputHistory">История операций:</label>
-            <textarea class="form-control" id="inputHistory" rows="4" readonly>
-                        <c:forEach var="operation" items="${operationsHistory}">${operation.toString()}
-                        </c:forEach>
-    </textarea>
-        </div>
-    </c:when>
-</c:choose>

@@ -18,6 +18,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,7 @@ public class JsonController extends AbstractController {
     }
 
     @RequestMapping(path = PageNamesConstants.REST_CALC_PAGE, method = RequestMethod.GET)
+    @Transactional
     public @ResponseBody
     String calc(
             @RequestParam(value = "a") String a,

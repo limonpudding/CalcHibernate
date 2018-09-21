@@ -35,6 +35,15 @@ public class PageNamesConstants {
             "INSERT INTO USERROLES\n" +
             "(USERNAME,ROLE)\n" +
             "VALUES  ('admin', 'ROLE_ADMIN');\n" +
+            "INSERT INTO USERROLES\n" +
+            "(USERNAME,ROLE)\n" +
+            "VALUES  ('admin', 'ROLE_SUM_SUB');\n" +
+            "INSERT INTO USERROLES\n" +
+            "(USERNAME,ROLE)\n" +
+            "VALUES  ('admin', 'ROLE_USER');\n" +
+            "INSERT INTO USERROLES\n" +
+            "(USERNAME,ROLE)\n" +
+            "VALUES  ('admin', 'ROLE_MATH');\n" +
             "create table BINARYOPERATION\n" +
             "(\n" +
             "  ID             NVARCHAR2(40) not null\n" +
