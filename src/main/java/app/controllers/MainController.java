@@ -156,6 +156,12 @@ public class MainController extends AbstractController {
         return getAccountsManager.build();
     }
 
+    @RequestMapping(path = "/angular")
+    public String getAngularCalc() throws Exception {
+        init();
+        return "angularCalc";
+    }
+
     @Secured(value = "ROLE_ADMIN")
     @RequestMapping(path = ROLE_CHANGE_PAGE, method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.NO_CONTENT)
