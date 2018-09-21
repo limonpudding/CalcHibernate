@@ -2,33 +2,20 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <div class="container" ng-controller="answerController" id="container">
     <script>
-//TODO вынести js скрипты в отдельные файлы
-//TODO заменить ajax на http
-        function getAnswer() {
-            $.ajax({
-                method: "GET", // метод HTTP, используемый для запроса
-                url: "/rest/calc?a=" + $("#a").val() + "&b=" + $("#b").val() + "&operation=" + $("#operation").val(),
-                success: [function (ans) {
-                    //$("p").text("User saved: " + msg);
-                    var scope = angular.element(document.getElementById("container")).scope();
-                    scope.updateAnswer(ans);
-                    scope.$apply();
-                }],
-                //failure: window.location.replace('/error'),
-                statusCode: {
-                    200: function () { // выполнить функцию если код ответа HTTP 200
-                        console.log("Ok");
-                    }
-                }
-            });
-        }
+        //TODO вынести js скрипты в отдельные файлы
+        //TODO заменить ajax на http
 
-        var answer = "";
         var answerApp = angular.module("answerApp", []);
-        answerApp.controller("answerController", function ($scope) {
-            $scope.message = answer;
-            $scope.updateAnswer = function (ans) {
-                $scope.message = ans;
+        answerApp.controller("answerController", function ($scope, $http) {
+            $scope.load = function () {
+                if(!confirmFibonacci())
+                    return;
+                $http({
+                    method: 'GET',
+                    url: "/rest/calc?a=" + $("#a").val() + "&b=" + $("#b").val() + "&operation=" + $("#operation").val()
+                }).then(function success(response) {
+                    $scope.message = response.data;
+                });
             }
         });
     </script>
@@ -110,11 +97,10 @@
                     if (+$("#a").val() > 50000) {
                         if (!confirm('Вы ввели слишком большое число фибоначчи, ' +
                             'его рассчёт может занять продолжительное время. Хотите продолжить?')) {
-                            return;
+                            return true;
                         }
                     }
                 }
-                getAnswer();
             }
 
             addEventListener("keyup", keyUp);
@@ -144,7 +130,7 @@
 
         <input type="text" id="operation" name="operation" style="display: none"><br>
 
-        <input type="button" id="calcButton" value="Calculate" style="display: none" onclick="confirmFibonacci()"><br>
+        <input type="button" id="calcButton" value="Calculate" style="display: none" ng-click="load()"><br>
 
 
         <div class="form-group">
