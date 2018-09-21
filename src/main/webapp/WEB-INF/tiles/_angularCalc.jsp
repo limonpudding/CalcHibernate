@@ -10,9 +10,8 @@
                 success: [function (ans) {
                     //$("p").text("User saved: " + msg);
                     var scope = angular.element(document.getElementById("container")).scope();
-                    scope.$apply(function () {
-                        scope.updateAnswer(ans);
-                    });
+                    scope.updateAnswer(ans);
+                    scope.$apply();
                 }],
                 //failure: window.location.replace('/error'),
                 statusCode: {
