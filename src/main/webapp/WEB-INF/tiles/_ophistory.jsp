@@ -71,8 +71,6 @@
                 }
             }
         });
-        // $('#idSessii').val(idSessii);
-        // $('#sortForm').submit();
     }
 
     function slidePrev() {
@@ -88,8 +86,44 @@
         createListSecondPage();
         slideNext();
     }
+
+    var answerApp = angular.module("answerApp", []);
+    answerApp.controller("answerController", function ($scope, $http) {
+        $scope.loadFirst = function () {
+            var tableInfo = {
+                'table': '1',
+                'mode': $('#firstSelectorMode').val(),
+                'order': $('#firstSelectorDirection').val()
+            };
+            $http({
+                method: 'GET',
+                data: tableInfo,
+                url: "rest/tables"
+            }).then(function success(response) {
+                $scope.firstTable = response.data;
+            });
+        };
+        $scope.loadSecond = function () {
+            var tableInfo = {
+                'id': window['idSession'],
+                'table': '2',
+                'mode': $('#secondSelectorMode').val(),
+                'order': $('#secondSelectorDirection').val()
+            };
+            $http({
+                method: 'GET',
+                data: tableInfo,
+                url: "rest/tables"
+            }).then(function success(response) {
+                $scope.secondTable = response.data;
+            });
+        };
+        $scope.loadFirst();
+    });
+
+
 </script>
-<div class="container" style="height: 80%;overflow-y: auto">
+<div class="container" style="height: 80%;overflow-y: auto" ng-controller="answerController">
     <div id="carouselExampleControls" class="carousel slide" data-ride="false" data-pause="true">
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -111,7 +145,7 @@
                             </select>
                         </div>
                         <div class="col">
-                            <input class="btn btn-primary" type="button" onclick="createListFirstPage()"
+                            <input class="btn btn-primary" type="button" ng-click="loadFirst()"
                                    value="Выбрать">
                         </div>
                     </div>
@@ -137,7 +171,13 @@
                     </tr>
                     </thead>
                     <tbody id="firstTable">
-                    <%--заполняется динамически--%>
+                    <tr ng-repeat="row in firstTable">
+                        <td class="col hidden" title={{row.operationSize}}>{{row.operationSize}}</td>
+                        <td class="col hidden" title={{row.id}}>{{row.id}}</td>
+                        <td class="col hidden" title={{row.ip}}>{{row.ip}}</td>
+                        <td class="col hidden" title={{row.timeStart}}>{{row.timeStart}}</td>
+                        <td class="col hidden" title={{row.timeEnd}}>{{row.timeEnd}}</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -158,7 +198,7 @@
                             </select>
                         </div>
                         <div class="col">
-                            <input class="btn btn-primary" type="button" onclick="createListSecondPage()"
+                            <input class="btn btn-primary" type="button" ng-click="loadSecond()"
                                    value="Выбрать">
                             <input class="btn btn-secondary" type="button" onclick="slidePrev()" value="Назад">
                         </div>
@@ -195,8 +235,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-<script>
-    createListFirstPage();
-</script>
 
 

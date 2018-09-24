@@ -122,4 +122,26 @@ public class JsonController extends AbstractController {
         print(logger, Level.INFO, GET_CONSTANTS_LOG, req.getRemoteAddr());
         return new ResponseEntity<>(jdbc.getConstantsDB(), HttpStatus.OK);
     }
+
+    @RequestMapping(path = PageNamesConstants.REST_PAGE+"/tables", method = RequestMethod.GET)
+    public @ResponseBody
+    String getTables() {
+        init();
+        return "[\n" +
+                "  {\n" +
+                "    \"operationSize\": \"10\",\n" +
+                "    \"id\": \"123\",\n" +
+                "    \"ip\": \"34234\",\n" +
+                "    \"timeStart\": \"213213\",\n" +
+                "    \"timeEnd\": \"11111\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"operationSize\": \"33333333\",\n" +
+                "    \"id\": \"3333\",\n" +
+                "    \"ip\": \"34233333334\",\n" +
+                "    \"timeStart\": \"213333333213\",\n" +
+                "    \"timeEnd\": \"11133333311\"\n" +
+                "  }\n" +
+                "]";
+    }
 }

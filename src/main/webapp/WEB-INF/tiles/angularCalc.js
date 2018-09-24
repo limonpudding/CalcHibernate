@@ -86,15 +86,11 @@ function fibonacci() {
 }
 
 function confirmFibonacci() {
-
-    if ($("#operation").val() === 'fib') {
-        if (+$("#a").val() > 50000) {
-            if (!confirm('Вы ввели слишком большое число фибоначчи, ' +
-                'его рассчёт может занять продолжительное время. Хотите продолжить?')) {
-                return true;
-            }
-        }
+    if ($("#operation").val() === 'fib' && +$("#a").val() > 50000) {
+        return confirm('Вы ввели слишком большое число фибоначчи, ' +
+            'его рассчёт может занять продолжительное время. Хотите продолжить?');
     }
+    return true;
 }
 
 addEventListener("keyup", keyUp);
