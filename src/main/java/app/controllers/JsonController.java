@@ -5,7 +5,6 @@ import app.database.entities.Constants;
 import app.database.entities.OperationKind;
 import app.database.entities.Sessions;
 import app.database.entities.dao.OperationDao;
-import app.math.LongArithmeticImplList;
 import app.pages.logic.Answer;
 import app.rest.Key;
 import app.rest.UpdatePost;
@@ -20,12 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import static app.utils.Log.*;
 
@@ -136,7 +135,11 @@ public class JsonController extends AbstractController {
         init();
         if ("1".equals(table)) {
             print(logger, Level.INFO, "Пользователь с IP: {} запросил список сессий", req.getRemoteAddr());
-            return new ResponseEntity<>(jdbc.selectSessionsFromBD(mode, order), HttpStatus.OK);
+            List<SessionJsonView> json = new ArrayList<>();
+            for (Sessions s:jdbc.selectSessionsFromBD(mode, order)) {
+                json.add(new SessionJsonView(s));
+            }
+            return new ResponseEntity<>(json, HttpStatus.OK);
         } else {
             print(logger, Level.INFO, "Пользователь с IP: {} запросил список операций для сессии с id: {}", req.getRemoteAddr(), id);
             return new ResponseEntity<>(jdbc.selectDataFromBD(mode, order, id), HttpStatus.OK);
