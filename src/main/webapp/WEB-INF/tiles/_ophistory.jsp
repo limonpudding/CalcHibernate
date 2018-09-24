@@ -82,25 +82,29 @@
     }
 
     function openSecondTable(id) {
-        window['idSession'] = id;
-        createListSecondPage();
+        var scope = angular.element(document.getElementById("container")).scope();
+        scope.loadSecond(id);
         slideNext();
     }
 
     var answerApp = angular.module("answerApp", []);
     answerApp.controller("answerController", function ($scope, $http) {
+        $scope.openSecondTable = function (id) {
+            $scope.loadSecond(id);
+            slideNext();
+        };
         $scope.loadFirst = function () {
             $http({
                 method: 'GET',
-                url: "rest/tables?table=1&mode="+$('#firstSelectorMode').val()+"&order="+$('#firstSelectorDirection').val()
+                url: "rest/tables?table=1&mode=" + $('#firstSelectorMode').val() + "&order=" + $('#firstSelectorDirection').val()
             }).then(function success(response) {
                 $scope.firstTable = response.data;
             });
         };
-        $scope.loadSecond = function () {
+        $scope.loadSecond = function (id) {
             $http({
                 method: 'GET',
-                url: "rest/tables?table=2&mode="+$('#firstSelectorMode').val()+"&order="+$('#firstSelectorDirection').val()+"&id="+window['idSession']
+                url: "rest/tables?table=2&mode=" + $('#firstSelectorMode').val() + "&order=" + $('#firstSelectorDirection').val() + "&id=" + id
             }).then(function success(response) {
                 $scope.secondTable = response.data;
             });
@@ -159,8 +163,11 @@
                     </thead>
                     <tbody id="firstTable">
                     <tr ng-repeat="row in firstTable">
-                        <td class="col hidden" title={{row.operationSize}}>{{row.operations.length}}</td>
-                        <td class="col hidden" title={{row.id}}>{{row.id}}</td>
+                        <td class="col hidden" title={{row.operationsCount}}>{{row.operationsCount}}</td>
+                        <td class="col hidden" title={{row.id}} ng-if="row.operationsCount != 0"><a href="#"
+                                                                                                    ng-click="openSecondTable('{{row.id}}')">{{row.id}}</a>
+                        </td>
+                        <td class="col hidden" title={{row.id}} ng-if="row.operationsCount == 0">{{row.id}}</td>
                         <td class="col hidden" title={{row.ip}}>{{row.ip}}</td>
                         <td class="col hidden" title={{row.timeStart}}>{{row.timeStart}}</td>
                         <td class="col hidden" title={{row.timeEnd}}>{{row.timeEnd}}</td>
@@ -212,7 +219,29 @@
                     </tr>
                     </thead>
                     <tbody id="secondTable">
+                    <tr ng-repeat="row in secondTable">
+                        <td class="col hidden" title={{row.operationName}}>{{row.operationName}}</td>
+                        <td class="col hidden" title={{row.firstOperand}}>{{row.firstOperand}}</td>
+                        <td class="col hidden" title={{row.secondOperand}}>{{row.secondOperand}}</td>
+                        <td class="col hidden" title={{row.answer}}>{{row.answer}}</td>
+                        <td class="col hidden" title={{row.time}}>{{row.time}}</td>
+                    </tr>
                     <%--заполняется динамически--%>
+                    <%--<td class="col hidden" title="${row.getOperationKind().getFancyName()}">--%>
+                        <%--${row.getOperationKind().getFancyName()}--%>
+                    <%--</td>--%>
+                    <%--<td class="col hidden" title="${row.getFirstOperand()}">--%>
+                        <%--${row.getFirstOperand()}--%>
+                    <%--</td>--%>
+                    <%--<td class="col hidden" title="${row.getSecondOperand()}">--%>
+                        <%--${row.getSecondOperand()}--%>
+                    <%--</td>--%>
+                    <%--<td class="col hidden" title="${row.getAnswer()}">--%>
+                        <%--${row.getAnswer()}--%>
+                    <%--</td>--%>
+                    <%--<td class="col hidden" title="${row.getTime()}">--%>
+                        <%--${row.getTime()}--%>
+                    <%--</td>--%>
                     </tbody>
                 </table>
             </div>
