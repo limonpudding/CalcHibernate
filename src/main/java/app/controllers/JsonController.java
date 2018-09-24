@@ -136,14 +136,18 @@ public class JsonController extends AbstractController {
         System.out.println(id+"___"+mode+"___"+order+"___"+table);
         if ("1".equals(table)) {
             print(logger, Level.INFO, "Пользователь с IP: {} запросил список сессий", req.getRemoteAddr());
-            List<SessionJsonView> json = new ArrayList<>();
+            List<SessionJsonView> sessionsJson = new ArrayList<>();
             for (Sessions s:jdbc.selectSessionsFromBD(mode, order)) {
-                json.add(new SessionJsonView(s));
+                sessionsJson.add(new SessionJsonView(s));
             }
-            return new ResponseEntity<>(json, HttpStatus.OK);
+            return new ResponseEntity<>(sessionsJson, HttpStatus.OK);
         } else {
             print(logger, Level.INFO, "Пользователь с IP: {} запросил список операций для сессии с id: {}", req.getRemoteAddr(), id);
-            return new ResponseEntity<>(jdbc.selectDataFromBD(mode, order, id), HttpStatus.OK);
+            List<OperationJsonView> operationsJson = new ArrayList<>();
+            for (OperationDao o:jdbc.selectDataFromBD(mode, order, id)) {
+                operationsJson.add(new OperationJsonView(o));
+            }
+            return new ResponseEntity<>(operationsJson, HttpStatus.OK);
         }
     }
 
