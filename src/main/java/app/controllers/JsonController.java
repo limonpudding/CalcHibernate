@@ -20,8 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static app.utils.Log.*;
 
@@ -65,8 +69,8 @@ public class JsonController extends AbstractController {
         builder.setFirstOperand(a);
         builder.setSecondOperand(b);
         builder.setOperationKind(OperationKind.getOperationKind(operation));
-        builder.setSession(sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()));
-        operationDao=builder.build();
+        builder.setSession(sessionFactory.getCurrentSession().get(Sessions.class, req.getSession().getId()));
+        operationDao = builder.build();
         jdbc.putOperation(operationDao.toOperation());
         return operationDao.getAnswer().toString();
     }
@@ -123,25 +127,19 @@ public class JsonController extends AbstractController {
         return new ResponseEntity<>(jdbc.getConstantsDB(), HttpStatus.OK);
     }
 
-    @RequestMapping(path = PageNamesConstants.REST_PAGE+"/tables", method = RequestMethod.GET)
+    @RequestMapping(path = "/rest/tables", method = RequestMethod.GET)
     public @ResponseBody
-    String getTables() {
+    ResponseEntity getConstants(@RequestParam(value = "id", required = false) String id,
+                                @RequestParam(value = "mode") String mode,
+                                @RequestParam(value = "order") String order,
+                                @RequestParam(value = "table") String table) {
         init();
-        return "[\n" +
-                "  {\n" +
-                "    \"operationSize\": \"10\",\n" +
-                "    \"id\": \"123\",\n" +
-                "    \"ip\": \"34234\",\n" +
-                "    \"timeStart\": \"213213\",\n" +
-                "    \"timeEnd\": \"11111\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"operationSize\": \"33333333\",\n" +
-                "    \"id\": \"3333\",\n" +
-                "    \"ip\": \"34233333334\",\n" +
-                "    \"timeStart\": \"213333333213\",\n" +
-                "    \"timeEnd\": \"11133333311\"\n" +
-                "  }\n" +
-                "]";
+        if ("1".equals(table)) {
+            print(logger, Level.INFO, "Пользователь с IP: {} запросил список сессий", req.getRemoteAddr());
+            return new ResponseEntity<>(jdbc.selectSessionsFromBD(mode, order), HttpStatus.OK);
+        } else {
+            print(logger, Level.INFO, "Пользователь с IP: {} запросил список операций для сессии с id: {}", req.getRemoteAddr(), id);
+            return new ResponseEntity<>(jdbc.selectDataFromBD(mode, order, id), HttpStatus.OK);
+        }
     }
 }
