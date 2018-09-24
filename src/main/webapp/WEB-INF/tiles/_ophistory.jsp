@@ -90,30 +90,17 @@
     var answerApp = angular.module("answerApp", []);
     answerApp.controller("answerController", function ($scope, $http) {
         $scope.loadFirst = function () {
-            var tableInfo = {
-                'table': '1',
-                'mode': $('#firstSelectorMode').val(),
-                'order': $('#firstSelectorDirection').val()
-            };
             $http({
                 method: 'GET',
-                data: tableInfo,
-                url: "rest/tables"
+                url: "rest/tables?table=1&mode="+$('#firstSelectorMode').val()+"&order="+$('#firstSelectorDirection').val()
             }).then(function success(response) {
                 $scope.firstTable = response.data;
             });
         };
         $scope.loadSecond = function () {
-            var tableInfo = {
-                'id': window['idSession'],
-                'table': '2',
-                'mode': $('#secondSelectorMode').val(),
-                'order': $('#secondSelectorDirection').val()
-            };
             $http({
                 method: 'GET',
-                data: tableInfo,
-                url: "rest/tables"
+                url: "rest/tables?table=2&mode="+$('#firstSelectorMode').val()+"&order="+$('#firstSelectorDirection').val()+"&id="+window['idSession']
             }).then(function success(response) {
                 $scope.secondTable = response.data;
             });
@@ -172,7 +159,7 @@
                     </thead>
                     <tbody id="firstTable">
                     <tr ng-repeat="row in firstTable">
-                        <td class="col hidden" title={{row.operationSize}}>{{row.operationSize}}</td>
+                        <td class="col hidden" title={{row.operationSize}}>{{row.operations.length}}</td>
                         <td class="col hidden" title={{row.id}}>{{row.id}}</td>
                         <td class="col hidden" title={{row.ip}}>{{row.ip}}</td>
                         <td class="col hidden" title={{row.timeStart}}>{{row.timeStart}}</td>

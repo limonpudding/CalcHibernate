@@ -129,11 +129,12 @@ public class JsonController extends AbstractController {
 
     @RequestMapping(path = "/rest/tables", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity getConstants(@RequestParam(value = "id", required = false) String id,
-                                @RequestParam(value = "mode") String mode,
-                                @RequestParam(value = "order") String order,
-                                @RequestParam(value = "table") String table) {
+    ResponseEntity getTables(@RequestParam(value = "id", required = false) String id,
+                                @RequestParam(value = "mode", required = false) String mode,
+                                @RequestParam(value = "order", required = false) String order,
+                                @RequestParam(value = "table", required = false) String table) {
         init();
+        System.out.println(id+"___"+mode+"___"+order+"___"+table);
         if ("1".equals(table)) {
             print(logger, Level.INFO, "Пользователь с IP: {} запросил список сессий", req.getRemoteAddr());
             return new ResponseEntity<>(jdbc.selectSessionsFromBD(mode, order), HttpStatus.OK);
@@ -142,4 +143,26 @@ public class JsonController extends AbstractController {
             return new ResponseEntity<>(jdbc.selectDataFromBD(mode, order, id), HttpStatus.OK);
         }
     }
+
+//    @RequestMapping(path = PageNamesConstants.REST_PAGE+"/tables", method = RequestMethod.GET)
+//    public @ResponseBody
+//    String getTables() {
+//        init();
+//        return "[\n" +
+//                "  {\n" +
+//                "    \"operationSize\": \"10\",\n" +
+//                "    \"id\": \"123\",\n" +
+//                "    \"ip\": \"34234\",\n" +
+//                "    \"timeStart\": \"213213\",\n" +
+//                "    \"timeEnd\": \"11111\"\n" +
+//                "  },\n" +
+//                "  {\n" +
+//                "    \"operationSize\": \"33333333\",\n" +
+//                "    \"id\": \"3333\",\n" +
+//                "    \"ip\": \"34233333334\",\n" +
+//                "    \"timeStart\": \"213333333213\",\n" +
+//                "    \"timeEnd\": \"11133333311\"\n" +
+//                "  }\n" +
+//                "]";
+//    }
 }
