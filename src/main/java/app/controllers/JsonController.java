@@ -20,8 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static app.utils.Log.*;
 
@@ -65,8 +69,8 @@ public class JsonController extends AbstractController {
         builder.setFirstOperand(a);
         builder.setSecondOperand(b);
         builder.setOperationKind(OperationKind.getOperationKind(operation));
-        builder.setSession(sessionFactory.getCurrentSession().get(Sessions.class,req.getSession().getId()));
-        operationDao=builder.build();
+        builder.setSession(sessionFactory.getCurrentSession().get(Sessions.class, req.getSession().getId()));
+        operationDao = builder.build();
         jdbc.putOperation(operationDao.toOperation());
         return operationDao.getAnswer().toString();
     }
@@ -121,5 +125,21 @@ public class JsonController extends AbstractController {
         init();
         print(logger, Level.INFO, GET_CONSTANTS_LOG, req.getRemoteAddr());
         return new ResponseEntity<>(jdbc.getConstantsDB(), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/rest/tables", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity getConstants(@RequestParam(value = "id", required = false) String id,
+                                @RequestParam(value = "mode") String mode,
+                                @RequestParam(value = "order") String order,
+                                @RequestParam(value = "table") String table) {
+        init();
+        if ("1".equals(table)) {
+            print(logger, Level.INFO, "Пользователь с IP: {} запросил список сессий", req.getRemoteAddr());
+            return new ResponseEntity<>(jdbc.selectSessionsFromBD(mode, order), HttpStatus.OK);
+        } else {
+            print(logger, Level.INFO, "Пользователь с IP: {} запросил список операций для сессии с id: {}", req.getRemoteAddr(), id);
+            return new ResponseEntity<>(jdbc.selectDataFromBD(mode, order, id), HttpStatus.OK);
+        }
     }
 }
