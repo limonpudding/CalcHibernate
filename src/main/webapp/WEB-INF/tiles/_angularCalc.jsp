@@ -20,12 +20,10 @@
         <label for="dropdownMenuButton" id="labelOperation"></label>
         <br>
         <label for="a" id="label1" style="display: none">Enter 1-st operator</label>
-        <input type="number" id="a" name="a" style="display: none"><br>
+        <input type="number" id="a" name="a" style="display: none" ng-model="calc.a"><br>
 
         <label for="b" id="label2" style="display: none">Enter 2-nd operator</label>
-        <input type="number" id="b" name="b" style="display: none"><br>
-
-        <input type="text" id="operation" name="operation" style="display: none"><br>
+        <input type="number" id="b" name="b" style="display: none" ng-model="calc.b"><br>
 
         <input type="button" id="calcButton" value="Calculate" style="display: none" ng-click="load()"><br>
 
