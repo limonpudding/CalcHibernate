@@ -32,9 +32,7 @@
             </sec:authorize>
 
         </ul>
-    </div>
-        <div class="collapse navbar-collapse order-2"  id="navbar2">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav">
             <sec:authorize access="!isAuthenticated()">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Авторизация</a>
