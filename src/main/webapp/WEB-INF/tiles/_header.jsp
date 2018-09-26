@@ -20,6 +20,9 @@
                 <a class="nav-link" href="/calc">Вычисления</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/angular">Ангуляр</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/ophistory">История операций</a>
             </li>
             <sec:authorize access="hasRole('ROLE_ADMIN')">
