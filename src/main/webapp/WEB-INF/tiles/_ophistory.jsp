@@ -83,15 +83,24 @@
 
     var answerApp = angular.module("answerApp", []);
     answerApp.controller("answerController", function ($scope, $http) {
+        $scope.idSession;
+        $scope.sessionsSort = {
+            mode: 'id',
+            direction: 'asc'
+        };
+        $scope.operationsSort = {
+            mode: 'operationKind',
+            direction: 'asc'
+        };
         $scope.openSecondTable = function (id) {
-            window['idSession'] = id;
+            $scope.idSession = id;
             $scope.loadSecond();
             slideNext();
         };
         $scope.loadFirst = function () {
             $http({
                 method: 'GET',
-                url: "rest/tables?table=1&mode=" + $('#firstSelectorMode').val() + "&order=" + $('#firstSelectorDirection').val()
+                url: "rest/tables?table=1&mode=" + $scope.sessionsSort.mode + "&order=" + $scope.sessionsSort.direction
             }).then(function success(response) {
                 $scope.firstTable = response.data;
             });
@@ -99,7 +108,7 @@
         $scope.loadSecond = function () {
             $http({
                 method: 'GET',
-                url: "rest/tables?table=2&mode=" + $('#secondSelectorMode').val() + "&order=" + $('#secondSelectorDirection').val() + "&id=" + window['idSession']
+                url: "rest/tables?table=2&mode=" + $scope.operationsSort.mode + "&order=" + $scope.operationsSort.direction + "&id=" + $scope.idSession
             }).then(function success(response) {
                     $scope.secondTable = response.data;
                 }
@@ -118,15 +127,15 @@
                 <form action="ophistory" method="get">
                     <div class="form-row">
                         <div class="form-group col-auto">
-                            <select class="custom-select" name="mode" id="firstSelectorMode">
-                                <option value="idSession">ID</option>
+                            <select class="custom-select" name="mode" id="firstSelectorMode" ng-model="sessionsSort.mode">
+                                <option value="id">ID</option>
                                 <option value="ip">IP</option>
                                 <option value="timeStart" selected>Время создания сессии</option>
                                 <option value="timeEnd">Время завершения сессии</option>
                             </select>
                         </div>
                         <div class="form-group col-auto">
-                            <select class="custom-select" name="order" id="firstSelectorDirection">
+                            <select class="custom-select" name="order" id="firstSelectorDirection"  ng-model="sessionsSort.direction">
                                 <option value="asc">По возрастанию</option>
                                 <option value="desc" selected>По убыванию</option>
                             </select>
@@ -177,13 +186,13 @@
                 <form action="ophistory" method="get" id="sortForm">
                     <div class="form-row">
                         <div class="form-group col-auto">
-                            <select class="custom-select" name="mode" id="secondSelectorMode">
+                            <select class="custom-select" name="mode" id="secondSelectorMode" ng-model="operationsSort.mode">
                                 <option value="operationKind">Операция</option>
                                 <option value="time">Время операции</option>
                             </select>
                         </div>
                         <div class="form-group col-auto">
-                            <select class="custom-select" name="order" id="secondSelectorDirection">
+                            <select class="custom-select" name="order" id="secondSelectorDirection" ng-model="operationsSort.direction">
                                 <option value="asc">По возрастанию</option>
                                 <option value="desc">По убыванию</option>
                             </select>
