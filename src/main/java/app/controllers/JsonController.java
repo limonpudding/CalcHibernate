@@ -71,7 +71,7 @@ public class JsonController extends AbstractController {
         builder.setSession(sessionFactory.getCurrentSession().get(Sessions.class, req.getSession().getId()));
         operationDao = builder.build();
         jdbc.putOperation(operationDao.toOperation());
-        return operationDao.getAnswer().toString();
+        return "\""+operationDao.getAnswer().toString()+"\"";
     }
 
     @RequestMapping(path = PageNamesConstants.REST_PAGE, method = RequestMethod.POST)

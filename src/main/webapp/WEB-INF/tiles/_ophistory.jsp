@@ -101,8 +101,9 @@
                 method: 'GET',
                 url: "rest/tables?table=2&mode=" + $('#secondSelectorMode').val() + "&order=" + $('#secondSelectorDirection').val() + "&id=" + window['idSession']
             }).then(function success(response) {
-                $scope.secondTable = response.data;
-            });
+                    $scope.secondTable = response.data;
+                }
+            );
         };
         $scope.loadFirst();
     });

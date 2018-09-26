@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.database.entities.dao.BinaryOperationDao;
 import app.database.entities.dao.OperationDao;
 
 public class OperationJsonView {
@@ -11,10 +12,12 @@ public class OperationJsonView {
 
     public OperationJsonView() {
     }
+
     public OperationJsonView(OperationDao op) {
         this.operationKind = op.getOperationKind().getFancyName();
         this.firstOperand = op.getFirstOperand().toString();
-        this.secondOperand = op.getSecondOperand().toString();
+        if (op instanceof BinaryOperationDao)
+            this.secondOperand = op.getSecondOperand().toString();
         this.answer = op.getAnswer().toString();
         this.time = op.getTime().toString();
     }

@@ -22,7 +22,7 @@ import static app.utils.PageNamesConstants.*;
 @Configuration
 @ComponentScan(basePackages = "app.security")
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
