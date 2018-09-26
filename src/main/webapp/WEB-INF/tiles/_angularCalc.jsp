@@ -9,22 +9,22 @@
                 Выберите операцию
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#" ng-click="summation()">Сложение!</a>
-                <a class="dropdown-item" href="#" ng-click="subtraction()">Вычитание!</a>
-                <a class="dropdown-item" href="#" ng-click="multiplication()">Умножение!</a>
-                <a class="dropdown-item" href="#" ng-click="division()">Деление!</a>
-                <a class="dropdown-item" href="#" ng-click="fibonacci()">Фибоначчи!</a>
+                <a class="dropdown-item" href="#" ng-click="calculate('sum', 'Сложение')">Сложение!</a>
+                <a class="dropdown-item" href="#" ng-click="calculate('sub', 'Вычитание')">Вычитание!</a>
+                <a class="dropdown-item" href="#" ng-click="calculate('mul', 'Умножение')">Умножение!</a>
+                <a class="dropdown-item" href="#" ng-click="calculate('div', 'Деление')">Деление!</a>
+                <a class="dropdown-item" href="#" ng-click="calculate('fib', 'Фибоначчи')">Фибоначчи!</a>
             </div>
         </div>
         <label for="dropdownMenuButton" id="labelOperation">{{operationName}}</label>
         <br>
-        <label for="a" id="label1" style="display: none">Enter 1-st operator</label>
-        <input type="number" id="a" name="a" style="display: none" ng-model="calc.a"><br>
+        <label for="a" id="label1" style="display: {{label1Display}}">Enter 1-st operator</label>
+        <input type="number" id="a" name="a" style="display: {{aDisplay}}" ng-model="calc.a" value={{calc.a}}><br>
 
-        <label for="b" id="label2" style="display: none">Enter 2-nd operator</label>
-        <input type="number" id="b" name="b" style="display: none" ng-model="calc.b"><br>
+        <label for="b" id="label2" style="display: {{label2Display}}">Enter 2-nd operator</label>
+        <input type="number" id="b" name="b" style="display: {{bDisplay}}" ng-model="calc.b" value={{calc.b}}><br>
 
-        <input type="button" id="calcButton" value="Calculate" style="display: none" ng-click="load()"><br>
+        <input type="button" id="calcButton" value="Calculate" style="display: {{buttonDisplay}}" ng-click="load()"><br>
 
 
         <div class="form-group">
