@@ -16,11 +16,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="/about">О ресурсе</a>
             </li>
+            <%--<li class="nav-item">--%>
+                <%--<a class="nav-link" href="/calc">Вычисления</a>--%>
+            <%--</li>--%>
             <li class="nav-item">
-                <a class="nav-link" href="/calc">Вычисления</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/angular">Ангуляр</a>
+                <a class="nav-link" href="/angular">Калькулятор</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/ophistory">История операций</a>

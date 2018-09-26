@@ -1,6 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <div class="container" ng-controller="answerController" id="container">
+    <style>
+        .show {
+            display: block;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
     <script charset="utf-8"><%@include file="angularCalc.js"%></script>
     <form>
         <div class="dropdown">
@@ -24,7 +33,7 @@
         <label for="b" id="label2" style="display: {{label2Display}}">Enter 2-nd operator</label>
         <input type="number" id="b" name="b" style="display: {{bDisplay}}" ng-model="calc.b" ng-value=calc.b><br>
 
-        <input type="button" id="calcButton" value="Calculate" style="display: {{buttonDisplay}}" ng-click="load()"><br>
+        <input type="button" id="calcButton" value="Calculate" ng-class="{'show': buttonDisplay, 'hide': !buttonDisplay}" ng-click="load()"><br>
 
 
         <div class="form-group">
