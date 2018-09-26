@@ -19,10 +19,10 @@
         <label for="dropdownMenuButton" id="labelOperation">{{operationName}}</label>
         <br>
         <label for="a" id="label1" style="display: {{label1Display}}">Enter 1-st operator</label>
-        <input type="number" id="a" name="a" style="display: {{aDisplay}}" ng-model="calc.a" value={{calc.a}}><br>
+        <input type="number" id="a" name="a" style="display: {{aDisplay}}" ng-model="calc.a" ng-value=calc.a><br>
 
         <label for="b" id="label2" style="display: {{label2Display}}">Enter 2-nd operator</label>
-        <input type="number" id="b" name="b" style="display: {{bDisplay}}" ng-model="calc.b" value={{calc.b}}><br>
+        <input type="number" id="b" name="b" style="display: {{bDisplay}}" ng-model="calc.b" ng-value=calc.b><br>
 
         <input type="button" id="calcButton" value="Calculate" style="display: {{buttonDisplay}}" ng-click="load()"><br>
 
