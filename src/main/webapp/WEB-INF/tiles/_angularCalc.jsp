@@ -14,10 +14,9 @@
                 <a class="dropdown-item" href="#" ng-click="multiplication()">Умножение!</a>
                 <a class="dropdown-item" href="#" ng-click="division()">Деление!</a>
                 <a class="dropdown-item" href="#" ng-click="fibonacci()">Фибоначчи!</a>
-                <a class="dropdown-item" href="#" ng-click="invisibleInterface()">Очистка!</a>
             </div>
         </div>
-        <label for="dropdownMenuButton" id="labelOperation"></label>
+        <label for="dropdownMenuButton" id="labelOperation">{{operationName}}</label>
         <br>
         <label for="a" id="label1" style="display: none">Enter 1-st operator</label>
         <input type="number" id="a" name="a" style="display: none" ng-model="calc.a"><br>
